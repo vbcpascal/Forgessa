@@ -1,0 +1,3 @@
+[submodule "dependencies/depile"]
+	path = dependencies/depile
+	url = git@github.com:ruifengx/depile.git
