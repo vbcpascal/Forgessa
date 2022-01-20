@@ -73,14 +73,14 @@ mod tests {
     use super::df;
     use super::scfg::SimpleCfg;
     use crate::analysis::domtree::{compute_idom, DomTree, ImmDomRel};
-    use crate::{samples, domtree};
+    use crate::{samples, map_b_bs};
     use crate::ssa::Blocks;
     use std::collections::{BTreeMap, BTreeSet};
     use depile::ir::program::read_program;
 
     #[test]
     fn test_df() {
-        let domtree: DomTree = domtree![
+        let domtree: DomTree = map_b_bs![
             0 => [0], 1 => [0, 1], 2 => [0, 1, 2], 3 => [0, 1, 3],
             4 => [0, 1, 3, 4], 5 => [0, 1, 3, 5],
             6 => [0, 1, 3, 6], 7 => [0, 1, 7]
@@ -89,7 +89,7 @@ mod tests {
         let imm_doms: ImmDomRel = compute_idom(&domtree);
         let cfg: SimpleCfg = SimpleCfg {
             entry: 0,
-            edges: domtree![
+            edges: map_b_bs![
                 0 => [1], 1 => [2, 3], 2 => [7], 3 => [4, 5],
                 4 => [6], 5 => [6]   , 6 => [7], 7 => [1]
             ]
@@ -98,7 +98,7 @@ mod tests {
         for i in 0..=7 {
             res.insert(i, df(i, &domtree, &imm_doms, &cfg));
         }
-        let dfs = domtree![
+        let dfs = map_b_bs![
             0 => [] , 1 => [1], 2 => [7], 3 => [7],
             4 => [6], 5 => [6], 6 => [7], 7 => [1]
         ];

@@ -71,7 +71,14 @@ fn get_idom(block_idx: usize, domtree: &DomTree) -> Option<usize> {
     None
 }
 
-
+#[macro_export]
+macro_rules! map_b_bs {
+    ($( $key: expr => $val: expr ),*) => {
+         DomTree::from_iter([
+             $( ($key, BTreeSet::from($val)), )*
+         ])
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -80,17 +87,9 @@ mod tests {
     use crate::analysis::domtree::{compute_domtree, compute_idom};
     use super::{BlockSet, DomTree};
 
-    macro_rules! domtree {
-        ($( $key: expr => $val: expr ),*) => {
-             DomTree::from_iter([
-                 $( ($key, BTreeSet::from($val)), )*
-             ])
-        }
-    }
-
     #[test]
     fn test_idom() {
-        let domtree: DomTree = domtree![
+        let domtree: DomTree = map_b_bs![
             0 => [0],
             1 => [0, 1],
             2 => [0, 1, 2],
