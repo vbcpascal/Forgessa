@@ -81,34 +81,27 @@ mod tests {
     #[test]
     fn test_df() {
         let domtree: DomTree = domtree![
-            0 => [0],
-            1 => [0, 1],
-            2 => [0, 1, 2],
-            3 => [0, 1, 3],
-            4 => [0, 1, 3, 4],
-            5 => [0, 1, 3, 5],
-            6 => [0, 1, 3, 6],
-            7 => [0, 1, 7]
+            0 => [0], 1 => [0, 1], 2 => [0, 1, 2], 3 => [0, 1, 3],
+            4 => [0, 1, 3, 4], 5 => [0, 1, 3, 5],
+            6 => [0, 1, 3, 6], 7 => [0, 1, 7]
         ];
         println!("IMMDOMS ok");
         let imm_doms: ImmDomRel = compute_idom(&domtree);
         let cfg: SimpleCfg = SimpleCfg {
             entry: 0,
             edges: domtree![
-                0 => [1],
-                1 => [2, 3],
-                2 => [7],
-                3 => [4, 5],
-                4 => [6],
-                5 => [6],
-                6 => [7],
-                7 => [1]
+                0 => [1], 1 => [2, 3], 2 => [7], 3 => [4, 5],
+                4 => [6], 5 => [6]   , 6 => [7], 7 => [1]
             ]
         };
         let mut res = BTreeMap::new();
         for i in 0..=7 {
             res.insert(i, df(i, &domtree, &imm_doms, &cfg));
         }
-        print!("{:?}", res);
+        let dfs = domtree![
+            0 => [] , 1 => [1], 2 => [7], 3 => [7],
+            4 => [6], 5 => [6], 6 => [7], 7 => [1]
+        ];
+        assert_eq!(res, dfs);
     }
 }
