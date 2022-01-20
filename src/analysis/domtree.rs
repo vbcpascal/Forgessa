@@ -7,13 +7,13 @@ use depile::analysis::control_flow::successor_blocks_impl;
 use crate::ssa::{SSAKind, Block, Blocks};
 
 pub type BlockSet = BTreeSet<usize>;
-pub type DomTree = BTreeMap<usize, BlockSet>;
+pub type BlockMap = BTreeMap<usize, BlockSet>;
 pub type ImmDomRel = BTreeMap<usize, Option<usize>>;
 
 
 /// Returns nodes dominated by `block_idx`, i.e. `block_idx` dominates
 /// `x` for `x` in return value.
-pub fn dominate_nodes(domtree: &DomTree, block_idx: usize) -> BlockSet {
+pub fn dominate_nodes(domtree: &BlockMap, block_idx: usize) -> BlockSet {
     let mut res: BlockSet = BlockSet::new();
     for (i, doms) in domtree {
         if doms.contains(&block_idx) { res.insert(*i); }
@@ -22,13 +22,13 @@ pub fn dominate_nodes(domtree: &DomTree, block_idx: usize) -> BlockSet {
 }
 
 /// Returns `true` if `x` dom `y`.
-pub fn dominate(domtree: &DomTree, x: usize, y: usize) -> bool {
+pub fn dominate(domtree: &BlockMap, x: usize, y: usize) -> bool {
     dominator(&domtree, y).contains(&x)
 }
 
 /// Returns dominators of `block_idx`, i.e. `x` dominates `block_idx`
 /// for `x` in return value.
-pub fn dominator(domtree: &DomTree, block_idx: usize) -> &BlockSet {
+pub fn dominator(domtree: &BlockMap, block_idx: usize) -> &BlockSet {
     domtree.get(&block_idx).unwrap()
 }
 
@@ -48,18 +48,26 @@ pub fn imm_dominators(imm_doms: &ImmDomRel, block_idx: usize) -> &Option<usize> 
     imm_doms.get(&block_idx).unwrap()
 }
 
-pub fn compute_domtree(blocks: &Blocks) -> DomTree {
-    let mut domtree: DomTree = BTreeMap::new();
+/// Returns the root of `domtree`.
+pub fn root_of_domtree(domtree: &BlockMap) -> usize {
+    for (i, doms) in domtree {
+        if doms.len() == 1 { return *i; }
+    }
+    panic!("Root not found");
+}
+
+pub fn compute_domtree(blocks: &Blocks) -> BlockMap {
+    let mut domtree: BlockMap = BTreeMap::new();
     domtree
 }
 
-pub fn compute_idom(domtree: &DomTree) -> ImmDomRel {
+pub fn compute_idom(domtree: &BlockMap) -> ImmDomRel {
     let mut idoms = BTreeMap::new();
     for (i, _) in domtree { idoms.insert(*i, get_idom(*i, domtree)); }
     idoms
 }
 
-fn get_idom(block_idx: usize, domtree: &DomTree) -> Option<usize> {
+fn get_idom(block_idx: usize, domtree: &BlockMap) -> Option<usize> {
     let doms: &BlockSet = domtree.get(&block_idx).unwrap();
     for (i, ids) in domtree {
         let mut ids_ = ids.clone();
@@ -74,7 +82,7 @@ fn get_idom(block_idx: usize, domtree: &DomTree) -> Option<usize> {
 #[macro_export]
 macro_rules! map_b_bs {
     ($( $key: expr => $val: expr ),*) => {
-         DomTree::from_iter([
+         BlockMap::from_iter([
              $( ($key, BTreeSet::from($val)), )*
          ])
     }
@@ -85,19 +93,14 @@ mod tests {
     use std::array::IntoIter;
     use std::collections::{BTreeMap, BTreeSet};
     use crate::analysis::domtree::{compute_domtree, compute_idom};
-    use super::{BlockSet, DomTree};
+    use super::{BlockSet, BlockMap};
 
     #[test]
     fn test_idom() {
-        let domtree: DomTree = map_b_bs![
-            0 => [0],
-            1 => [0, 1],
-            2 => [0, 1, 2],
-            3 => [0, 1, 3],
-            4 => [0, 1, 3, 4],
-            5 => [0, 1, 3, 5],
-            6 => [0, 1, 3, 6],
-            7 => [0, 1, 7]
+        let domtree: BlockMap = map_b_bs![
+            0 => [0], 1 => [0, 1], 2 => [0, 1, 2], 3 => [0, 1, 3],
+            4 => [0, 1, 3, 4], 5 => [0, 1, 3, 5],
+            6 => [0, 1, 3, 6], 7 => [0, 1, 7]
         ];
         let idoms = BTreeMap::from_iter([
             (0, None), (1, Some(0)), (2, Some(1)), (3, Some(1)),
