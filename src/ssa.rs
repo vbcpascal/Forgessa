@@ -5,6 +5,7 @@
 //! [`Extra`]: depile::ir::instr::basic::Extra
 
 use std::fmt::Formatter;
+use depile::analysis::control_flow::{BranchingBehaviour, HasBranchingBehaviour};
 use parse_display::{Display, FromStr};
 use depile::ir::instr::basic::{Branching, Marker, InterProc, Operand};
 
@@ -54,6 +55,12 @@ impl std::str::FromStr for Phi {
         let mut vars: Vec<SSAOpd> = Vec::new();
         for tok in tokens[1..].iter() { vars.push(tok.parse().unwrap()); }
         Ok(Phi{vars})
+    }
+}
+
+impl HasBranchingBehaviour for Phi {
+    fn get_branching_behaviour(&self) -> BranchingBehaviour {
+        BranchingBehaviour { might_fallthrough: true, alternative_dest: None }
     }
 }
 
