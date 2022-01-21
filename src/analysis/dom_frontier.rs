@@ -1,14 +1,13 @@
 use std::collections::BTreeMap;
 use depile::ir::Function;
 use crate::analysis::dom_frontier::scfg::{SimpleCfg, to_simple_cfg};
-use crate::analysis::domtree::{BlockSet, dominate, dominate_nodes, BlockMap, imm_dominators, ImmDomRel, compute_idom, root_of_domtree};
+use crate::analysis::domtree::{BlockSet, dominate, dominate_nodes, BlockMap, imm_dominators, ImmDomRel, compute_idom, root_of_domtree, compute_domtree};
 
 pub fn compute_dom_frontier(func: &Function) -> BlockMap {
-    let mut res = BlockMap::new();
+    let domtree = compute_domtree(func);
     let blocks = func.blocks.as_slice();
     let cfg = to_simple_cfg(func.entry_block, blocks);
-    
-    res
+    compute_df(&domtree, &cfg)
 }
 
 /// Compute dominance frontier (DF) for all nodes in `domtree`.
@@ -93,7 +92,9 @@ mod tests {
     use crate::{samples, map_b_bs};
     use std::collections::{BTreeMap, BTreeSet};
     use depile::ir::program::read_program;
-    use crate::analysis::dom_frontier::compute_df;
+    use crate::analysis::dom_frontier::{compute_df, compute_dom_frontier};
+    use crate::analysis::dom_frontier::scfg::to_simple_cfg;
+    use crate::samples::get_sample_functions;
 
     #[test]
     fn test_df() {
@@ -114,5 +115,22 @@ mod tests {
             4 => [6], 5 => [6], 6 => [7], 7 => [1]
         ];
         assert_eq!(dfs, compute_df(&domtree, &cfg));
+    }
+
+    #[test]
+    fn test_cfg() {
+        let funcs = get_sample_functions(samples::PRIME);
+        let func = &funcs.functions[0];
+        let cfg = to_simple_cfg(func.entry_block, func.blocks.as_slice());
+        println!("{}", cfg)
+    }
+
+    #[test]
+    fn test_func_df() {
+        let funcs = get_sample_functions(samples::PRIME);
+        let func = &funcs.functions[0];
+        let dfs = compute_dom_frontier(func);
+
+        println!("{:?}", dfs);
     }
 }
