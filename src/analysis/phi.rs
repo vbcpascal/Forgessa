@@ -3,47 +3,17 @@ use depile::ir::{Block, Function};
 use depile::ir::instr::basic::Operand::Var;
 use depile::ir::instr::Instr::Move;
 use depile::ir::instr::InstrExt;
-use crate::analysis::dom_frontier::compute_dom_frontier;
-use crate::analysis::domtree::{BlockMap, BlockSet};
+use crate::analysis::dom_frontier::{compute_dom_frontier, compute_dom_frontier_with_domtree};
+use crate::analysis::domtree::{BlockMap, BlockSet, compute_domtree, compute_idom, ImmDomRel};
+use crate::ssa::SSABlock;
 use crate::ssa::SSAOpd::{Operand, Subscribed};
 
-pub trait HasVariableOperand {
-    fn get_var_name(&self) -> Option<String>;
-    fn is_var(&self) -> bool { self.get_var_name().is_some() }
-    fn unwrap(&self) -> String { self.get_var_name().unwrap() }
-}
+// pub fn place_phi(block: &SSABlock) -> SSABlock {
+//
+// }
 
-impl HasVariableOperand for depile::ir::instr::basic::Operand {
-    fn get_var_name(&self) -> Option<String> {
-        match self {
-            Var(var, _) => Some(var.clone()),
-            _ => None,
-        }
-    }
-}
-
-impl HasVariableOperand for crate::ssa::SSAOpd {
-    fn get_var_name(&self) -> Option<String> {
-        match self {
-            Operand(opd) => opd.get_var_name(),
-            Subscribed(var, _) => Some(var.clone()),
-        }
-    }
-}
-
-pub fn find_defs<K: InstrExt>(block: &Block<K>) -> BTreeSet<String>
-    where K::Operand: HasVariableOperand {
-    let mut vars = BTreeSet::new();
-    for instr in block.instructions.iter() {
-        match instr {
-            Move { source: _, dest: dst }  => if dst.is_var() { vars.insert(dst.unwrap()); }
-            _ => { }
-        }
-    }
-    vars
-}
-
-pub fn place_phi(func: &Function) -> BTreeMap<usize, BTreeMap<String, PhiAtom>> {
+/// Infer the place of phi function will be placed in `func`.
+pub fn infer_phi(func: &Function) -> BTreeMap<usize, BTreeMap<String, PhiAtom>> {
     // Step 1: calculate dominance frontiers
     let dfs: BlockMap = compute_dom_frontier(func);
 
@@ -85,6 +55,44 @@ pub fn place_phi(func: &Function) -> BTreeMap<usize, BTreeMap<String, PhiAtom>> 
     phi_instrs
 }
 
+/// Find all the variable definitions in `block`.
+pub fn find_defs<K: InstrExt>(block: &Block<K>) -> BTreeSet<String>
+    where K::Operand: HasVariableOperand {
+    let mut vars = BTreeSet::new();
+    for instr in block.instructions.iter() {
+        match instr {
+            Move { source: _, dest: dst }  => if dst.is_var() { vars.insert(dst.unwrap()); }
+            _ => { }
+        }
+    }
+    vars
+}
+
+/// Indicates a variable can be got from this operand.
+pub trait HasVariableOperand {
+    fn get_var_name(&self) -> Option<String>;
+    fn is_var(&self) -> bool { self.get_var_name().is_some() }
+    fn unwrap(&self) -> String { self.get_var_name().unwrap() }
+}
+
+impl HasVariableOperand for depile::ir::instr::basic::Operand {
+    fn get_var_name(&self) -> Option<String> {
+        match self {
+            Var(var, _) => Some(var.clone()),
+            _ => None,
+        }
+    }
+}
+
+impl HasVariableOperand for crate::ssa::SSAOpd {
+    fn get_var_name(&self) -> Option<String> {
+        match self {
+            Operand(opd) => opd.get_var_name(),
+            Subscribed(var, _) => Some(var.clone()),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct PhiAtom {
     pub var: String,
@@ -102,15 +110,29 @@ impl PhiAtom {
 }
 
 pub struct PhiForge {
-
+    pub domtree: BlockMap,
+    pub imm_doms: ImmDomRel,
+    pub dom_frontier: BlockMap,
 }
 
+impl PhiForge {
+    fn new(func: &Function) -> Self {
+        let domtree = compute_domtree(func);
+        let imm_doms = compute_idom(&domtree);
+        let dfs = compute_dom_frontier_with_domtree(func, &domtree);
+        Self {
+            domtree: domtree,
+            imm_doms: imm_doms,
+            dom_frontier: dfs,
 
+        }
+    }
+}
 
 #[cfg(test)]
 mod test {
     use depile::ir::Function;
-    use crate::analysis::phi::{find_defs, place_phi};
+    use crate::analysis::phi::{find_defs, infer_phi};
     use crate::samples::{get_sample_functions, PRIME};
 
     #[test]
@@ -126,7 +148,7 @@ mod test {
     fn test_phi_instrs() {
         let funcs = get_sample_functions(PRIME);
         let func: &Function = &funcs.functions[0];
-        println!("{:?}", place_phi(func));
+        println!("{:?}", infer_phi(func));
     }
 
 
