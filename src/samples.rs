@@ -1,0 +1,31 @@
+
+#![allow(unused)]
+
+use depile::ir::{Blocks, Functions, Program};
+use depile::ir::program::read_program;
+macro_rules! count {
+    () => { 0 };
+    ($x: tt $(, $xs: tt)*) => { 1 + count!($($xs),*) }
+}
+
+macro_rules! include_samples {
+    ($($name: ident),+ $(,)?) => {
+        $(
+            pub const $name: &str = include_str!(concat!("../dependencies/depile/src/samples/", stringify!($name), ".txt"));
+        )+
+        pub const ALL_SAMPLES: [&str; count!($($name),+)] = [$($name),+];
+    }
+}
+
+include_samples! {
+    COLLATZ,
+    GCD,
+    HANOIFIBFAC,
+    LOOP,
+    MMM,
+    PRIME,
+    REGSLARGE,
+    SIEVE,
+    SORT,
+    STRUCT,
+}
