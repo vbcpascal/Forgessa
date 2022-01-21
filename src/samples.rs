@@ -3,6 +3,7 @@
 
 use depile::ir::{Blocks, Functions, Program};
 use depile::ir::program::read_program;
+
 macro_rules! count {
     () => { 0 };
     ($x: tt $(, $xs: tt)*) => { 1 + count!($($xs),*) }
@@ -28,4 +29,10 @@ include_samples! {
     SIEVE,
     SORT,
     STRUCT,
+}
+
+pub fn get_sample_functions(str: &str) -> Functions {
+    let program: Box<Program> = read_program(str).unwrap();
+    let blocks: Blocks<depile::ir::instr::basic::Kind> = Blocks::try_from(program.as_ref()).unwrap();
+    blocks.functions().unwrap()
 }

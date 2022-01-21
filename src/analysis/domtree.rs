@@ -157,6 +157,7 @@ mod tests {
     use depile::ir::{Blocks, Function, Functions, Program};
     use depile::ir::instr::Kind;
     use crate::analysis::domtree::{compute_domtree, compute_idom};
+    use crate::samples::get_sample_functions;
     use super::{BlockSet, BlockMap};
 
     #[test]
@@ -178,9 +179,7 @@ mod tests {
         use depile::ir::program::read_program;
         use crate::samples;
 
-        let program: Box<Program> = read_program(samples::PRIME).unwrap();
-        let blocks: Blocks<depile::ir::instr::basic::Kind> = Blocks::try_from(program.as_ref()).unwrap();
-        let funcs: Functions = blocks.functions().unwrap();
+        let funcs = get_sample_functions(samples::PRIME);
         let func = &funcs.functions[0];
         let domtree = compute_domtree(func);
         let idoms = compute_idom(&domtree);
