@@ -1,13 +1,13 @@
 use std::collections::BTreeMap;
+use depile::ir::Function;
 use crate::analysis::dom_frontier::scfg::{SimpleCfg, to_simple_cfg};
 use crate::analysis::domtree::{BlockSet, dominate, dominate_nodes, BlockMap, imm_dominators, ImmDomRel, compute_idom, root_of_domtree};
-use crate::ssa::{Block, Function};
 
-pub fn compute_dom_frontier(func: Function) -> BlockMap {
+pub fn compute_dom_frontier(func: &Function) -> BlockMap {
     let mut res = BlockMap::new();
     let blocks = func.blocks.as_slice();
     let cfg = to_simple_cfg(func.entry_block, blocks);
-
+    
     res
 }
 
@@ -47,9 +47,10 @@ fn df<'a>(block_idx: usize, domtree: &BlockMap, imm_doms: &ImmDomRel, cfg: &Simp
 mod scfg {
     use std::collections::BTreeMap;
     use std::fmt::{Display, Formatter};
-    use depile::analysis::control_flow::successor_blocks_impl;
+    use depile::analysis::control_flow::{HasBranchingBehaviour, successor_blocks_impl};
+    use depile::ir::Block;
+    use depile::ir::instr::InstrExt;
     use crate::analysis::domtree::BlockSet;
-    use crate::ssa::Block;
 
     #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct SimpleCfg {
@@ -69,7 +70,11 @@ mod scfg {
         }
     }
 
-    pub fn to_simple_cfg(entry: usize, blocks: &[Block]) -> SimpleCfg {
+    pub fn to_simple_cfg<K>(entry: usize, blocks: &[Block<K>]) -> SimpleCfg
+        where K: InstrExt,
+              K::Branching: HasBranchingBehaviour,
+              K::Marker: HasBranchingBehaviour,
+              K::Extra: HasBranchingBehaviour {
         let mut edges = BTreeMap::new();
         for (i, _) in blocks.iter().enumerate() {
             let succs: BlockSet = successor_blocks_impl(blocks, i)
@@ -86,7 +91,6 @@ mod tests {
     use super::scfg::SimpleCfg;
     use crate::analysis::domtree::{BlockSet, compute_idom, BlockMap, ImmDomRel};
     use crate::{samples, map_b_bs};
-    use crate::ssa::Blocks;
     use std::collections::{BTreeMap, BTreeSet};
     use depile::ir::program::read_program;
     use crate::analysis::dom_frontier::compute_df;
