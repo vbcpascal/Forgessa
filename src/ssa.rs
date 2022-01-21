@@ -4,11 +4,12 @@
 //! [`Operand`]: depile::ir::instr::basic::Operand
 //! [`Extra`]: depile::ir::instr::basic::Extra
 
+#![allow(unused)]
+
 use std::fmt::Formatter;
 use depile::analysis::control_flow::{BranchingBehaviour, HasBranchingBehaviour};
 use parse_display::{Display, FromStr};
 use depile::ir::instr::basic::{Branching, Marker, InterProc, Operand};
-use depile::ir::instr::InstrExt;
 
 /// Instruction kind SSA
 pub type SSAKind = depile::ir::instr::Kind<SSAOpd, Branching, Marker, InterProc, Phi>;
@@ -69,8 +70,6 @@ impl HasBranchingBehaviour for Phi {
 
 #[cfg(test)]
 mod tests {
-    use depile::ir::Blocks;
-    use crate::ssa::SSAKind;
     use super::{SSAInstr, Phi, SSAOpd};
 
     macro_rules! assert_equiv {

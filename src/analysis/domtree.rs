@@ -1,10 +1,9 @@
-#![allow(unused)]
+
 
 use std::collections::{BTreeMap, BTreeSet};
-use depile::analysis::control_flow::{ControlFlow, HasBranchingBehaviour, NextBlocks, successor_blocks_impl};
+use depile::analysis::control_flow::HasBranchingBehaviour;
 use depile::analysis::data_flow::{AnalysisRes, ForwardAnalysis};
-use depile::analysis::lattice::JoinSemiLattice;
-use depile::ir::{Block, Function};
+use depile::ir::Function;
 use depile::ir::instr::InstrExt;
 use crate::analysis::domtree::dominance_analysis::DomAnalysis;
 
@@ -18,6 +17,7 @@ pub type ImmDomRel = BTreeMap<usize, Option<usize>>;
 
 /// Returns nodes dominated by `block_idx`, i.e. `block_idx` dominates
 /// `x` for `x` in return value.
+#[allow(unused)]
 pub fn dominate_nodes(domtree: &BlockMap, block_idx: usize) -> BlockSet {
     let mut res: BlockSet = BlockSet::new();
     for (i, doms) in domtree {
@@ -27,18 +27,21 @@ pub fn dominate_nodes(domtree: &BlockMap, block_idx: usize) -> BlockSet {
 }
 
 /// Returns `true` if `x` dom `y`.
+#[allow(unused)]
 pub fn dominate(domtree: &BlockMap, x: usize, y: usize) -> bool {
     dominator(&domtree, y).contains(&x)
 }
 
 /// Returns dominators of `block_idx`, i.e. `x` dominates `block_idx`
 /// for `x` in return value.
+#[allow(unused)]
 pub fn dominator(domtree: &BlockMap, block_idx: usize) -> &BlockSet {
     domtree.get(&block_idx).unwrap()
 }
 
 /// Returns nodes immediate dominated by `block_idx`, i.e. `block_idx`
 /// immediate dominates `x` for `x` in return value.
+#[allow(unused)]
 pub fn imm_dominate_nodes(imm_doms: &ImmDomRel, block_idx: usize) -> BlockSet {
     let mut res: BlockSet = BlockSet::new();
     for (x, y) in imm_doms {
@@ -49,11 +52,13 @@ pub fn imm_dominate_nodes(imm_doms: &ImmDomRel, block_idx: usize) -> BlockSet {
 }
 
 /// Returns immediate dominators of `block_idx`.
+#[allow(unused)]
 pub fn imm_dominators(imm_doms: &ImmDomRel, block_idx: usize) -> &Option<usize> {
     imm_doms.get(&block_idx).unwrap()
 }
 
 /// Returns the root of `domtree`.
+#[allow(unused)]
 pub fn root_of_domtree(domtree: &BlockMap) -> usize {
     for (i, doms) in domtree {
         if doms.len() == 1 { return *i; }
@@ -105,11 +110,10 @@ macro_rules! map_b_bs {
 }
 
 mod dominance_analysis {
-    use std::borrow::Borrow;
-    use depile::analysis::control_flow::{ControlFlow, ControlFlowExt};
+    use depile::analysis::control_flow::ControlFlowExt;
     use depile::analysis::data_flow::ForwardAnalysis;
     use depile::analysis::lattice::JoinSemiLattice;
-    use depile::ir::{Function, Block};
+    use depile::ir::Block;
     use depile::ir::instr::InstrExt;
     use crate::analysis::domtree::BlockSet;
 
@@ -140,7 +144,7 @@ mod dominance_analysis {
     impl<K: InstrExt> ForwardAnalysis<K> for DomAnalysis {
         fn v_entry() -> Self { Self::empty() }
 
-        fn transfer_function(block_idx: usize, block: &Block<K>, input: &Self, output: &mut Self) -> bool {
+        fn transfer_function(block_idx: usize, _: &Block<K>, input: &Self, output: &mut Self) -> bool {
             let mut res = input.clone();
             res.insert(block_idx);
             <Self as JoinSemiLattice<K>>::join_assign(output, res)
@@ -151,14 +155,10 @@ mod dominance_analysis {
 
 #[cfg(test)]
 mod tests {
-    use std::array::IntoIter;
     use std::collections::{BTreeMap, BTreeSet};
-    use std::process::id;
-    use depile::ir::{Blocks, Function, Functions, Program};
-    use depile::ir::instr::Kind;
     use crate::analysis::domtree::{compute_domtree, compute_idom};
     use crate::samples::get_sample_functions;
-    use super::{BlockSet, BlockMap};
+    use super::BlockMap;
 
     #[test]
     fn test_idom() {
@@ -176,7 +176,6 @@ mod tests {
 
     #[test]
     fn test_dom() {
-        use depile::ir::program::read_program;
         use crate::samples;
 
         let funcs = get_sample_functions(samples::PRIME);
