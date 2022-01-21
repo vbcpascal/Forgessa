@@ -9,10 +9,10 @@ use crate::analysis::domtree::dominance_analysis::DomAnalysis;
 
 /// A set of blocks
 pub type BlockSet = BTreeSet<usize>;
-
 /// Mapping block to a set of blocks, such as dominator as dominance frontier.
 /// Can be build via macro [`map_b_bs!`].
 pub type BlockMap = BTreeMap<usize, BlockSet>;
+/// Immediate dominance relation.
 pub type ImmDomRel = BTreeMap<usize, Option<usize>>;
 
 /// Returns nodes dominated by `block_idx`, i.e. `block_idx` dominates
