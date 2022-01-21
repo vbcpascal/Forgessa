@@ -8,17 +8,22 @@
 
 use std::fmt::Formatter;
 use depile::analysis::control_flow::{BranchingBehaviour, HasBranchingBehaviour};
+use depile::ir::instr::basic::Operand;
 use parse_display::{Display, FromStr};
-use depile::ir::instr::basic::{Branching, Marker, InterProc, Operand};
 
 /// Instruction kind SSA
-pub type SSAKind = depile::ir::instr::Kind<SSAOpd, Branching, Marker, InterProc, Phi>;
+pub type SSAKind = depile::ir::instr::Kind<
+    SSAOpd,
+    depile::ir::instr::Branching<SSAOpd>,
+    depile::ir::instr::stripped::Marker,
+    depile::ir::instr::basic::InterProc,
+    Phi>;
 
 /// SSA block.
-pub type Block = depile::ir::Block<SSAKind>;
-pub type Blocks = depile::ir::Blocks<SSAKind>;
-pub type Function = depile::ir::Function<SSAKind>;
-pub type Functions = depile::ir::Functions<SSAKind>;
+pub type SSABlock = depile::ir::Block<SSAKind>;
+pub type SSABlocks = depile::ir::Blocks<SSAKind>;
+pub type SSAFunction = depile::ir::Function<SSAKind>;
+pub type SSAFunctions = depile::ir::Functions<SSAKind>;
 
 /// [`Instr`](depile::ir::Instr)uction with kind "SSA"
 pub type SSAInstr = depile::ir::Instr<SSAKind>;
