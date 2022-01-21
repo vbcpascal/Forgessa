@@ -156,8 +156,8 @@ mod dominance_analysis {
 #[cfg(test)]
 mod tests {
     use std::collections::{BTreeMap, BTreeSet};
+    use crate::samples::{get_sample_functions, PRIME, ALL_SAMPLES};
     use crate::analysis::domtree::{compute_domtree, compute_idom};
-    use crate::samples::get_sample_functions;
     use super::BlockMap;
 
     #[test]
@@ -175,10 +175,8 @@ mod tests {
     }
 
     #[test]
-    fn test_dom() {
-        use crate::samples;
-
-        let funcs = get_sample_functions(samples::PRIME);
+    fn test_prime_dom() {
+        let funcs = get_sample_functions(PRIME);
         let func = &funcs.functions[0];
         let domtree = compute_domtree(func);
         let idoms = compute_idom(&domtree);
@@ -188,5 +186,14 @@ mod tests {
             (9, Some(3)), (10, Some(9)), (11, Some(9)), (12, Some(1))
         ]);
         assert_eq!(idoms, idoms_);
+    }
+
+    #[test]
+    fn test_samples_dom() {
+        for s in ALL_SAMPLES {
+            for func in get_sample_functions(s).functions.iter() {
+                compute_idom(&compute_domtree(func));
+            }
+        }
     }
 }

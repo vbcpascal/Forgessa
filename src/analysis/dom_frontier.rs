@@ -97,7 +97,7 @@ mod tests {
     use super::{compute_df, compute_dom_frontier};
     use super::scfg::{SimpleCfg, to_simple_cfg};
     use crate::map_b_bs;
-    use crate::samples::{get_sample_functions, PRIME};
+    use crate::samples::{get_sample_functions, PRIME, ALL_SAMPLES};
     use crate::analysis::domtree::BlockMap;
 
     #[test]
@@ -122,7 +122,7 @@ mod tests {
     }
 
     #[test]
-    fn test_cfg() {
+    fn test_prime_cfg() {
         let funcs = get_sample_functions(PRIME);
         let func = &funcs.functions[0];
         let cfg = to_simple_cfg(func.entry_block, func.blocks.as_slice());
@@ -138,7 +138,7 @@ mod tests {
     }
 
     #[test]
-    fn test_func_df() {
+    fn test_prime_df() {
         let funcs = get_sample_functions(PRIME);
         let func = &funcs.functions[0];
         let dfs = compute_dom_frontier(func);
@@ -148,5 +148,14 @@ mod tests {
             9 => [1], 10 => [11], 11 => [1], 12 => []
         ];
         assert_eq!(dfs, dfs_);
+    }
+
+    #[test]
+    fn test_samples_df () {
+        for s in ALL_SAMPLES {
+            for func in get_sample_functions(s).functions.iter() {
+                compute_dom_frontier(func);
+            }
+        }
     }
 }
