@@ -1,4 +1,3 @@
-use std::collections::BTreeMap;
 use depile::ir::Function;
 use crate::analysis::dom_frontier::scfg::{SimpleCfg, to_simple_cfg};
 use crate::analysis::domtree::{BlockSet, dominate, dominate_nodes, BlockMap, imm_dominators, ImmDomRel, compute_idom, root_of_domtree, compute_domtree};
@@ -20,7 +19,11 @@ pub fn compute_df(domtree: &BlockMap, cfg: &SimpleCfg) -> BlockMap {
 }
 
 /// Compute dominance frontier (DF) for `block_idx` and store the result in `dfs`.
-fn df<'a>(block_idx: usize, domtree: &BlockMap, imm_doms: &ImmDomRel, cfg: &SimpleCfg, dfs: &'a mut BTreeMap<usize, BlockSet>) -> &'a BlockSet {
+fn df<'a>(block_idx: usize,
+          domtree: &BlockMap,
+          imm_doms: &ImmDomRel,
+          cfg: &SimpleCfg,
+          dfs: &'a mut BlockMap) -> &'a BlockSet {
     if dfs.contains_key(&block_idx) { return dfs.get(&block_idx).unwrap(); }
     let mut res: BlockSet = BlockSet::new();
 
@@ -76,8 +79,12 @@ mod scfg {
               K::Extra: HasBranchingBehaviour {
         let mut edges = BTreeMap::new();
         for (i, _) in blocks.iter().enumerate() {
-            let succs: BlockSet = successor_blocks_impl(blocks, i)
-                .iter().cloned().collect();
+            let mut succs = BlockSet::new();
+            for s in successor_blocks_impl(blocks, i) {
+                // TODO: out of range
+                if s >= blocks.len() { continue; }
+                succs.insert(s);
+            }
             edges.insert(i, succs);
         }
         SimpleCfg { entry, edges }
@@ -86,15 +93,12 @@ mod scfg {
 
 #[cfg(test)]
 mod tests {
-    use super::df;
-    use super::scfg::SimpleCfg;
-    use crate::analysis::domtree::{BlockSet, compute_idom, BlockMap, ImmDomRel};
-    use crate::{samples, map_b_bs};
-    use std::collections::{BTreeMap, BTreeSet};
-    use depile::ir::program::read_program;
-    use crate::analysis::dom_frontier::{compute_df, compute_dom_frontier};
-    use crate::analysis::dom_frontier::scfg::to_simple_cfg;
-    use crate::samples::get_sample_functions;
+    use std::collections::BTreeSet;
+    use super::{compute_df, compute_dom_frontier};
+    use super::scfg::{SimpleCfg, to_simple_cfg};
+    use crate::map_b_bs;
+    use crate::samples::{get_sample_functions, PRIME};
+    use crate::analysis::domtree::BlockMap;
 
     #[test]
     fn test_df() {
@@ -119,18 +123,30 @@ mod tests {
 
     #[test]
     fn test_cfg() {
-        let funcs = get_sample_functions(samples::PRIME);
+        let funcs = get_sample_functions(PRIME);
         let func = &funcs.functions[0];
         let cfg = to_simple_cfg(func.entry_block, func.blocks.as_slice());
-        println!("{}", cfg)
+        let cfg_: SimpleCfg = SimpleCfg {
+            entry: 0,
+            edges: map_b_bs![
+                0 => [1], 1 => [2, 12], 2 => [3], 3 => [4, 9],
+                4 => [5, 6], 5 => [8], 6 => [7, 8], 7 => [8], 8 => [3],
+                9 => [10, 11], 10 => [11], 11 => [1], 12 => []
+            ]
+        };
+        assert_eq!(cfg, cfg_);
     }
 
     #[test]
     fn test_func_df() {
-        let funcs = get_sample_functions(samples::PRIME);
+        let funcs = get_sample_functions(PRIME);
         let func = &funcs.functions[0];
         let dfs = compute_dom_frontier(func);
-
-        println!("{:?}", dfs);
+        let dfs_ = map_b_bs![
+            0 => [] , 1  => [1] , 2  => [1], 3  => [1, 3],
+            4 => [3], 5  => [8] , 6  => [8], 7  => [8], 8 => [3],
+            9 => [1], 10 => [11], 11 => [1], 12 => []
+        ];
+        assert_eq!(dfs, dfs_);
     }
 }
