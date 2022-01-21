@@ -4,7 +4,7 @@ use depile::ir::instr::basic::Operand::Var;
 use depile::ir::instr::Instr::Move;
 use depile::ir::instr::InstrExt;
 use crate::analysis::dom_frontier::{compute_dom_frontier, compute_dom_frontier_with_domtree};
-use crate::analysis::domtree::{BlockMap, BlockSet, compute_domtree, compute_idom, ImmDomRel};
+use crate::analysis::domtree::{BlockMap, BlockSet, compute_domtree, compute_idom, imm_dominators, ImmDomRel, root_of_domtree};
 use crate::ssa::SSABlock;
 use crate::ssa::SSAOpd::{Operand, Subscribed};
 
@@ -12,48 +12,6 @@ use crate::ssa::SSAOpd::{Operand, Subscribed};
 //
 // }
 
-/// Infer the place of phi function will be placed in `func`.
-pub fn infer_phi(func: &Function) -> BTreeMap<usize, BTreeMap<String, PhiAtom>> {
-    // Step 1: calculate dominance frontiers
-    let dfs: BlockMap = compute_dom_frontier(func);
-
-    // Step 2: find global names
-    let mut defs: BTreeMap<usize, BTreeSet<String>> = BTreeMap::new();
-    for (i, block) in func.blocks.iter().enumerate() {
-        defs.insert(i, find_defs(block));
-    }
-
-    let mut def_sites: BTreeMap<String, Vec<usize>> = BTreeMap::new();
-    for (i, _) in func.blocks.iter().enumerate() {
-        for var in defs.get(&i).unwrap() {
-            if !def_sites.contains_key(var) {
-                def_sites.insert(var.clone(), Vec::new());
-            }
-            def_sites.get_mut(var).unwrap().push(i);
-        }
-    }
-
-    // Step 3: insert phi-functions
-    let mut phi_instrs: BTreeMap<usize, BTreeMap<String, PhiAtom>> = BTreeMap::new();
-    for i in 0..func.blocks.len() { phi_instrs.insert(i, BTreeMap::new()); }
-    for (var, bs) in def_sites.iter() {
-        let mut blocks: Vec<usize> = bs.clone();
-        while !blocks.is_empty() {
-            let b = blocks.pop().unwrap();
-
-            for df in dfs.get(&b).unwrap() {
-                let phis = phi_instrs.get_mut(df).unwrap();
-                if !phis.contains_key(var) {
-                    phis.insert(var.clone(), PhiAtom::new(var));
-                    blocks.push(df.clone());
-                }
-                phis.get_mut(var).unwrap().insert(b);
-            }
-        }
-    }
-
-    phi_instrs
-}
 
 /// Find all the variable definitions in `block`.
 pub fn find_defs<K: InstrExt>(block: &Block<K>) -> BTreeSet<String>
@@ -94,15 +52,15 @@ impl HasVariableOperand for crate::ssa::SSAOpd {
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-pub struct PhiAtom {
+pub struct PhiCell {
     pub var: String,
     /// Blocks generating this phi-node
     pub origins: BlockSet,
 }
 
-impl PhiAtom {
+impl PhiCell {
     pub fn new(var: &String) -> Self {
-        PhiAtom { var: var.clone(), origins: BlockSet::new() }
+        PhiCell { var: var.clone(), origins: BlockSet::new() }
     }
     pub fn insert(&mut self, block: usize) -> bool {
         self.origins.insert(block)
@@ -113,6 +71,7 @@ pub struct PhiForge {
     pub domtree: BlockMap,
     pub imm_doms: ImmDomRel,
     pub dom_frontier: BlockMap,
+    pub rename_stack: BTreeMap<String, RenameStackCell>,
 }
 
 impl PhiForge {
@@ -124,15 +83,80 @@ impl PhiForge {
             domtree: domtree,
             imm_doms: imm_doms,
             dom_frontier: dfs,
-
+            rename_stack: BTreeMap::new(),
         }
     }
+
+    /// Infer the place of phi function will be placed in `func`.
+    pub fn infer_phi(&self, func: &Function) -> BTreeMap<usize, BTreeMap<String, PhiCell>> {
+        // Step 1: calculate dominance frontiers
+        let dfs: &BlockMap = &self.dom_frontier;
+
+        // Step 2: find global names
+        let mut defs: BTreeMap<usize, BTreeSet<String>> = BTreeMap::new();
+        for (i, block) in func.blocks.iter().enumerate() {
+            defs.insert(i, find_defs(block));
+        }
+
+        let mut def_sites: BTreeMap<String, Vec<usize>> = BTreeMap::new();
+        for (i, _) in func.blocks.iter().enumerate() {
+            for var in defs.get(&i).unwrap() {
+                if !def_sites.contains_key(var) {
+                    def_sites.insert(var.clone(), Vec::new());
+                }
+                def_sites.get_mut(var).unwrap().push(i);
+            }
+        }
+
+        // Step 3: insert phi-functions
+        let mut phi_instrs: BTreeMap<usize, BTreeMap<String, PhiCell>> = BTreeMap::new();
+        for i in 0..func.blocks.len() { phi_instrs.insert(i, BTreeMap::new()); }
+        for (var, bs) in def_sites.iter() {
+            let mut blocks: Vec<usize> = bs.clone();
+            while !blocks.is_empty() {
+                let b = blocks.pop().unwrap();
+
+                for df in dfs.get(&b).unwrap() {
+                    let phis = phi_instrs.get_mut(df).unwrap();
+                    if !phis.contains_key(var) {
+                        phis.insert(var.clone(), PhiCell::new(var));
+                        blocks.push(df.clone());
+                    }
+                    phis.get_mut(var).unwrap().insert(b);
+                }
+            }
+        }
+
+        phi_instrs
+    }
+
+    /// Pre-order walk over dominator tree.
+    pub fn traversal_order(&self) -> Vec<usize> {
+        fn visit(block_idx: usize, imm_doms: &ImmDomRel, order: &mut Vec<usize>) {
+            order.push(block_idx);
+            for i in 0..imm_doms.len() {
+                if imm_dominators(imm_doms, i).map_or(false, |x| x == block_idx) {
+                    visit(i, imm_doms, order);
+                }
+            }
+        }
+        let mut order: Vec<usize> = Vec::new();
+        let root: usize = root_of_domtree(&self.domtree);
+        visit(root, &self.imm_doms, &mut order);
+        order
+    }
+
+}
+
+pub struct RenameStackCell {
+    pub counter: usize,
+    pub stack: Vec<usize>,
 }
 
 #[cfg(test)]
 mod test {
     use depile::ir::Function;
-    use crate::analysis::phi::{find_defs, infer_phi};
+    use crate::analysis::phi::{find_defs, PhiForge};
     use crate::samples::{get_sample_functions, PRIME};
 
     #[test]
@@ -148,7 +172,9 @@ mod test {
     fn test_phi_instrs() {
         let funcs = get_sample_functions(PRIME);
         let func: &Function = &funcs.functions[0];
-        println!("{:?}", infer_phi(func));
+        let forge = PhiForge::new(func);
+        println!("{:?}", forge.infer_phi(func));
+        println!("{:?}", forge.traversal_order());
     }
 
 
