@@ -15,6 +15,11 @@ macro_rules! include_samples {
             pub const $name: &str = include_str!(concat!("../dependencies/depile/src/samples/", stringify!($name), ".txt"));
         )+
         pub const ALL_SAMPLES: [&str; count!($($name),+)] = [$($name),+];
+
+        pub mod samples_str {
+            $( pub const $name: &str = stringify!($name); )+
+            pub const ALL_SAMPLES: [&str; count!($($name),+)] = [$($name),+];
+        }
     }
 }
 
