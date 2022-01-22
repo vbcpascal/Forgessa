@@ -37,13 +37,13 @@ pub enum SSAOpd {
     Operand(Operand),
     /// Subscribed variable.
     #[display("{0}${1}")]
-    Subscribed(String, i64),
+    Subscribed(String, usize),
 }
 
 /// SSA extra instructions.
 #[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub struct Phi {
-    vars: Vec<SSAOpd>
+    pub vars: Vec<SSAOpd>
 }
 
 impl std::fmt::Display for Phi {
