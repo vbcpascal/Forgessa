@@ -1,0 +1,197 @@
+Function #0:
+#parameters = 1
+#local_vars = 0
+
+(ENTRY) Block #0:
+  instr 3: cmpeq n$0 0
+  instr 4: blbc (3) [2]
+
+Block #1:
+  instr 5: add res_base#32720 GP
+  instr 6: store 1 (5)
+  instr 7: br [3]
+
+Block #2:
+  instr 8: sub n$0 1
+  instr 9: param (8)
+  instr 10: call [0]
+  instr 11: add res_base#32720 GP
+  instr 12: load (11)
+  instr 13: mul n$0 (12)
+  instr 14: add res_base#32720 GP
+  instr 15: store (13) (14)
+
+Block #3:
+  instr 16: ret
+
+
+Function #1:
+#parameters = 1
+#local_vars = 0
+
+(ENTRY) Block #0:
+  instr 18: cmple n$0 1
+  instr 19: blbc (18) [2]
+
+Block #1:
+  instr 20: add res_base#32720 GP
+  instr 21: store 1 (20)
+  instr 22: br [3]
+
+Block #2:
+  instr 23: sub n$0 1
+  instr 24: param (23)
+  instr 25: call [1]
+  instr 26: add res_base#32720 GP
+  instr 27: load (26)
+  instr 28: move (27) x$0
+  instr 29: sub n$0 2
+  instr 30: param (29)
+  instr 31: call [1]
+  instr 32: add res_base#32720 GP
+  instr 33: load (32)
+  instr 34: move (33) y$0
+  instr 35: add x$0 y$0
+  instr 36: add res_base#32720 GP
+  instr 37: store (35) (36)
+
+Block #3:
+  instr 38: phi x$-1 x$0
+  instr 39: move (39) x$0
+  instr 40: phi y$-1 y$0
+  instr 41: move (41) y$0
+  instr 42: ret
+
+
+Function #2:
+#parameters = 2
+#local_vars = 0
+
+(ENTRY) Block #0:
+  instr 43: write from$0
+  instr 44: write to$0
+  instr 45: wrl
+  instr 46: add count_base#32728 GP
+  instr 47: load (46)
+  instr 48: add (47) 1
+  instr 49: add count_base#32728 GP
+  instr 50: store (48) (49)
+  instr 51: ret
+
+
+Function #3:
+#parameters = 4
+#local_vars = 0
+
+(ENTRY) Block #0:
+  instr 52: cmpeq height$0 1
+  instr 53: blbc (52) [2]
+
+Block #1:
+  instr 54: param from$0
+  instr 55: param to$0
+  instr 56: call [2]
+  instr 57: br [3]
+
+Block #2:
+  instr 58: param from$0
+  instr 59: param to$0
+  instr 60: param by$0
+  instr 61: sub height$0 1
+  instr 62: param (61)
+  instr 63: call [3]
+  instr 64: param from$0
+  instr 65: param to$0
+  instr 66: call [2]
+  instr 67: param by$0
+  instr 68: param from$0
+  instr 69: param to$0
+  instr 70: sub height$0 1
+  instr 71: param (70)
+  instr 72: call [3]
+
+Block #3:
+  instr 73: ret
+
+
+Function #4:
+#parameters = 1
+#local_vars = 0
+
+(ENTRY) Block #0:
+  instr 74: add count_base#32728 GP
+  instr 75: store 0 (74)
+  instr 76: param 1
+  instr 77: param 2
+  instr 78: param 3
+  instr 79: param height$0
+  instr 80: call [3]
+  instr 81: wrl
+  instr 82: add count_base#32728 GP
+  instr 83: load (82)
+  instr 84: write (83)
+  instr 85: wrl
+  instr 86: ret
+
+
+(ENTRY) Function #5:
+#parameters = 0
+#local_vars = 0
+
+(ENTRY) Block #0:
+  instr 88: add a_base#32760 GP
+  instr 89: store 16807 (88)
+  instr 90: add m_base#32752 GP
+  instr 91: store 127 (90)
+  instr 92: add m_base#32752 GP
+  instr 93: load (92)
+  instr 94: mul (93) 256
+  instr 95: add (94) 255
+  instr 96: add m_base#32752 GP
+  instr 97: store (95) (96)
+  instr 98: add m_base#32752 GP
+  instr 99: load (98)
+  instr 100: mul (99) 256
+  instr 101: add (100) 255
+  instr 102: add m_base#32752 GP
+  instr 103: store (101) (102)
+  instr 104: add m_base#32752 GP
+  instr 105: load (104)
+  instr 106: mul (105) 256
+  instr 107: add (106) 255
+  instr 108: add m_base#32752 GP
+  instr 109: store (107) (108)
+  instr 110: add m_base#32752 GP
+  instr 111: load (110)
+  instr 112: add a_base#32760 GP
+  instr 113: load (112)
+  instr 114: div (111) (113)
+  instr 115: add q_base#32744 GP
+  instr 116: store (114) (115)
+  instr 117: add m_base#32752 GP
+  instr 118: load (117)
+  instr 119: add a_base#32760 GP
+  instr 120: load (119)
+  instr 121: mod (118) (120)
+  instr 122: add r_base#32736 GP
+  instr 123: store (121) (122)
+  instr 124: param 7
+  instr 125: call [0]
+  instr 126: add res_base#32720 GP
+  instr 127: load (126)
+  instr 128: write (127)
+  instr 129: wrl
+  instr 130: wrl
+  instr 131: param 11
+  instr 132: call [1]
+  instr 133: add res_base#32720 GP
+  instr 134: load (133)
+  instr 135: write (134)
+  instr 136: wrl
+  instr 137: wrl
+  instr 138: param 3
+  instr 139: call [4]
+  instr 140: wrl
+  instr 141: ret
+
+

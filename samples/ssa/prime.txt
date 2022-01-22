@@ -1,0 +1,98 @@
+(ENTRY) Function #0:
+#parameters = 0
+#local_vars = 0
+
+(ENTRY) Block #0:
+  instr 4: mul 0 8
+  instr 5: add prime_base#29568 GP
+  instr 6: add (5) (4)
+  instr 7: store 2 (6)
+  instr 8: mul 0 8
+  instr 9: add prime_base#29568 GP
+  instr 10: add (9) (8)
+  instr 11: load (10)
+  instr 12: write (11)
+  instr 13: move 1 i$0
+  instr 14: move 3 v$0
+
+Block #1:
+  instr 15: phi i$0 i$2
+  instr 16: move (16) i$1
+  instr 17: phi j$-1 j$2
+  instr 18: move (18) j$0
+  instr 19: phi v$0 v$2
+  instr 20: move (20) v$1
+  instr 21: cmplt i$1 400
+  instr 22: blbc (21) [12]
+
+Block #2:
+  instr 23: move 0 j$1
+
+Block #3:
+  instr 24: phi j$1 j$4
+  instr 25: move (25) j$2
+  instr 26: cmplt j$2 i$1
+  instr 27: blbc (26) [9]
+
+Block #4:
+  instr 28: mul j$2 8
+  instr 29: add prime_base#29568 GP
+  instr 30: add (29) (28)
+  instr 31: mul j$2 8
+  instr 32: add prime_base#29568 GP
+  instr 33: add (32) (31)
+  instr 34: load (30)
+  instr 35: load (33)
+  instr 36: mul (34) (35)
+  instr 37: cmple (36) v$1
+  instr 38: blbs (37) [6]
+
+Block #5:
+  instr 39: sub i$1 1
+  instr 40: move (39) j$3
+  instr 41: br [8]
+
+Block #6:
+  instr 42: mul j$2 8
+  instr 43: add prime_base#29568 GP
+  instr 44: add (43) (42)
+  instr 45: load (44)
+  instr 46: mod v$1 (45)
+  instr 47: cmpeq (46) 0
+  instr 48: blbc (47) [8]
+
+Block #7:
+  instr 49: move i$1 j$3
+
+Block #8:
+  instr 50: phi j$3 j$2 j$3
+  instr 51: move (51) j$3
+  instr 52: add j$3 1
+  instr 53: move (52) j$4
+  instr 54: br [3]
+
+Block #9:
+  instr 55: cmpeq j$2 i$1
+  instr 56: blbc (55) [11]
+
+Block #10:
+  instr 57: mul i$1 8
+  instr 58: add prime_base#29568 GP
+  instr 59: add (58) (57)
+  instr 60: store v$1 (59)
+  instr 61: write v$1
+  instr 62: add i$1 1
+  instr 63: move (62) i$2
+
+Block #11:
+  instr 64: phi i$1 i$2
+  instr 65: move (65) i$2
+  instr 66: add v$1 2
+  instr 67: move (66) v$2
+  instr 68: br [1]
+
+Block #12:
+  instr 69: wrl
+  instr 70: ret
+
+
