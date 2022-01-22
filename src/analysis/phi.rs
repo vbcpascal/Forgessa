@@ -85,7 +85,7 @@ pub struct PhiForge {
 }
 
 impl PhiForge {
-    fn run(funcs: &Functions) -> SSAFunctions {
+    pub fn run(funcs: &Functions) -> SSAFunctions {
         fn count_instructions(func: &SSAFunction) -> usize {
             func.blocks.iter().fold(0, |x, block| x + block.instructions.len())
         }
