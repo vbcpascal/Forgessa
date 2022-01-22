@@ -1,12 +1,16 @@
+Report of sort:
+  Function: 4
+  Number of constants propagated: 8
+
 (ENTRY) Function #0:
 #parameters = 0
 #local_vars = 0
 
 (ENTRY) Block #0:
-  instr 4: move 0 i$0
+  instr 4: nop
 
 Block #1:
-  instr 5: phi i$0 i$2
+  instr 5: phi 0 0
   instr 6: move (5) i$1
   instr 7: cmplt i$1 10
   instr 8: blbc (7) [3]
@@ -23,10 +27,10 @@ Block #2:
   instr 17: br [1]
 
 Block #3:
-  instr 18: move 0 i$2
+  instr 18: nop
 
 Block #4:
-  instr 19: phi i$2 i$4
+  instr 19: phi 0 0
   instr 20: move (19) i$3
   instr 21: cmplt i$3 10
   instr 22: blbc (21) [6]
@@ -43,10 +47,10 @@ Block #5:
 
 Block #6:
   instr 31: wrl
-  instr 32: move 0 i$4
+  instr 32: nop
 
 Block #7:
-  instr 33: phi i$4 i$6
+  instr 33: phi 0 0
   instr 34: move (33) i$5
   instr 35: phi j$-1 j$2
   instr 36: move (35) j$0
@@ -56,10 +60,10 @@ Block #7:
   instr 40: blbc (39) [14]
 
 Block #8:
-  instr 41: move 0 j$1
+  instr 41: nop
 
 Block #9:
-  instr 42: phi j$1 j$3
+  instr 42: phi 0 j$3
   instr 43: move (42) j$2
   instr 44: phi temp$0 temp$2
   instr 45: move (44) temp$1
@@ -110,10 +114,10 @@ Block #13:
   instr 82: br [7]
 
 Block #14:
-  instr 83: move 0 i$6
+  instr 83: nop
 
 Block #15:
-  instr 84: phi i$6 i$8
+  instr 84: phi 0 i$8
   instr 85: move (84) i$7
   instr 86: cmplt i$7 10
   instr 87: blbc (86) [17]

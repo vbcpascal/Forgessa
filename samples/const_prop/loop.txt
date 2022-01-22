@@ -1,14 +1,18 @@
+Report of loop:
+  Function: 4
+  Number of constants propagated: 14
+
 (ENTRY) Function #0:
 #parameters = 0
 #local_vars = 0
 
 (ENTRY) Block #0:
-  instr 4: move 13 n$0
-  instr 5: move 0 x$0
-  instr 6: move 0 a$0
+  instr 4: nop
+  instr 5: nop
+  instr 6: nop
 
 Block #1:
-  instr 7: phi a$0 a$2
+  instr 7: phi 0 a$2
   instr 8: move (7) a$1
   instr 9: phi b$-1 b$2
   instr 10: move (9) b$0
@@ -20,17 +24,17 @@ Block #1:
   instr 16: move (15) e$0
   instr 17: phi f$-1 f$1
   instr 18: move (17) f$0
-  instr 19: phi x$0 x$3
+  instr 19: phi 0 x$3
   instr 20: move (19) x$1
-  instr 21: cmplt a$1 n$0
+  instr 21: cmplt a$1 13
   instr 22: blbc (21) [18]
 
 Block #2:
-  instr 23: move 0 b$1
-  instr 24: move 0 x$2
+  instr 23: nop
+  instr 24: nop
 
 Block #3:
-  instr 25: phi b$1 b$3
+  instr 25: phi 0 b$3
   instr 26: move (25) b$2
   instr 27: phi c$0 c$3
   instr 28: move (27) c$1
@@ -40,16 +44,16 @@ Block #3:
   instr 32: move (31) e$1
   instr 33: phi f$0 f$2
   instr 34: move (33) f$1
-  instr 35: phi x$2 x$4
+  instr 35: phi 0 x$4
   instr 36: move (35) x$3
-  instr 37: cmplt b$2 n$0
+  instr 37: cmplt b$2 13
   instr 38: blbc (37) [17]
 
 Block #4:
-  instr 39: move 0 c$2
+  instr 39: nop
 
 Block #5:
-  instr 40: phi c$2 c$4
+  instr 40: phi 0 c$4
   instr 41: move (40) c$3
   instr 42: phi d$1 d$4
   instr 43: move (42) d$2
@@ -59,14 +63,14 @@ Block #5:
   instr 47: move (46) f$2
   instr 48: phi x$3 x$5
   instr 49: move (48) x$4
-  instr 50: cmplt c$3 n$0
+  instr 50: cmplt c$3 13
   instr 51: blbc (50) [16]
 
 Block #6:
-  instr 52: move 0 d$3
+  instr 52: nop
 
 Block #7:
-  instr 53: phi d$3 d$5
+  instr 53: phi 0 d$5
   instr 54: move (53) d$4
   instr 55: phi e$2 e$5
   instr 56: move (55) e$3
@@ -74,31 +78,31 @@ Block #7:
   instr 58: move (57) f$3
   instr 59: phi x$4 x$6
   instr 60: move (59) x$5
-  instr 61: cmplt d$4 n$0
+  instr 61: cmplt d$4 13
   instr 62: blbc (61) [15]
 
 Block #8:
-  instr 63: move 0 e$4
+  instr 63: nop
 
 Block #9:
-  instr 64: phi e$4 e$6
+  instr 64: phi 0 e$6
   instr 65: move (64) e$5
   instr 66: phi f$3 f$6
   instr 67: move (66) f$4
   instr 68: phi x$5 x$7
   instr 69: move (68) x$6
-  instr 70: cmplt e$5 n$0
+  instr 70: cmplt e$5 13
   instr 71: blbc (70) [14]
 
 Block #10:
-  instr 72: move 0 f$5
+  instr 72: nop
 
 Block #11:
-  instr 73: phi f$5 f$7
+  instr 73: phi 0 f$7
   instr 74: move (73) f$6
   instr 75: phi x$6 x$8
   instr 76: move (75) x$7
-  instr 77: cmplt f$6 n$0
+  instr 77: cmplt f$6 13
   instr 78: blbc (77) [13]
 
 Block #12:

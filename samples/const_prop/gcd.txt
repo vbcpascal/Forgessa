@@ -1,3 +1,10 @@
+Report of gcd:
+  Function: 3
+  Number of constants propagated: 0
+
+  Function: 23
+  Number of constants propagated: 0
+
 Function #0:
 #parameters = 2
 #local_vars = 0

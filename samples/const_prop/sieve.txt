@@ -1,3 +1,7 @@
+Report of sieve:
+  Function: 4
+  Number of constants propagated: 7
+
 (ENTRY) Function #0:
 #parameters = 0
 #local_vars = 0
@@ -11,10 +15,10 @@
   instr 9: add is_prime_base#-8016 FP
   instr 10: add (9) (8)
   instr 11: store 0 (10)
-  instr 12: move 2 i$0
+  instr 12: nop
 
 Block #1:
-  instr 13: phi i$0 i$2
+  instr 13: phi 2 2
   instr 14: move (13) i$1
   instr 15: cmplt i$1 1000
   instr 16: blbc (15) [3]
@@ -29,12 +33,12 @@ Block #2:
   instr 23: br [1]
 
 Block #3:
-  instr 24: move 2 i$2
+  instr 24: nop
 
 Block #4:
-  instr 25: phi i$2 i$4
+  instr 25: phi 2 2
   instr 26: move (25) i$3
-  instr 27: phi j$-1 j$1
+  instr 27: phi j$-1 2
   instr 28: move (27) j$0
   instr 29: cmplt i$3 1000
   instr 30: blbc (29) [10]
@@ -48,10 +52,10 @@ Block #5:
   instr 36: blbs (35) [9]
 
 Block #6:
-  instr 37: move 2 j$1
+  instr 37: nop
 
 Block #7:
-  instr 38: phi j$1 j$3
+  instr 38: phi 2 j$3
   instr 39: move (38) j$2
   instr 40: mul i$3 j$2
   instr 41: cmplt (40) 1000
@@ -75,10 +79,10 @@ Block #9:
   instr 55: br [4]
 
 Block #10:
-  instr 56: move 2 i$4
+  instr 56: nop
 
 Block #11:
-  instr 57: phi i$4 i$6
+  instr 57: phi 2 i$6
   instr 58: move (57) i$5
   instr 59: cmplt i$5 1000
   instr 60: blbc (59) [15]

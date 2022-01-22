@@ -1,3 +1,22 @@
+Report of hanoifibfac:
+  Function: 3
+  Number of constants propagated: 0
+
+  Function: 18
+  Number of constants propagated: 0
+
+  Function: 43
+  Number of constants propagated: 0
+
+  Function: 52
+  Number of constants propagated: 0
+
+  Function: 74
+  Number of constants propagated: 0
+
+  Function: 88
+  Number of constants propagated: 0
+
 Function #0:
 #parameters = 1
 #local_vars = 0

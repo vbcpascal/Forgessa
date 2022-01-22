@@ -1,40 +1,44 @@
+Report of mmm:
+  Function: 4
+  Number of constants propagated: 51
+
 (ENTRY) Function #0:
 #parameters = 0
 #local_vars = 0
 
 (ENTRY) Block #0:
-  instr 4: move 0 i$0
+  instr 4: nop
 
 Block #1:
-  instr 5: phi i$0 i$2
+  instr 5: phi 0 0
   instr 6: move (5) i$1
-  instr 7: phi j$-1 j$2
+  instr 7: phi j$-1 0
   instr 8: move (7) j$0
   instr 9: cmplt i$1 4
   instr 10: blbc (9) [6]
 
 Block #2:
-  instr 11: move 0 j$1
+  instr 11: nop
 
 Block #3:
-  instr 12: phi j$1 j$3
+  instr 12: phi 0 0
   instr 13: move (12) j$2
-  instr 14: cmplt j$2 3
+  instr 14: cmplt 0 3
   instr 15: blbc (14) [5]
 
 Block #4:
   instr 16: mul i$1 24
   instr 17: add m1_base#-96 FP
   instr 18: add (17) (16)
-  instr 19: mul j$2 8
+  instr 19: mul 0 8
   instr 20: add (18) (19)
-  instr 21: mul j$2 2
+  instr 21: mul 0 2
   instr 22: add i$1 (21)
   instr 23: store (22) (20)
-  instr 24: mul j$2 2
+  instr 24: mul 0 2
   instr 25: add i$1 (24)
   instr 26: write (25)
-  instr 27: add j$2 1
+  instr 27: add 0 1
   instr 28: move (27) j$3
   instr 29: br [3]
 
@@ -45,27 +49,27 @@ Block #5:
   instr 33: br [1]
 
 Block #6:
-  instr 34: move 0 i$2
+  instr 34: nop
 
 Block #7:
-  instr 35: phi i$2 i$4
+  instr 35: phi 0 0
   instr 36: move (35) i$3
-  instr 37: phi j$0 j$3
+  instr 37: phi j$0 0
   instr 38: move (37) j$1
   instr 39: cmplt i$3 4
   instr 40: blbc (39) [12]
 
 Block #8:
-  instr 41: move 0 j$2
+  instr 41: nop
 
 Block #9:
-  instr 42: phi j$2 j$4
+  instr 42: phi 0 0
   instr 43: move (42) j$3
-  instr 44: cmplt j$3 3
+  instr 44: cmplt 0 3
   instr 45: blbc (44) [11]
 
 Block #10:
-  instr 46: mul j$3 32
+  instr 46: mul 0 32
   instr 47: add m2_base#-192 FP
   instr 48: add (47) (46)
   instr 49: mul i$3 8
@@ -73,11 +77,11 @@ Block #10:
   instr 51: mul i$3 24
   instr 52: add m1_base#-96 FP
   instr 53: add (52) (51)
-  instr 54: mul j$3 8
+  instr 54: mul 0 8
   instr 55: add (53) (54)
   instr 56: load (55)
   instr 57: store (56) (50)
-  instr 58: add j$3 1
+  instr 58: add 0 1
   instr 59: move (58) j$4
   instr 60: br [9]
 
@@ -88,34 +92,34 @@ Block #11:
 
 Block #12:
   instr 64: wrl
-  instr 65: move 0 i$4
+  instr 65: nop
 
 Block #13:
-  instr 66: phi i$4 i$6
+  instr 66: phi 0 0
   instr 67: move (66) i$5
-  instr 68: phi j$1 j$4
+  instr 68: phi 0 0
   instr 69: move (68) j$2
   instr 70: cmplt i$5 3
   instr 71: blbc (70) [18]
 
 Block #14:
-  instr 72: move 0 j$3
+  instr 72: nop
 
 Block #15:
-  instr 73: phi j$3 j$5
+  instr 73: phi 0 0
   instr 74: move (73) j$4
-  instr 75: cmplt j$4 4
+  instr 75: cmplt 0 4
   instr 76: blbc (75) [17]
 
 Block #16:
   instr 77: mul i$5 32
   instr 78: add m2_base#-192 FP
   instr 79: add (78) (77)
-  instr 80: mul j$4 8
+  instr 80: mul 0 8
   instr 81: add (79) (80)
   instr 82: load (81)
   instr 83: write (82)
-  instr 84: add j$4 1
+  instr 84: add 0 1
   instr 85: move (84) j$5
   instr 86: br [15]
 
@@ -126,33 +130,33 @@ Block #17:
   instr 90: br [13]
 
 Block #18:
-  instr 91: move 0 i$6
+  instr 91: nop
 
 Block #19:
-  instr 92: phi i$6 i$8
+  instr 92: phi 0 0
   instr 93: move (92) i$7
-  instr 94: phi j$2 j$5
+  instr 94: phi 0 0
   instr 95: move (94) j$3
   instr 96: cmplt i$7 3
   instr 97: blbc (96) [24]
 
 Block #20:
-  instr 98: move 0 j$4
+  instr 98: nop
 
 Block #21:
-  instr 99: phi j$4 j$6
+  instr 99: phi 0 0
   instr 100: move (99) j$5
-  instr 101: cmplt j$5 3
+  instr 101: cmplt 0 3
   instr 102: blbc (101) [23]
 
 Block #22:
   instr 103: mul i$7 24
   instr 104: add m3_base#-264 FP
   instr 105: add (104) (103)
-  instr 106: mul j$5 8
+  instr 106: mul 0 8
   instr 107: add (105) (106)
   instr 108: store 0 (107)
-  instr 109: add j$5 1
+  instr 109: add 0 1
   instr 110: move (109) j$6
   instr 111: br [21]
 
@@ -163,12 +167,12 @@ Block #23:
 
 Block #24:
   instr 115: wrl
-  instr 116: move 0 i$8
+  instr 116: nop
 
 Block #25:
-  instr 117: phi i$8 i$10
+  instr 117: phi 0 0
   instr 118: move (117) i$9
-  instr 119: phi j$3 j$6
+  instr 119: phi 0 0
   instr 120: move (119) j$4
   instr 121: phi k$-1 k$1
   instr 122: move (121) k$0
@@ -176,21 +180,21 @@ Block #25:
   instr 124: blbc (123) [33]
 
 Block #26:
-  instr 125: move 0 j$5
+  instr 125: nop
 
 Block #27:
-  instr 126: phi j$5 j$7
+  instr 126: phi 0 j$7
   instr 127: move (126) j$6
   instr 128: phi k$0 k$3
   instr 129: move (128) k$1
-  instr 130: cmplt j$6 3
+  instr 130: cmplt 0 3
   instr 131: blbc (130) [32]
 
 Block #28:
-  instr 132: move 0 k$2
+  instr 132: nop
 
 Block #29:
-  instr 133: phi k$2 k$4
+  instr 133: phi 0 k$4
   instr 134: move (133) k$3
   instr 135: cmplt k$3 4
   instr 136: blbc (135) [31]
@@ -199,17 +203,17 @@ Block #30:
   instr 137: mul i$9 24
   instr 138: add m3_base#-264 FP
   instr 139: add (138) (137)
-  instr 140: mul j$6 8
+  instr 140: mul 0 8
   instr 141: add (139) (140)
   instr 142: mul i$9 24
   instr 143: add m3_base#-264 FP
   instr 144: add (143) (142)
-  instr 145: mul j$6 8
+  instr 145: mul 0 8
   instr 146: add (144) (145)
   instr 147: mul k$3 24
   instr 148: add m1_base#-96 FP
   instr 149: add (148) (147)
-  instr 150: mul j$6 8
+  instr 150: mul 0 8
   instr 151: add (149) (150)
   instr 152: mul i$9 32
   instr 153: add m2_base#-192 FP
@@ -227,7 +231,7 @@ Block #30:
   instr 165: br [29]
 
 Block #31:
-  instr 166: add j$6 1
+  instr 166: add 0 1
   instr 167: move (166) j$7
   instr 168: br [27]
 
@@ -237,21 +241,21 @@ Block #32:
   instr 171: br [25]
 
 Block #33:
-  instr 172: move 0 i$10
+  instr 172: nop
 
 Block #34:
-  instr 173: phi i$10 i$12
+  instr 173: phi 0 i$12
   instr 174: move (173) i$11
-  instr 175: phi j$4 j$7
+  instr 175: phi 0 j$7
   instr 176: move (175) j$5
   instr 177: cmplt i$11 3
   instr 178: blbc (177) [39]
 
 Block #35:
-  instr 179: move 0 j$6
+  instr 179: nop
 
 Block #36:
-  instr 180: phi j$6 j$8
+  instr 180: phi 0 j$8
   instr 181: move (180) j$7
   instr 182: cmplt j$7 3
   instr 183: blbc (182) [38]
