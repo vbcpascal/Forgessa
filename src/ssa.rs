@@ -16,8 +16,7 @@ pub type SSAKind = depile::ir::instr::Kind<
     SSAOpd,
     depile::ir::instr::Branching<SSAOpd>,
     depile::ir::instr::stripped::Marker,
-    depile::ir::instr::basic::InterProc,
-    Phi>;
+    SSAInterProc, Phi>;
 
 /// SSA block.
 pub type SSABlock = depile::ir::Block<SSAKind>;
@@ -71,6 +70,18 @@ impl HasBranchingBehaviour for Phi {
     fn get_branching_behaviour(&self) -> BranchingBehaviour {
         BranchingBehaviour { might_fallthrough: true, alternative_dest: None }
     }
+}
+
+#[derive(Debug, Display, FromStr, Clone, Ord, PartialOrd, Eq, PartialEq)]
+pub enum SSAInterProc {
+    #[display("param {0}")]
+    PushParam(Operand),
+    /// Perform a function call.
+    #[display("call [{dest}]")]
+    Call {
+        /// Destination for the function call.
+        dest: usize
+    },
 }
 
 #[cfg(test)]
