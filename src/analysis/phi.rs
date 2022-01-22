@@ -139,19 +139,15 @@ impl PhiForge {
     }
 
     /// Pre-order walk over dominator tree.
-    pub fn traversal_order(&self) -> Vec<usize> {
-        fn visit(block_idx: usize, imm_doms: &ImmDomRel, order: &mut Vec<usize>) {
-            order.push(block_idx);
-            for i in 0..imm_doms.len() {
-                if imm_dominators(imm_doms, i).map_or(false, |x| x == block_idx) {
-                    visit(i, imm_doms, order);
-                }
-            }
+    pub fn top_down_domtree(&self) -> BlockMap {
+        let mut res: BlockMap = BlockMap::new();
+        for (i, _) in self.domtree.iter().enumerate() {
+            res.insert(i, BlockSet::new());
         }
-        let mut order: Vec<usize> = Vec::new();
-        let root: usize = root_of_domtree(&self.domtree);
-        visit(root, &self.imm_doms, &mut order);
-        order
+        for (i, j) in &self.imm_doms {
+            if j.is_some() { res.get_mut(&j.unwrap()).unwrap().insert(*i); }
+        }
+        res
     }
 
     pub fn place_phi_placeholder(&self, func: &Function, instr_idx: usize) -> SSAFunction {
@@ -186,25 +182,25 @@ impl PhiForge {
     }
 
     pub fn rename_phi<'a>(&self, func: &'a mut SSAFunction) -> &'a mut SSAFunction {
-        let order = self.traversal_order();
-        let mut rename_stack = RenameStack::new();
-
-        for block_idx in order {
-            let block: &mut SSABlock = func.blocks.get_mut(block_idx).unwrap();
-
-            // Step 1: generate unique names and push them.
-            for (j, (var, _)) in self.phi_cells.get(&block_idx).unwrap().iter().enumerate() {
-                let var_index: usize = rename_stack.request_push(var);
-                let phi_instr_index: usize = block.first_index + var_index;
-                *block.instructions.get_mut(2 * j + 1).unwrap() =
-                    SSAInstr::Move {
-                        source: SSAOpd::Operand(Register(2 * j + phi_instr_index)),
-                        dest: SSAOpd::Subscribed(var.clone(), var_index)
-                    }
-            }
-
-
-        }
+        // let order = self.traversal_order();
+        // let mut rename_stack = RenameStack::new();
+        //
+        // for block_idx in order {
+        //     let block: &mut SSABlock = func.blocks.get_mut(block_idx).unwrap();
+        //
+        //     // Step 1: generate unique names and push them.
+        //     for (j, (var, _)) in self.phi_cells.get(&block_idx).unwrap().iter().enumerate() {
+        //         let var_index: usize = rename_stack.request_push(var);
+        //         let phi_instr_index: usize = block.first_index + var_index;
+        //         *block.instructions.get_mut(2 * j + 1).unwrap() =
+        //             SSAInstr::Move {
+        //                 source: SSAOpd::Operand(Register(2 * j + phi_instr_index)),
+        //                 dest: SSAOpd::Subscribed(var.clone(), var_index)
+        //             }
+        //     }
+        //
+        //
+        // }
         func
     }
 }
@@ -278,7 +274,7 @@ mod test {
         let func: &Function = &funcs.functions[0];
         let mut forge = PhiForge::new(func);
         println!("{:?}", forge.infer_phi(func));
-        println!("{:?}", forge.traversal_order());
+        println!("{:?}", forge.top_down_domtree());
         let mut func_phi = forge.place_phi_placeholder(func, func.blocks[0].first_index);
         forge.place_phi(&mut func_phi);
         forge.rename_phi(&mut func_phi);
