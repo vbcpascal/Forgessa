@@ -175,7 +175,7 @@ impl PhiForge {
         }
     }
 
-    pub fn place_phi(&self, func: &mut SSAFunction) -> &mut SSAFunction {
+    pub fn place_phi<'a>(&self, func: &'a mut SSAFunction) -> &'a mut SSAFunction {
         for (i, mut b) in func.blocks.iter_mut().enumerate() {
             for (j, (var, _)) in self.phi_cells.get(&i).unwrap().iter().enumerate() {
                 *b.instructions.get_mut(2 * j).unwrap() =
@@ -185,17 +185,20 @@ impl PhiForge {
         func
     }
 
-    pub fn rename_phi(&self, func: &mut SSAFunction) -> &mut SSAFunction {
+    pub fn rename_phi<'a>(&self, func: &'a mut SSAFunction) -> &'a mut SSAFunction {
         let order = self.traversal_order();
         let mut rename_stack = RenameStack::new();
 
         for block_idx in order {
             let block: &mut SSABlock = func.blocks.get_mut(block_idx).unwrap();
+
+            // Step 1: generate unique names and push them.
             for (j, (var, _)) in self.phi_cells.get(&block_idx).unwrap().iter().enumerate() {
                 let var_index: usize = rename_stack.request_push(var);
+                let phi_instr_index: usize = block.first_index + var_index;
                 *block.instructions.get_mut(2 * j + 1).unwrap() =
                     SSAInstr::Move {
-                        source: SSAOpd::Operand(Register(2 * j)),
+                        source: SSAOpd::Operand(Register(2 * j + phi_instr_index)),
                         dest: SSAOpd::Subscribed(var.clone(), var_index)
                     }
             }
@@ -221,7 +224,7 @@ impl RenameStack {
 
     fn var_stack_mut(&mut self, var: &String) -> &mut RenameStackCell {
         if !self.var_stacks.contains_key(var) {
-            self.var_stacks.insert(var.clone(), RenameStackCell::new())
+            self.var_stacks.insert(var.clone(), RenameStackCell::new());
         }
         self.var_stacks.get_mut(var).unwrap()
     }
@@ -276,9 +279,10 @@ mod test {
         let mut forge = PhiForge::new(func);
         println!("{:?}", forge.infer_phi(func));
         println!("{:?}", forge.traversal_order());
-        let mut func_nop = forge.place_phi_placeholder(func, func.blocks[0].first_index);
-        forge.place_phi(&mut func_nop);
-        println!("{}", func_nop);
+        let mut func_phi = forge.place_phi_placeholder(func, func.blocks[0].first_index);
+        forge.place_phi(&mut func_phi);
+        forge.rename_phi(&mut func_phi);
+        println!("{}", func_phi);
     }
 
 
