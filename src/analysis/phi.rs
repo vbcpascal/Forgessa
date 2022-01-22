@@ -205,7 +205,9 @@ impl PhiForge {
             }
 
             // Step 2: rewrite names
-
+            for instr in block.instructions.iter_mut() {
+                // instr = instr.rename_by(rename_stack)
+            }
         }
         func
     }
@@ -268,68 +270,65 @@ impl RenameStackCell {
 
 /// Indicates definitions and operands can be renamed by [`RenameStack`].
 pub trait Renameable {
-    fn rename_by(&self, rename_stack: &mut RenameStack) -> Self;
+    fn rename_by(&mut self, rename_stack: &mut RenameStack);
 }
 
 impl Renameable for SSAOpd {
-    fn rename_by(&self, rename_stack: &mut RenameStack) -> Self {
+    fn rename_by(&mut self, rename_stack: &mut RenameStack){
         match self {
             SSAOpd::Operand(opd) => {
                 match opd {
                     Operand::Var(var, _) => {
                         let var_idx = rename_stack.get(var);
-                        SSAOpd::Subscribed(var.clone(), var_idx)
+                        *self = SSAOpd::Subscribed(var.clone(), var_idx)
                     }
-                    _ => SSAOpd::Operand(opd.clone())
+                    _ => { }
                 }
             }
-            _ => self.clone()
+            _ => { }
         }
     }
 }
 
 impl Renameable for BranchKind<SSAOpd> {
-    fn rename_by(&self, rename_stack: &mut RenameStack) -> Self {
+    fn rename_by(&mut self, rename_stack: &mut RenameStack) {
         match self {
-            BranchKind::If(opd) => BranchKind::If(opd.rename_by(rename_stack)),
-            BranchKind::Unless(opd) => BranchKind::Unless(opd.rename_by(rename_stack)),
-            _ => self.clone(),
+            BranchKind::If(opd) => opd.rename_by(rename_stack),
+            BranchKind::Unless(opd) => opd.rename_by(rename_stack),
+            _ => (),
         }
     }
 }
 
 impl Renameable for SSAInterProc {
-    fn rename_by(&self, rename_stack: &mut RenameStack) -> Self {
+    fn rename_by(&mut self, rename_stack: &mut RenameStack) {
         match self {
-            SSAInterProc::PushParam(opd) => SSAInterProc::PushParam(opd.rename_by(rename_stack)),
-            _ => self.clone(),
+            SSAInterProc::PushParam(opd) => opd.rename_by(rename_stack),
+            _ => (),
         }
     }
 }
 
 impl Renameable for SSAInstr {
-    fn rename_by(&self, rename_stack: &mut RenameStack) -> Self {
+    fn rename_by(&mut self, rename_stack: &mut RenameStack) {
         match self {
             Instr::Binary {op, lhs, rhs} =>
-                Binary {op: op.clone(), lhs: lhs.rename_by(rename_stack), rhs: rhs.rename_by(rename_stack)},
+                { lhs.rename_by(rename_stack); rhs.rename_by(rename_stack); }
             Instr::Unary { op, operand } =>
-                Unary {op: op.clone(), operand: operand.rename_by(rename_stack) },
-            Instr::Branch(branching) => Instr::Branch( Branching {
-                method: branching.method.rename_by(rename_stack),
-                dest: branching.dest,
-            }),
-            Instr::Load(opd) => Instr::Load(opd.rename_by(rename_stack)),
-            Instr::Store {data, address} => Instr::Store {
-                data: data.rename_by(rename_stack),
-                address: address.rename_by(rename_stack),
-            },
-            Instr::Move {source, dest} => Instr::Move {
-                source: source.rename_by(rename_stack),
-                dest: dest.rename_by(rename_stack),
-            },
-            Instr::Write(opd) => Instr::Write(opd.rename_by(rename_stack)),
-            Instr::InterProc(interproc) => Instr::InterProc(interproc.rename_by(rename_stack)),
-            _ => self.clone()
+                { operand.rename_by(rename_stack); }
+            Instr::Branch(branching) =>
+                { branching.method.rename_by(rename_stack); }
+            Instr::Load(opd) =>
+                { opd.rename_by(rename_stack); }
+            Instr::Store {data, address} =>
+                { data.rename_by(rename_stack); address.rename_by(rename_stack); }
+            Instr::Move {source, dest} =>
+                { source.rename_by(rename_stack); dest.rename_by(rename_stack); }
+            Instr::Write(opd) =>
+                { opd.rename_by(rename_stack); }
+            Instr::InterProc(interproc) =>
+                { interproc.rename_by(rename_stack); }
+            _ => ()
         }
     }
 }
