@@ -1,17 +1,15 @@
 use std::collections::{BTreeMap, BTreeSet};
 use depile::ir::{Block, Function};
 use depile::ir::instr::basic::Operand::Var;
-use depile::ir::instr::Instr::Move;
+use depile::ir::instr::Instr::{Extra, Move};
 use depile::ir::instr::InstrExt;
-use crate::analysis::dom_frontier::{compute_dom_frontier, compute_dom_frontier_with_domtree};
+use crate::analysis::cfg::SimpleCfg;
+use crate::analysis::converter::block_convert;
+use crate::analysis::panning::{Pannable, PannableBlock};
+use crate::analysis::dom_frontier::compute_df_cfg;
 use crate::analysis::domtree::{BlockMap, BlockSet, compute_domtree, compute_idom, imm_dominators, ImmDomRel, root_of_domtree};
-use crate::ssa::SSABlock;
+use crate::ssa::{Phi, SSABlock, SSAFunction, SSAInstr};
 use crate::ssa::SSAOpd::{Operand, Subscribed};
-
-// pub fn place_phi(block: &SSABlock) -> SSABlock {
-//
-// }
-
 
 /// Find all the variable definitions in `block`.
 pub fn find_defs<K: InstrExt>(block: &Block<K>) -> BTreeSet<String>
@@ -53,8 +51,9 @@ impl HasVariableOperand for crate::ssa::SSAOpd {
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct PhiCell {
+    // The name of the phi node.
     pub var: String,
-    /// Blocks generating this phi-node
+    /// Blocks generating this phi node.
     pub origins: BlockSet,
 }
 
@@ -68,18 +67,22 @@ impl PhiCell {
 }
 
 pub struct PhiForge {
+    pub cfg: SimpleCfg,
     pub domtree: BlockMap,
     pub imm_doms: ImmDomRel,
     pub dom_frontier: BlockMap,
+
     pub rename_stack: BTreeMap<String, RenameStackCell>,
 }
 
 impl PhiForge {
     fn new(func: &Function) -> Self {
+        let cfg = SimpleCfg::from(func.entry_block, func.blocks.as_slice());
         let domtree = compute_domtree(func);
         let imm_doms = compute_idom(&domtree);
-        let dfs = compute_dom_frontier_with_domtree(func, &domtree);
+        let dfs = compute_df_cfg(&domtree, &cfg);
         Self {
+            cfg: cfg,
             domtree: domtree,
             imm_doms: imm_doms,
             dom_frontier: dfs,
@@ -146,6 +149,54 @@ impl PhiForge {
         order
     }
 
+    pub fn place_phi_placeholder(&self, func: &Function, instr_idx: usize) -> SSAFunction {
+        let mut blocks: Vec<SSABlock> = Vec::new();
+        let phi_cells = self.infer_phi(func);
+        let mut id = instr_idx;
+
+        for (i, b) in func.blocks.iter().enumerate() {
+            let offset = id - b.first_index;
+            let block = block_convert(b)
+                .pan(&|x| x + offset)
+                .panning_forward_fill(phi_cells.get(&i).unwrap().len() * 2);
+            id += block.instructions.len();
+            blocks.push(block);
+        }
+
+        SSAFunction {
+            parameter_count: func.parameter_count,
+            local_var_count: 0, // TODO
+            entry_block: func.entry_block,
+            blocks: blocks,
+        }
+    }
+
+    pub fn place_phi(&self, func: &Function, instr_idx: usize) -> SSAFunction {
+        let blocks: Vec<SSABlock> = Vec::new();
+        let phi_cells = self.infer_phi(func);
+        let id = instr_idx;
+
+        // for (i, b) in func.blocks.iter().enumerate() {
+        //     let mut block = block_convert(b);
+        //     let count = self.cfg.get_prevs(i).len();
+        //     for (s, _) in phi_cells.get(&i) {
+        //
+        //     }
+        // }
+
+        SSAFunction {
+            parameter_count: func.parameter_count,
+            local_var_count: 0, // TODO
+            entry_block: func.entry_block,
+            blocks: blocks
+        }
+    }
+
+    fn insert_phi(&self, instr_idx: usize, name: &String, count: usize, block: &mut SSABlock) {
+        let mut instrs: Vec<SSAInstr> = Vec::new();
+        let mut instrs = block.instructions.to_vec();
+
+    }
 }
 
 pub struct RenameStackCell {
@@ -175,6 +226,8 @@ mod test {
         let forge = PhiForge::new(func);
         println!("{:?}", forge.infer_phi(func));
         println!("{:?}", forge.traversal_order());
+        let func_nop = forge.place_phi_placeholder(func, func.blocks[0].first_index);
+        println!("{}", func_nop);
     }
 
 
