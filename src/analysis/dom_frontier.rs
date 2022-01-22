@@ -1,5 +1,5 @@
 use depile::ir::Function;
-use crate::analysis::dom_frontier::scfg::{SimpleCfg, to_simple_cfg};
+use crate::analysis::cfg::SimpleCfg;
 use crate::analysis::domtree::{BlockSet, dominate, dominate_nodes, BlockMap, imm_dominators, ImmDomRel, compute_idom, root_of_domtree, compute_domtree};
 
 /// Compute dominance frontier (DF) for `func`.
@@ -11,12 +11,12 @@ pub fn compute_dom_frontier(func: &Function) -> BlockMap {
 /// Compute dominance frontier (DF) for `func`, whose dominance tree is `domtree`.
 pub fn compute_dom_frontier_with_domtree(func: &Function, domtree: &BlockMap) -> BlockMap {
     let blocks = func.blocks.as_slice();
-    let cfg = to_simple_cfg(func.entry_block, blocks);
+    let cfg = SimpleCfg::from(func.entry_block, blocks);
     compute_df_cfg(&domtree, &cfg)
 }
 
 /// Compute dominance frontier (DF) for all nodes in `domtree`.
-fn compute_df_cfg(domtree: &BlockMap, cfg: &SimpleCfg) -> BlockMap {
+pub fn compute_df_cfg(domtree: &BlockMap, cfg: &SimpleCfg) -> BlockMap {
     let imm_doms: ImmDomRel = compute_idom(domtree);
     let root: usize = root_of_domtree(domtree);
     let mut res: BlockMap = BlockMap::new();
@@ -34,10 +34,10 @@ fn df<'a>(block_idx: usize,
     let mut res: BlockSet = BlockSet::new();
 
     // compute Local(idx)
-    for succ in cfg.edges.get(&block_idx).unwrap() {
+    for succ in cfg.get_succs(block_idx) {
         // !imm__.contains(block_idx)
-        if !imm_dominators(imm_doms, *succ).map_or(false, |x| x == block_idx) {
-            res.insert(*succ);
+        if !imm_dominators(imm_doms, succ).map_or(false, |x| x == block_idx) {
+            res.insert(succ);
         }
     }
     // compute Up(idx)
@@ -52,56 +52,11 @@ fn df<'a>(block_idx: usize,
     return dfs.get(&block_idx).unwrap();
 }
 
-mod scfg {
-    use std::collections::BTreeMap;
-    use std::fmt::{Display, Formatter};
-    use depile::analysis::control_flow::{HasBranchingBehaviour, successor_blocks_impl};
-    use depile::ir::Block;
-    use depile::ir::instr::InstrExt;
-    use crate::analysis::domtree::BlockSet;
-
-    #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct SimpleCfg {
-        pub entry: usize,
-        pub edges: BTreeMap<usize, BlockSet>,
-    }
-
-    impl Display for SimpleCfg {
-        fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-            write!(f, "CFG: entry {}\n", self.entry)?;
-            for (x, ys) in &self.edges {
-                for y in ys {
-                    write!(f, "  {} -> {}\n", x, y)?;
-                }
-            }
-            Ok(())
-        }
-    }
-
-    pub fn to_simple_cfg<K>(entry: usize, blocks: &[Block<K>]) -> SimpleCfg
-        where K: InstrExt,
-              K::Branching: HasBranchingBehaviour,
-              K::Marker: HasBranchingBehaviour,
-              K::Extra: HasBranchingBehaviour {
-        let mut edges = BTreeMap::new();
-        for (i, _) in blocks.iter().enumerate() {
-            let mut succs = BlockSet::new();
-            for s in successor_blocks_impl(blocks, i) {
-                // TODO: out of range
-                if s >= blocks.len() { continue; }
-                succs.insert(s);
-            }
-            edges.insert(i, succs);
-        }
-        SimpleCfg { entry, edges }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use std::collections::BTreeSet;
+    use crate::analysis::cfg::SimpleCfg;
     use super::{compute_df_cfg, compute_dom_frontier};
-    use super::scfg::{SimpleCfg, to_simple_cfg};
     use crate::map_b_bs;
     use crate::samples::{get_sample_functions, PRIME, ALL_SAMPLES};
     use crate::analysis::domtree::BlockMap;
@@ -125,22 +80,6 @@ mod tests {
             4 => [6], 5 => [6], 6 => [7], 7 => [1]
         ];
         assert_eq!(dfs, compute_df_cfg(&domtree, &cfg));
-    }
-
-    #[test]
-    fn test_prime_cfg() {
-        let funcs = get_sample_functions(PRIME);
-        let func = &funcs.functions[0];
-        let cfg = to_simple_cfg(func.entry_block, func.blocks.as_slice());
-        let cfg_: SimpleCfg = SimpleCfg {
-            entry: 0,
-            edges: map_b_bs![
-                0 => [1], 1 => [2, 12], 2 => [3], 3 => [4, 9],
-                4 => [5, 6], 5 => [8], 6 => [7, 8], 7 => [8], 8 => [3],
-                9 => [10, 11], 10 => [11], 11 => [1], 12 => []
-            ]
-        };
-        assert_eq!(cfg, cfg_);
     }
 
     #[test]
