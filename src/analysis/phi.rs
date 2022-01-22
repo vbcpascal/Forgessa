@@ -186,14 +186,17 @@ impl PhiForge {
     pub fn rename_phi<'a>(&self, func: &'a mut SSAFunction) -> &'a mut SSAFunction {
         let mut rename_stack = RenameStack::new();
         let td_tree = self.top_down_domtree();
+        let root = root_of_domtree(&self.domtree);
+        visit(self, root, func, &mut rename_stack, &td_tree);
 
         fn visit(forge: &PhiForge,
                  block_idx: usize,
                  func: &mut SSAFunction,
-                 rename_stack: &mut RenameStack) {
+                 rename_stack: &mut RenameStack,
+                 td_tree: &BlockMap) {
             let block: &mut SSABlock = func.blocks.get_mut(block_idx).unwrap();
 
-            // Step 1: generate unique names and push them
+            // Step 1: generate unique names and push them.
             for (j, (var, _)) in forge.phi_cells.get(&block_idx).unwrap().iter().enumerate() {
                 let var_index: usize = rename_stack.request_push(var);
                 let phi_instr_index: usize = block.first_index + var_index;
@@ -204,9 +207,18 @@ impl PhiForge {
                     }
             }
 
-            // Step 2: rewrite names
+            // Step 2: rewrite names.
             for instr in block.instructions.iter_mut() {
-                // instr = instr.rename_by(rename_stack)
+                instr.rename_by(rename_stack);
+            }
+
+            // Step 3: fill in phi parameters of successor blocks.
+            
+
+            // Step 4: recurse on children.
+            for child in td_tree.get(&block_idx).unwrap() {
+                let mut rs = rename_stack.clone();
+                visit(forge, *child, func, &mut rename_stack.clone(), td_tree);
             }
         }
         func
@@ -322,12 +334,18 @@ impl Renameable for SSAInstr {
                 { opd.rename_by(rename_stack); }
             Instr::Store {data, address} =>
                 { data.rename_by(rename_stack); address.rename_by(rename_stack); }
-            Instr::Move {source, dest} =>
-                { source.rename_by(rename_stack); dest.rename_by(rename_stack); }
             Instr::Write(opd) =>
                 { opd.rename_by(rename_stack); }
             Instr::InterProc(interproc) =>
                 { interproc.rename_by(rename_stack); }
+            Instr::Move {source, dest} => {
+                source.rename_by(rename_stack);
+                match dest {
+                    SSAOpd::Operand(Operand::Var(var, _)) =>
+                        *dest = SSAOpd::Subscribed(var.clone(), rename_stack.request_push(var)),
+                    _ => ()
+                }
+            }
             _ => ()
         }
     }
