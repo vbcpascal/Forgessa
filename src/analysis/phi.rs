@@ -1,7 +1,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 use depile::analysis::control_flow::ControlFlowExt;
-use depile::ir::{Block, Function};
-use depile::ir::instr::basic::Operand::Var;
+use depile::ir::{Block, Function, Instr};
+use depile::ir::instr::basic::Operand::{Register, Var};
 use depile::ir::instr::Instr::{Extra, Move};
 use depile::ir::instr::InstrExt;
 use crate::analysis::cfg::SimpleCfg;
@@ -9,7 +9,7 @@ use crate::analysis::converter::block_convert;
 use crate::analysis::panning::{Pannable, PannableBlock};
 use crate::analysis::dom_frontier::compute_df_cfg;
 use crate::analysis::domtree::{BlockMap, BlockSet, compute_domtree, compute_idom, imm_dominators, ImmDomRel, root_of_domtree};
-use crate::ssa::{Phi, SSABlock, SSAFunction, SSAInstr};
+use crate::ssa::{Phi, SSABlock, SSAFunction, SSAInstr, SSAOpd};
 use crate::ssa::SSAOpd::{Operand, Subscribed};
 
 /// Find all the variable definitions in `block`.
@@ -76,7 +76,6 @@ pub struct PhiForge {
     pub dom_frontier: BlockMap,
 
     pub phi_cells: BlockPhiCells,
-    pub rename_stack: RenameStack,
 }
 
 impl PhiForge {
@@ -91,7 +90,6 @@ impl PhiForge {
             imm_doms: imm_doms,
             dom_frontier: dfs,
             phi_cells: BTreeMap::new(),
-            rename_stack: BTreeMap::new(),
         }
     }
 
@@ -177,21 +175,83 @@ impl PhiForge {
         }
     }
 
-    pub fn place_phi(&self, func: &mut SSAFunction) {
+    pub fn place_phi(&self, func: &mut SSAFunction) -> &mut SSAFunction {
         for (i, mut b) in func.blocks.iter_mut().enumerate() {
             for (j, (var, _)) in self.phi_cells.get(&i).unwrap().iter().enumerate() {
                 *b.instructions.get_mut(2 * j).unwrap() =
                     SSAInstr::Extra(Phi { vars: Vec::new() });
             }
         }
+        func
+    }
+
+    pub fn rename_phi(&self, func: &mut SSAFunction) -> &mut SSAFunction {
+        let order = self.traversal_order();
+        let mut rename_stack = RenameStack::new();
+
+        for block_idx in order {
+            let block: &mut SSABlock = func.blocks.get_mut(block_idx).unwrap();
+            for (j, (var, _)) in self.phi_cells.get(&block_idx).unwrap().iter().enumerate() {
+                let var_index: usize = rename_stack.request_push(var);
+                *block.instructions.get_mut(2 * j + 1).unwrap() =
+                    SSAInstr::Move {
+                        source: SSAOpd::Operand(Register(2 * j)),
+                        dest: SSAOpd::Subscribed(var.clone(), var_index)
+                    }
+            }
+
+
+        }
+        func
     }
 }
 
-pub type RenameStack = BTreeMap<String, RenameStackCell>;
+pub struct RenameStack {
+    var_stacks: BTreeMap<String, RenameStackCell>
+}
+
+impl RenameStack {
+    fn new() -> Self { RenameStack { var_stacks: BTreeMap::new() } }
+
+    fn init(&mut self, vars: &Vec<String>) {
+        for var in vars {
+            self.var_stacks.insert(var.clone(), RenameStackCell::new());
+        }
+    }
+
+    fn var_stack_mut(&mut self, var: &String) -> &mut RenameStackCell {
+        if !self.var_stacks.contains_key(var) {
+            self.var_stacks.insert(var.clone(), RenameStackCell::new())
+        }
+        self.var_stacks.get_mut(var).unwrap()
+    }
+
+    fn request_push(&mut self, var: &String) -> usize {
+        let id = self.request(var);
+        self.push_var(var, id);
+        id
+    }
+
+    fn request(&mut self, var: &String) -> usize {
+        let cell = self.var_stack_mut(var);
+        let id = cell.counter;
+        cell.counter += 1;
+        id
+    }
+
+    fn push_var(&mut self, var: &String, var_idx: usize) {
+        let cell = self.var_stack_mut(var);
+        cell.stack.push(var_idx);
+    }
+}
 
 pub struct RenameStackCell {
     pub counter: usize,
     pub stack: Vec<usize>,
+}
+
+impl RenameStackCell {
+    fn new() -> Self { RenameStackCell { counter: 0, stack: Vec::new() } }
 }
 
 #[cfg(test)]
