@@ -1,3 +1,4 @@
+use std::cmp::max;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs::rename;
 use depile::analysis::control_flow::ControlFlowExt;
@@ -89,10 +90,11 @@ impl PhiForge {
             func.blocks.iter().fold(0, |x, block| x + block.instructions.len())
         }
 
-        let mut curr_idx: usize = funcs.functions[0].blocks[0].first_index;
+        let mut curr_idx: usize = 0;
         let mut res = Vec::new();
 
         for func in &funcs.functions {
+            curr_idx = max(curr_idx, func.blocks[0].first_index);
             let func_res = PhiForge::run_func(&func, curr_idx);
             curr_idx += count_instructions(&func_res);
             res.push(func_res);
@@ -235,10 +237,10 @@ impl PhiForge {
             // Step 1: generate unique names and push them.
             for (j, (var, _)) in forge.phi_cells.get(&block_idx).unwrap().iter().enumerate() {
                 let var_index: usize = rename_stack.request_push(var);
-                let phi_instr_index: usize = block.first_index + var_index * 2;
+                let phi_instr_index: usize = block.first_index + j * 2;
                 *block.instructions.get_mut(2 * j + 1).unwrap() =
                     SSAInstr::Move {
-                        source: SSAOpd::Operand(Register(phi_instr_index + 1)),
+                        source: SSAOpd::Operand(Register(phi_instr_index)),
                         dest: SSAOpd::Subscribed(var.clone(),  to_isize!(var_index))
                     }
             }
@@ -416,6 +418,7 @@ macro_rules! to_isize {
 
 #[cfg(test)]
 mod test {
+    use std::io::{ Write, BufWriter };
     use depile::ir::Function;
     use crate::analysis::phi::{find_defs, PhiForge};
     use crate::samples::{ALL_SAMPLES, get_sample_functions, HANOIFIBFAC, PRIME};
@@ -431,7 +434,7 @@ mod test {
 
     #[test]
     fn test_phi_instrs() {
-        let funcs = get_sample_functions(HANOIFIBFAC);
+        let funcs = get_sample_functions(PRIME);
         let func: &Function = &funcs.functions[0];
         let mut forge = PhiForge::new(func);
         println!("{:?}", forge.infer_phi(func));
@@ -443,14 +446,21 @@ mod test {
     }
 
     #[test]
-    fn test_phi_samples() {
-        let funcs = get_sample_functions(HANOIFIBFAC);
-        let res = PhiForge::run(&funcs);
-        println!("{}", res);
-        // for str in ALL_SAMPLES {
-        //     let funcs = get_sample_functions(str);
-        //     let res = PhiForge::run(&funcs);
-        // }
-    }
+    fn test_phi_samples () {
+        for (i, str) in ALL_SAMPLES.iter().enumerate() {
+            let name = crate::samples::samples_str::ALL_SAMPLES[i].to_string().to_lowercase();
+            let funcs = get_sample_functions(str);
 
+            let mut file_path = format!("samples/stripped/{}.txt", name);
+            let file = std::fs::File::create(file_path).unwrap();
+            let mut writer = BufWriter::new(&file);
+            write!(&mut writer, "{}", funcs).unwrap();
+
+            let res = PhiForge::run(&funcs);
+            let mut file_path = format!("samples/ssa/{}.txt", name);
+            let file = std::fs::File::create(file_path).unwrap();
+            let mut writer = BufWriter::new(&file);
+            write!(&mut writer, "{}", res).unwrap();
+        }
+    }
 }
