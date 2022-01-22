@@ -1,4 +1,5 @@
 use std::collections::{BTreeMap, BTreeSet};
+use depile::analysis::control_flow::ControlFlowExt;
 use depile::ir::{Block, Function};
 use depile::ir::instr::basic::Operand::Var;
 use depile::ir::instr::Instr::{Extra, Move};
@@ -51,7 +52,7 @@ impl HasVariableOperand for crate::ssa::SSAOpd {
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct PhiCell {
-    // The name of the phi node.
+    /// The name of the phi node.
     pub var: String,
     /// Blocks generating this phi node.
     pub origins: BlockSet,
@@ -66,13 +67,16 @@ impl PhiCell {
     }
 }
 
+pub type BlockPhiCells = BTreeMap<usize, BTreeMap<String, PhiCell>>;
+
 pub struct PhiForge {
     pub cfg: SimpleCfg,
     pub domtree: BlockMap,
     pub imm_doms: ImmDomRel,
     pub dom_frontier: BlockMap,
 
-    pub rename_stack: BTreeMap<String, RenameStackCell>,
+    pub phi_cells: BlockPhiCells,
+    pub rename_stack: RenameStack,
 }
 
 impl PhiForge {
@@ -86,12 +90,13 @@ impl PhiForge {
             domtree: domtree,
             imm_doms: imm_doms,
             dom_frontier: dfs,
+            phi_cells: BTreeMap::new(),
             rename_stack: BTreeMap::new(),
         }
     }
 
     /// Infer the place of phi function will be placed in `func`.
-    pub fn infer_phi(&self, func: &Function) -> BTreeMap<usize, BTreeMap<String, PhiCell>> {
+    pub fn infer_phi(&mut self, func: &Function) -> &BlockPhiCells {
         // Step 1: calculate dominance frontiers
         let dfs: &BlockMap = &self.dom_frontier;
 
@@ -112,7 +117,9 @@ impl PhiForge {
         }
 
         // Step 3: insert phi-functions
-        let mut phi_instrs: BTreeMap<usize, BTreeMap<String, PhiCell>> = BTreeMap::new();
+        let mut phi_instrs = &mut self.phi_cells;
+        phi_instrs.clear();
+
         for i in 0..func.blocks.len() { phi_instrs.insert(i, BTreeMap::new()); }
         for (var, bs) in def_sites.iter() {
             let mut blocks: Vec<usize> = bs.clone();
@@ -151,14 +158,13 @@ impl PhiForge {
 
     pub fn place_phi_placeholder(&self, func: &Function, instr_idx: usize) -> SSAFunction {
         let mut blocks: Vec<SSABlock> = Vec::new();
-        let phi_cells = self.infer_phi(func);
         let mut id = instr_idx;
 
         for (i, b) in func.blocks.iter().enumerate() {
             let offset = id - b.first_index;
             let block = block_convert(b)
                 .pan(&|x| x + offset)
-                .panning_forward_fill(phi_cells.get(&i).unwrap().len() * 2);
+                .panning_forward_fill(self.phi_cells.get(&i).unwrap().len() * 2);
             id += block.instructions.len();
             blocks.push(block);
         }
@@ -171,33 +177,17 @@ impl PhiForge {
         }
     }
 
-    pub fn place_phi(&self, func: &Function, instr_idx: usize) -> SSAFunction {
-        let blocks: Vec<SSABlock> = Vec::new();
-        let phi_cells = self.infer_phi(func);
-        let id = instr_idx;
-
-        // for (i, b) in func.blocks.iter().enumerate() {
-        //     let mut block = block_convert(b);
-        //     let count = self.cfg.get_prevs(i).len();
-        //     for (s, _) in phi_cells.get(&i) {
-        //
-        //     }
-        // }
-
-        SSAFunction {
-            parameter_count: func.parameter_count,
-            local_var_count: 0, // TODO
-            entry_block: func.entry_block,
-            blocks: blocks
+    pub fn place_phi(&self, func: &mut SSAFunction) {
+        for (i, mut b) in func.blocks.iter_mut().enumerate() {
+            for (j, (var, _)) in self.phi_cells.get(&i).unwrap().iter().enumerate() {
+                *b.instructions.get_mut(2 * j).unwrap() =
+                    SSAInstr::Extra(Phi { vars: Vec::new() });
+            }
         }
     }
-
-    fn insert_phi(&self, instr_idx: usize, name: &String, count: usize, block: &mut SSABlock) {
-        let mut instrs: Vec<SSAInstr> = Vec::new();
-        let mut instrs = block.instructions.to_vec();
-
-    }
 }
+
+pub type RenameStack = BTreeMap<String, RenameStackCell>;
 
 pub struct RenameStackCell {
     pub counter: usize,
@@ -223,10 +213,11 @@ mod test {
     fn test_phi_instrs() {
         let funcs = get_sample_functions(PRIME);
         let func: &Function = &funcs.functions[0];
-        let forge = PhiForge::new(func);
+        let mut forge = PhiForge::new(func);
         println!("{:?}", forge.infer_phi(func));
         println!("{:?}", forge.traversal_order());
-        let func_nop = forge.place_phi_placeholder(func, func.blocks[0].first_index);
+        let mut func_nop = forge.place_phi_placeholder(func, func.blocks[0].first_index);
+        forge.place_phi(&mut func_nop);
         println!("{}", func_nop);
     }
 
