@@ -7,8 +7,10 @@
 #![allow(unused)]
 
 use std::fmt::Formatter;
+use smallvec::{SmallVec, smallvec};
 use depile::analysis::control_flow::{BranchingBehaviour, HasBranchingBehaviour};
-use depile::ir::instr::basic::Operand;
+use depile::ir::instr::basic::{InterProc, Operand};
+use depile::ir::instr::{HasDest, HasOperand, OutputInfo};
 use parse_display::{Display, FromStr};
 
 /// Instruction kind SSA
@@ -72,16 +74,40 @@ impl HasBranchingBehaviour for Phi {
     }
 }
 
+/// SSA inter-procedural instructions.
 #[derive(Debug, Display, FromStr, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub enum SSAInterProc {
+    /// Push actual parameters for later use in [`InterProc::Call`].
     #[display("param {0}")]
-    PushParam(Operand),
+    PushParam(SSAOpd),
     /// Perform a function call.
     #[display("call [{dest}]")]
     Call {
         /// Destination for the function call.
         dest: usize
     },
+}
+
+impl HasOperand<SSAOpd> for SSAInterProc {
+    fn get_operands(&self) -> SmallVec<[&SSAOpd; 2]> {
+        match self {
+            SSAInterProc::PushParam(operand) => smallvec![operand],
+            _ => SmallVec::new(),
+        }
+    }
+}
+
+impl OutputInfo for SSAInterProc {
+    fn has_output(&self) -> bool { false }
+}
+
+impl HasDest for SSAInterProc {
+    fn map_dest(self, f: impl FnOnce(usize) -> usize) -> Self {
+        match self {
+            SSAInterProc::Call { dest } => SSAInterProc::Call { dest: f(dest) },
+            instr => instr,
+        }
+    }
 }
 
 #[cfg(test)]
