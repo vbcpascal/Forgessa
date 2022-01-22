@@ -9,7 +9,7 @@ pub fn block_convert(block: &Block<Kind>) -> SSABlock {
         instrs.push(instr.clone().map_kind(
             convert::map_operand,
             convert::map_branching,
-            std::convert::identity,
+            convert::map_inter_proc,
             std::convert::identity,
             |_| panic!(""),
         ))
@@ -21,8 +21,8 @@ pub fn block_convert(block: &Block<Kind>) -> SSABlock {
 ///
 mod convert {
     use depile::ir::instr::{Branching, BranchKind};
-    use depile::ir::instr::stripped::Operand;
-    use crate::ssa::SSAOpd;
+    use depile::ir::instr::stripped::{InterProc, Operand};
+    use crate::ssa::{SSAInterProc, SSAOpd};
 
     pub fn map_operand(opd: Operand) -> SSAOpd {
         SSAOpd::Operand(opd)
@@ -40,6 +40,13 @@ mod convert {
         Branching {
             method: map_branch_kind(branching.method),
             dest: branching.dest,
+        }
+    }
+
+    pub fn map_inter_proc(inter: InterProc) -> SSAInterProc {
+        match inter {
+            InterProc::PushParam(opd) => SSAInterProc::PushParam(map_operand(opd)),
+            InterProc::Call {dest} => SSAInterProc::Call {dest}
         }
     }
 }
