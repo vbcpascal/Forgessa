@@ -1,16 +1,18 @@
 use std::collections::{BTreeMap, BTreeSet};
+use std::fs::rename;
 use depile::analysis::control_flow::ControlFlowExt;
 use depile::ir::{Block, Function, Instr};
+use depile::ir::instr::basic::Operand;
 use depile::ir::instr::basic::Operand::{Register, Var};
-use depile::ir::instr::Instr::{Extra, Move};
-use depile::ir::instr::InstrExt;
+use depile::ir::instr::Instr::{Binary, Extra, Move, Unary};
+use depile::ir::instr::{Branching, BranchKind, InstrExt};
 use crate::analysis::cfg::SimpleCfg;
 use crate::analysis::converter::block_convert;
 use crate::analysis::panning::{Pannable, PannableBlock};
 use crate::analysis::dom_frontier::compute_df_cfg;
 use crate::analysis::domtree::{BlockMap, BlockSet, compute_domtree, compute_idom, imm_dominators, ImmDomRel, root_of_domtree};
-use crate::ssa::{Phi, SSABlock, SSAFunction, SSAInstr, SSAOpd};
-use crate::ssa::SSAOpd::{Operand, Subscribed};
+use crate::ssa::{Phi, SSABlock, SSAFunction, SSAInstr, SSAInterProc, SSAOpd};
+use crate::ssa::SSAOpd::Subscribed;
 
 /// Find all the variable definitions in `block`.
 pub fn find_defs<K: InstrExt>(block: &Block<K>) -> BTreeSet<String>
@@ -44,8 +46,8 @@ impl HasVariableOperand for depile::ir::instr::basic::Operand {
 impl HasVariableOperand for crate::ssa::SSAOpd {
     fn get_var_name(&self) -> Option<String> {
         match self {
-            Operand(opd) => opd.get_var_name(),
-            Subscribed(var, _) => Some(var.clone()),
+            SSAOpd::Operand(opd) => opd.get_var_name(),
+            SSAOpd::Subscribed(var, _) => Some(var.clone()),
         }
     }
 }
@@ -182,29 +184,34 @@ impl PhiForge {
     }
 
     pub fn rename_phi<'a>(&self, func: &'a mut SSAFunction) -> &'a mut SSAFunction {
-        // let order = self.traversal_order();
-        // let mut rename_stack = RenameStack::new();
-        //
-        // for block_idx in order {
-        //     let block: &mut SSABlock = func.blocks.get_mut(block_idx).unwrap();
-        //
-        //     // Step 1: generate unique names and push them.
-        //     for (j, (var, _)) in self.phi_cells.get(&block_idx).unwrap().iter().enumerate() {
-        //         let var_index: usize = rename_stack.request_push(var);
-        //         let phi_instr_index: usize = block.first_index + var_index;
-        //         *block.instructions.get_mut(2 * j + 1).unwrap() =
-        //             SSAInstr::Move {
-        //                 source: SSAOpd::Operand(Register(2 * j + phi_instr_index)),
-        //                 dest: SSAOpd::Subscribed(var.clone(), var_index)
-        //             }
-        //     }
-        //
-        //
-        // }
+        let mut rename_stack = RenameStack::new();
+        let td_tree = self.top_down_domtree();
+
+        fn visit(forge: &PhiForge,
+                 block_idx: usize,
+                 func: &mut SSAFunction,
+                 rename_stack: &mut RenameStack) {
+            let block: &mut SSABlock = func.blocks.get_mut(block_idx).unwrap();
+
+            // Step 1: generate unique names and push them
+            for (j, (var, _)) in forge.phi_cells.get(&block_idx).unwrap().iter().enumerate() {
+                let var_index: usize = rename_stack.request_push(var);
+                let phi_instr_index: usize = block.first_index + var_index;
+                *block.instructions.get_mut(2 * j + 1).unwrap() =
+                    SSAInstr::Move {
+                        source: SSAOpd::Operand(Register(2 * j + phi_instr_index)),
+                        dest: SSAOpd::Subscribed(var.clone(), var_index)
+                    }
+            }
+
+            // Step 2: rewrite names
+
+        }
         func
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct RenameStack {
     var_stacks: BTreeMap<String, RenameStackCell>
 }
@@ -218,11 +225,9 @@ impl RenameStack {
         }
     }
 
-    fn var_stack_mut(&mut self, var: &String) -> &mut RenameStackCell {
-        if !self.var_stacks.contains_key(var) {
-            self.var_stacks.insert(var.clone(), RenameStackCell::new());
-        }
-        self.var_stacks.get_mut(var).unwrap()
+    fn get(&mut self, var: &String) -> usize {
+        let cell = self.var_stack_mut(var);
+        *cell.stack.last().unwrap()
     }
 
     fn request_push(&mut self, var: &String) -> usize {
@@ -242,8 +247,16 @@ impl RenameStack {
         let cell = self.var_stack_mut(var);
         cell.stack.push(var_idx);
     }
+
+    fn var_stack_mut(&mut self, var: &String) -> &mut RenameStackCell {
+        if !self.var_stacks.contains_key(var) {
+            self.var_stacks.insert(var.clone(), RenameStackCell::new());
+        }
+        self.var_stacks.get_mut(var).unwrap()
+    }
 }
 
+#[derive(Debug, Clone)]
 pub struct RenameStackCell {
     pub counter: usize,
     pub stack: Vec<usize>,
@@ -252,6 +265,75 @@ pub struct RenameStackCell {
 impl RenameStackCell {
     fn new() -> Self { RenameStackCell { counter: 0, stack: Vec::new() } }
 }
+
+/// Indicates definitions and operands can be renamed by [`RenameStack`].
+pub trait Renameable {
+    fn rename_by(&self, rename_stack: &mut RenameStack) -> Self;
+}
+
+impl Renameable for SSAOpd {
+    fn rename_by(&self, rename_stack: &mut RenameStack) -> Self {
+        match self {
+            SSAOpd::Operand(opd) => {
+                match opd {
+                    Operand::Var(var, _) => {
+                        let var_idx = rename_stack.get(var);
+                        SSAOpd::Subscribed(var.clone(), var_idx)
+                    }
+                    _ => SSAOpd::Operand(opd.clone())
+                }
+            }
+            _ => self.clone()
+        }
+    }
+}
+
+impl Renameable for BranchKind<SSAOpd> {
+    fn rename_by(&self, rename_stack: &mut RenameStack) -> Self {
+        match self {
+            BranchKind::If(opd) => BranchKind::If(opd.rename_by(rename_stack)),
+            BranchKind::Unless(opd) => BranchKind::Unless(opd.rename_by(rename_stack)),
+            _ => self.clone(),
+        }
+    }
+}
+
+impl Renameable for SSAInterProc {
+    fn rename_by(&self, rename_stack: &mut RenameStack) -> Self {
+        match self {
+            SSAInterProc::PushParam(opd) => SSAInterProc::PushParam(opd.rename_by(rename_stack)),
+            _ => self.clone(),
+        }
+    }
+}
+
+impl Renameable for SSAInstr {
+    fn rename_by(&self, rename_stack: &mut RenameStack) -> Self {
+        match self {
+            Instr::Binary {op, lhs, rhs} =>
+                Binary {op: op.clone(), lhs: lhs.rename_by(rename_stack), rhs: rhs.rename_by(rename_stack)},
+            Instr::Unary { op, operand } =>
+                Unary {op: op.clone(), operand: operand.rename_by(rename_stack) },
+            Instr::Branch(branching) => Instr::Branch( Branching {
+                method: branching.method.rename_by(rename_stack),
+                dest: branching.dest,
+            }),
+            Instr::Load(opd) => Instr::Load(opd.rename_by(rename_stack)),
+            Instr::Store {data, address} => Instr::Store {
+                data: data.rename_by(rename_stack),
+                address: address.rename_by(rename_stack),
+            },
+            Instr::Move {source, dest} => Instr::Move {
+                source: source.rename_by(rename_stack),
+                dest: dest.rename_by(rename_stack),
+            },
+            Instr::Write(opd) => Instr::Write(opd.rename_by(rename_stack)),
+            Instr::InterProc(interproc) => Instr::InterProc(interproc.rename_by(rename_stack)),
+            _ => self.clone()
+        }
+    }
+}
+
 
 #[cfg(test)]
 mod test {
