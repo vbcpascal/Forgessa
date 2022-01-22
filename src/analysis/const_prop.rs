@@ -113,7 +113,10 @@ impl Substitutable for SSAInstr {
             Instr::Move {source, dest} => {
                 let changed = cp.check_subst(source);
                 match as_constant(source) {
-                    Some(opd) => cp.insert(dest, source),
+                    Some(opd) => {
+                        cp.insert(dest, source);
+                        *self = Instr::Nop;
+                    },
                     None => (),
                 };
                 changed
@@ -153,7 +156,7 @@ mod test {
             let file = std::fs::File::create(file_path).unwrap();
             let mut writer = BufWriter::new(&file);
             writeln!(&mut writer, "Report of {}:", name);
-            for r in reports { writeln!(&mut writer, "{}", r); }
+            for r in reports { writeln!(&mut writer, "{}", r).expect("error"); }
             write!(&mut writer, "{}", ssa).unwrap();
         }
     }
