@@ -37,7 +37,7 @@ pub enum SSAOpd {
     Operand(Operand),
     /// Subscribed variable.
     #[display("{0}${1}")]
-    Subscribed(String, usize),
+    Subscribed(String, isize),
 }
 
 /// SSA extra instructions.

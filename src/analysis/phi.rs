@@ -6,12 +6,15 @@ use depile::ir::instr::basic::Operand;
 use depile::ir::instr::basic::Operand::{Register, Var};
 use depile::ir::instr::Instr::{Binary, Extra, Move, Unary};
 use depile::ir::instr::{Branching, BranchKind, InstrExt};
+use depile::ir::instr::stripped::Functions;
+use crate::to_isize;
 use crate::analysis::cfg::SimpleCfg;
 use crate::analysis::converter::block_convert;
 use crate::analysis::panning::{Pannable, PannableBlock};
 use crate::analysis::dom_frontier::compute_df_cfg;
 use crate::analysis::domtree::{BlockMap, BlockSet, compute_domtree, compute_idom, imm_dominators, ImmDomRel, root_of_domtree};
-use crate::ssa::{Phi, SSABlock, SSAFunction, SSAInstr, SSAInterProc, SSAOpd};
+use crate::analysis::params::scan_parameters;
+use crate::ssa::{Phi, SSABlock, SSAFunction, SSAFunctions, SSAInstr, SSAInterProc, SSAOpd};
 use crate::ssa::SSAOpd::Subscribed;
 
 /// Find all the variable definitions in `block`.
@@ -72,21 +75,52 @@ impl PhiCell {
 pub type BlockPhiCells = BTreeMap<usize, BTreeMap<String, PhiCell>>;
 
 pub struct PhiForge {
+    pub params: Vec<String>,
     pub cfg: SimpleCfg,
     pub domtree: BlockMap,
     pub imm_doms: ImmDomRel,
     pub dom_frontier: BlockMap,
-
     pub phi_cells: BlockPhiCells,
 }
 
 impl PhiForge {
+    fn run(funcs: &Functions) -> SSAFunctions {
+        fn count_instructions(func: &SSAFunction) -> usize {
+            func.blocks.iter().fold(0, |x, block| x + block.instructions.len())
+        }
+
+        let mut curr_idx: usize = funcs.functions[0].blocks[0].first_index;
+        let mut res = Vec::new();
+
+        for func in &funcs.functions {
+            let func_res = PhiForge::run_func(&func, curr_idx);
+            curr_idx += count_instructions(&func_res);
+            res.push(func_res);
+        }
+
+        SSAFunctions {
+            functions: res,
+            entry_function: funcs.entry_function,
+        }
+    }
+
+    fn run_func(func: &Function, instr_idx: usize) -> SSAFunction {
+        let mut forge = PhiForge::new(func);
+        forge.infer_phi(func);
+        forge.top_down_domtree();
+        let mut func_phi = forge.place_phi_placeholder(func, instr_idx);
+        forge.place_phi(&mut func_phi);
+        forge.rename_phi(&mut func_phi);
+        func_phi
+    }
+
     fn new(func: &Function) -> Self {
         let cfg = SimpleCfg::from(func.entry_block, func.blocks.as_slice());
         let domtree = compute_domtree(func);
         let imm_doms = compute_idom(&domtree);
         let dfs = compute_df_cfg(&domtree, &cfg);
         Self {
+            params: scan_parameters(func),
             cfg: cfg,
             domtree: domtree,
             imm_doms: imm_doms,
@@ -187,6 +221,8 @@ impl PhiForge {
         let mut rename_stack = RenameStack::new();
         let td_tree = self.top_down_domtree();
         let root = root_of_domtree(&self.domtree);
+        for param in &self.params { rename_stack.request_push(param); }
+
         visit(self, root, func, &mut rename_stack, &td_tree);
 
         fn visit(forge: &PhiForge,
@@ -199,11 +235,11 @@ impl PhiForge {
             // Step 1: generate unique names and push them.
             for (j, (var, _)) in forge.phi_cells.get(&block_idx).unwrap().iter().enumerate() {
                 let var_index: usize = rename_stack.request_push(var);
-                let phi_instr_index: usize = block.first_index + var_index;
+                let phi_instr_index: usize = block.first_index + var_index * 2;
                 *block.instructions.get_mut(2 * j + 1).unwrap() =
                     SSAInstr::Move {
-                        source: SSAOpd::Operand(Register(2 * j + phi_instr_index)),
-                        dest: SSAOpd::Subscribed(var.clone(), var_index)
+                        source: SSAOpd::Operand(Register(phi_instr_index + 1)),
+                        dest: SSAOpd::Subscribed(var.clone(),  to_isize!(var_index))
                     }
             }
 
@@ -213,7 +249,15 @@ impl PhiForge {
             }
 
             // Step 3: fill in phi parameters of successor blocks.
-            
+            for succ in forge.cfg.get_succs(block_idx) {
+                let succ_block = func.blocks.get_mut(succ).unwrap();
+                for (j, (var, _)) in forge.phi_cells.get(&succ).unwrap().iter().enumerate() {
+                    let instr = succ_block.instructions.get_mut(2 * j).unwrap();
+                    // TODO
+                    let var_idx = rename_stack.try_get(var);
+                    push_phi_param(instr, var, var_idx);
+                }
+            }
 
             // Step 4: recurse on children.
             for child in td_tree.get(&block_idx).unwrap() {
@@ -237,6 +281,11 @@ impl RenameStack {
         for var in vars {
             self.var_stacks.insert(var.clone(), RenameStackCell::new());
         }
+    }
+
+    fn try_get(&mut self, var: &String) -> isize {
+        let cell = self.var_stack_mut(var);
+        cell.stack.last().map_or(-1, |x| to_isize!(*x))
     }
 
     fn get(&mut self, var: &String) -> usize {
@@ -292,7 +341,7 @@ impl Renameable for SSAOpd {
                 match opd {
                     Operand::Var(var, _) => {
                         let var_idx = rename_stack.get(var);
-                        *self = SSAOpd::Subscribed(var.clone(), var_idx)
+                        *self = SSAOpd::Subscribed(var.clone(), to_isize!(var_idx))
                     }
                     _ => { }
                 }
@@ -342,7 +391,8 @@ impl Renameable for SSAInstr {
                 source.rename_by(rename_stack);
                 match dest {
                     SSAOpd::Operand(Operand::Var(var, _)) =>
-                        *dest = SSAOpd::Subscribed(var.clone(), rename_stack.request_push(var)),
+                        *dest = SSAOpd::Subscribed(var.clone(),
+                                                   to_isize!(rename_stack.request_push(var))),
                     _ => ()
                 }
             }
@@ -351,12 +401,24 @@ impl Renameable for SSAInstr {
     }
 }
 
+fn push_phi_param(instr: &mut SSAInstr, var: &String, var_idx: isize) {
+    match instr {
+        Instr::Extra(Phi {vars}) =>
+            vars.push(SSAOpd::Subscribed(var.clone(), var_idx)),
+        _ => panic!("Not phi instruction."),
+    }
+}
+
+#[macro_export]
+macro_rules! to_isize {
+    ($num: expr) => { isize::try_from($num).unwrap() };
+}
 
 #[cfg(test)]
 mod test {
     use depile::ir::Function;
     use crate::analysis::phi::{find_defs, PhiForge};
-    use crate::samples::{get_sample_functions, PRIME};
+    use crate::samples::{ALL_SAMPLES, get_sample_functions, HANOIFIBFAC, PRIME};
 
     #[test]
     fn test_find_defs() {
@@ -369,7 +431,7 @@ mod test {
 
     #[test]
     fn test_phi_instrs() {
-        let funcs = get_sample_functions(PRIME);
+        let funcs = get_sample_functions(HANOIFIBFAC);
         let func: &Function = &funcs.functions[0];
         let mut forge = PhiForge::new(func);
         println!("{:?}", forge.infer_phi(func));
@@ -380,5 +442,15 @@ mod test {
         println!("{}", func_phi);
     }
 
+    #[test]
+    fn test_phi_samples() {
+        let funcs = get_sample_functions(HANOIFIBFAC);
+        let res = PhiForge::run(&funcs);
+        println!("{}", res);
+        // for str in ALL_SAMPLES {
+        //     let funcs = get_sample_functions(str);
+        //     let res = PhiForge::run(&funcs);
+        // }
+    }
 
 }
