@@ -3,8 +3,9 @@ use std::fmt::{Display, Formatter};
 use depile::ir::Instr;
 use depile::ir::instr::basic::Operand::Const;
 use depile::ir::instr::stripped::Operand;
-use crate::ssa::{Phi, SSABlock, SSAFunction, SSAFunctions, SSAInstr, SSAOpd};
+use crate::ssa::{Phi, SSABlock, SSAFunction, SSAFunctions, SSAInstr, SSAInterProc, SSAOpd};
 
+/// Reports the performance of constant propagation.
 #[derive(Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub struct ConstPropReport {
     pub instr_idx: usize,
@@ -85,16 +86,24 @@ impl Substitutable for SSAFunction {
 impl Substitutable for SSABlock {
     fn subst(&mut self, cp: &mut ConstProp) -> bool {
         let mut changed = false;
+        let mut instr_idx = self.first_index;
         for instr in self.instructions.iter_mut() {
-            changed |= instr.subst(cp);
+            changed |= IdxInstr { idx: instr_idx, instr: instr }.subst(cp);
         }
         changed
     }
 }
 
-impl Substitutable for SSAInstr {
+pub struct IdxInstr<'a> {
+    pub idx: usize,
+    pub instr: &'a mut SSAInstr,
+}
+
+impl Substitutable for IdxInstr<'_> {
     fn subst(&mut self, cp: &mut ConstProp) -> bool {
-        match self {
+        let idx = self.idx;
+        let instr = &mut self.instr;
+        match instr {
             Instr::Binary {op, lhs, rhs} =>
                 cp.check_subst(lhs) || cp.check_subst(rhs),
             Instr::Unary {op, operand} =>
@@ -104,27 +113,40 @@ impl Substitutable for SSAInstr {
             Instr::Store {data, address } =>
                 cp.check_subst(data),
             Instr::Move {source, dest} => {
-                let changed = cp.check_subst(source);
+                let mut changed = cp.check_subst(source);
                 match as_constant(source) {
                     Some(opd) => {
                         cp.insert(dest, source);
-                        *self = Instr::Nop;
+                        **instr = Instr::Nop;
+                        changed = true;
                     },
                     None => (),
                 };
                 changed
             }
             Instr::Read => false,
-            Instr::Write(opd) => false,
+            Instr::Write(opd) =>
+                cp.check_subst(opd),
             Instr::WriteLn => false,
-            Instr::InterProc(interproc) => false,
+            Instr::InterProc(interproc) =>
+                match interproc {
+                    SSAInterProc::PushParam(opd) => cp.check_subst(opd),
+                    _ => false,
+                },
             Instr::Nop => false,
-            Instr::Marker(marker) => false,
+            Instr::Marker(_) => false,
             Instr::Extra(Phi {vars}) => {
-                let mut changes = false;
-                for var in vars { changes |= cp.check_subst(var); }
-                // check same phi-s
-                changes
+                let mut changed = false;
+                for var in vars.iter_mut() { changed |= cp.check_subst(var); }
+
+                match check_vars_in_phi(vars) {
+                    Some(opd) => {
+                        cp.insert(&SSAOpd::Operand(Operand::Register(idx)), &opd);
+                        **instr = Instr::Nop;
+                    },
+                    None => ()
+                }
+                changed
             }
         }
     }
@@ -159,9 +181,11 @@ pub fn check_vars_in_phi(vars: &Vec<SSAOpd>) -> Option<SSAOpd> {
 #[cfg(test)]
 mod test {
     use std::io::{BufWriter, Write};
-    use crate::analysis::const_prop::ConstProp;
+    use depile::ir::instr::basic::Operand::Const;
+    use crate::analysis::const_prop::{check_vars_in_phi, ConstProp};
     use crate::analysis::phi::PhiForge;
     use crate::samples::{ALL_SAMPLES, get_sample_functions};
+    use crate::ssa::SSAOpd;
 
     #[test]
     fn test_const_prop() {
@@ -171,7 +195,6 @@ mod test {
             let mut ssa = PhiForge::run(&funcs);
             let reports = ConstProp::run(&mut ssa);
 
-
             let mut file_path = format!("samples/const_prop/{}.txt", name);
             let file = std::fs::File::create(file_path).unwrap();
             let mut writer = BufWriter::new(&file);
@@ -179,5 +202,16 @@ mod test {
             for r in reports { writeln!(&mut writer, "{}", r).expect("error"); }
             write!(&mut writer, "{}", ssa).unwrap();
         }
+    }
+
+    #[test]
+    fn test_check_vars_phi() {
+        let v = SSAOpd::Operand(Const(4));
+        let mut vars = Vec::new();
+        for i in 0..3 { vars.push(v.clone()); }
+        assert!(check_vars_in_phi(&vars).is_some());
+
+        vars.push(SSAOpd::Subscribed(String::from("v"), -1));
+        assert!(check_vars_in_phi(&vars).is_some());
     }
 }
