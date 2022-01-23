@@ -102,7 +102,6 @@ pub struct IdxInstr<'a> {
 
 impl Substitutable for IdxInstr<'_> {
     fn subst(&mut self, cp: &mut ConstProp) -> bool {
-        let idx = self.idx;
         let instr = &mut self.instr;
         match instr {
             Instr::Binary {op: _, lhs, rhs} =>
@@ -142,7 +141,7 @@ impl Substitutable for IdxInstr<'_> {
                 },
             Instr::Nop => false,
             Instr::Marker(_) => false,
-            Instr::Extra(Phi {vars, blocks, dest}) => {
+            Instr::Extra(Phi {vars, blocks: _, dest}) => {
                 let mut changed = false;
                 for var in vars.iter_mut() { changed |= cp.check_subst(var); }
 

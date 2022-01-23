@@ -2,7 +2,7 @@ use std::cmp::max;
 use std::collections::{BTreeMap, BTreeSet};
 use depile::ir::{Block, Function, Instr};
 use depile::ir::instr::basic::Operand;
-use depile::ir::instr::basic::Operand::{Register, Var};
+use depile::ir::instr::basic::Operand::Var;
 use depile::ir::instr::{BranchKind, InstrExt};
 use depile::ir::instr::stripped::Functions;
 use crate::to_isize;
@@ -238,7 +238,7 @@ impl PhiForge {
             for (j, (var, _)) in forge.phi_cells.get(&block_idx).unwrap().iter().enumerate() {
                 let var_index: usize = rename_stack.request_push(var);
                 match block.instructions.get_mut(j).unwrap() {
-                    Instr::Extra(Phi {vars, blocks, dest}) =>
+                    Instr::Extra(Phi {vars: _, blocks: _, dest}) =>
                         *dest = SSAOpd::Subscribed(var.clone(),  to_isize!(var_index)),
                     _ => panic!("Error"),
                 }
@@ -400,7 +400,7 @@ impl Renameable for SSAInstr {
 
 fn push_phi_param(instr: &mut SSAInstr, var: &String, var_idx: isize, block_idx: isize) {
     match instr {
-        Instr::Extra(Phi {vars, blocks, dest}) => {
+        Instr::Extra(Phi {vars, blocks, dest: _}) => {
             vars.push(SSAOpd::Subscribed(var.clone(), var_idx));
             blocks.push(block_idx.try_into().unwrap());
         }

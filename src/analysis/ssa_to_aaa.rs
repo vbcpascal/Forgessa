@@ -13,7 +13,7 @@ impl SSATo3Addr {
         let mut locals = Vec::new();
 
         for i in 0..params.len() {
-            let mut func = funcs.functions.get_mut(i).unwrap();
+            let func = funcs.functions.get_mut(i).unwrap();
             let params = &params[i];
             s23.remove_phi_func(func);
             locals.push(s23.rename_params(func, params));
@@ -168,8 +168,7 @@ mod helper {
 #[cfg(test)]
 mod test {
     use std::io::{ Write, BufWriter };
-    use depile::ir::Function;
-    use crate::analysis::phi::{find_defs, PhiForge};
+    use crate::analysis::phi::PhiForge;
     use crate::analysis::ssa_to_aaa::SSATo3Addr;
     use crate::samples::{ALL_SAMPLES, get_sample_functions, PRIME};
 

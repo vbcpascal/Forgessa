@@ -1,4 +1,4 @@
-use depile::ir::{Block, Instr};
+use depile::ir::Block;
 use depile::ir::instr::stripped::Kind;
 use crate::ssa::{SSABlock, SSAInstr};
 
