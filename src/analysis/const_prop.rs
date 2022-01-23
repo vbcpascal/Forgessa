@@ -72,13 +72,6 @@ pub trait Substitutable {
     fn subst(&mut self, cp: &mut ConstProp) -> bool;
 }
 
-pub fn as_constant(opd: &SSAOpd) -> Option<&SSAOpd> {
-    match opd {
-        SSAOpd::Operand(Operand::Const(_)) => Some(opd),
-        _ => None,
-    }
-}
-
 impl Substitutable for SSAFunction {
     fn subst(&mut self, cp: &mut ConstProp) -> bool {
         let mut changed = false;
@@ -130,10 +123,37 @@ impl Substitutable for SSAInstr {
             Instr::Extra(Phi {vars}) => {
                 let mut changes = false;
                 for var in vars { changes |= cp.check_subst(var); }
+                // check same phi-s
                 changes
             }
         }
     }
+}
+
+pub fn as_constant(opd: &SSAOpd) -> Option<&SSAOpd> {
+    match opd {
+        SSAOpd::Operand(Operand::Const(_)) => Some(opd),
+        _ => None,
+    }
+}
+
+pub fn check_vars_in_phi(vars: &Vec<SSAOpd>) -> Option<SSAOpd> {
+    let mut curr: Option<i64> = None;
+    for var in vars {
+        match var {
+            SSAOpd::Operand(Const(i)) => {
+                if curr.is_none() { curr = Some(*i); }
+                else if curr.is_some() && curr == Some(*i) { }
+                else { return None; }
+            }
+            SSAOpd::Subscribed(_, index) => {
+                if *index >= 0 { return None }
+                else { continue; }
+           }
+            _ => panic!("error phi")
+        }
+    }
+    Some(SSAOpd::Operand(Const(curr.unwrap())))
 }
 
 #[cfg(test)]
