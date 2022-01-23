@@ -1,0 +1,37 @@
+(ENTRY) Function #0:
+#parameters = 0
+#local_vars = 0
+
+(ENTRY) Block #0:
+
+Block #1:
+  instr 4: nop
+  instr 5: cmpeq 1 1
+  instr 6: blbc (5) [3]
+
+Block #2:
+  instr 7: move 1 x$1
+  instr 8: move x$1 x$0
+  instr 9: br [1]
+
+Block #3:
+  instr 9: move 2 a$0
+  instr 10: cmple a$0 0
+  instr 11: blbs (10) [5]
+
+Block #4:
+  instr 12: move 4 a$1
+  instr 13: move a$1 a$3
+  instr 14: br [6]
+
+Block #5:
+  instr 14: move 4 a$2
+  instr 15: move a$2 a$3
+
+Block #6:
+  instr 15: nop
+  instr 16: move a$3 b$0
+  instr 17: write b$0
+  instr 18: ret
+
+
