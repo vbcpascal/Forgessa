@@ -3,7 +3,7 @@ Function #0:
 #local_vars = 0
 
 (ENTRY) Block #0:
-  instr 3: cmpeq n$0 0
+  instr 3: cmpeq n#16 0
   instr 4: blbc (3) [2]
 
 Block #1:
@@ -12,12 +12,12 @@ Block #1:
   instr 7: br [3]
 
 Block #2:
-  instr 8: sub n$0 1
+  instr 8: sub n#16 1
   instr 9: param (8)
   instr 10: call [0]
   instr 11: add res_base#32720 GP
   instr 12: load (11)
-  instr 13: mul n$0 (12)
+  instr 13: mul n#16 (12)
   instr 14: add res_base#32720 GP
   instr 15: store (13) (14)
 
@@ -27,10 +27,10 @@ Block #3:
 
 Function #1:
 #parameters = 1
-#local_vars = 0
+#local_vars = 2
 
 (ENTRY) Block #0:
-  instr 18: cmple n$0 1
+  instr 18: cmple n#16 1
   instr 19: blbc (18) [2]
 
 Block #1:
@@ -39,23 +39,23 @@ Block #1:
   instr 22: br [3]
 
 Block #2:
-  instr 23: sub n$0 1
+  instr 23: sub n#16 1
   instr 24: param (23)
   instr 25: call [1]
   instr 26: add res_base#32720 GP
   instr 27: load (26)
-  instr 28: move (27) x$0
-  instr 29: sub n$0 2
+  instr 28: move (27) x0#-8
+  instr 29: sub n#16 2
   instr 30: param (29)
   instr 31: call [1]
   instr 32: add res_base#32720 GP
   instr 33: load (32)
-  instr 34: move (33) y$0
-  instr 35: add x$0 y$0
+  instr 34: move (33) y0#-16
+  instr 35: add x0#-8 y0#-16
   instr 36: add res_base#32720 GP
   instr 37: store (35) (36)
-  instr 38: move x$0 x$0
-  instr 39: move y$0 y$0
+  instr 38: move x0#-8 x0#-8
+  instr 39: move y0#-16 y0#-16
 
 Block #3:
   instr 38: nop
@@ -68,8 +68,8 @@ Function #2:
 #local_vars = 0
 
 (ENTRY) Block #0:
-  instr 41: write from$0
-  instr 42: write to$0
+  instr 41: write from#24
+  instr 42: write to#16
   instr 43: wrl
   instr 44: add count_base#32728 GP
   instr 45: load (44)
@@ -84,29 +84,29 @@ Function #3:
 #local_vars = 0
 
 (ENTRY) Block #0:
-  instr 50: cmpeq height$0 1
+  instr 50: cmpeq height#16 1
   instr 51: blbc (50) [2]
 
 Block #1:
-  instr 52: param from$0
-  instr 53: param to$0
+  instr 52: param from#40
+  instr 53: param to#24
   instr 54: call [2]
   instr 55: br [3]
 
 Block #2:
-  instr 56: param from$0
-  instr 57: param to$0
-  instr 58: param by$0
-  instr 59: sub height$0 1
+  instr 56: param from#40
+  instr 57: param to#24
+  instr 58: param by#32
+  instr 59: sub height#16 1
   instr 60: param (59)
   instr 61: call [3]
-  instr 62: param from$0
-  instr 63: param to$0
+  instr 62: param from#40
+  instr 63: param to#24
   instr 64: call [2]
-  instr 65: param by$0
-  instr 66: param from$0
-  instr 67: param to$0
-  instr 68: sub height$0 1
+  instr 65: param by#32
+  instr 66: param from#40
+  instr 67: param to#24
+  instr 68: sub height#16 1
   instr 69: param (68)
   instr 70: call [3]
 
@@ -124,7 +124,7 @@ Function #4:
   instr 75: param 1
   instr 76: param 2
   instr 77: param 3
-  instr 78: param height$0
+  instr 78: param height#16
   instr 79: call [3]
   instr 80: wrl
   instr 81: add count_base#32728 GP

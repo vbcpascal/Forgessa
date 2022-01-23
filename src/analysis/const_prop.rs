@@ -200,7 +200,7 @@ mod test {
         for (i, str) in ALL_SAMPLES.iter().enumerate() {
             let name = crate::samples::samples_str::ALL_SAMPLES[i].to_string().to_lowercase();
             let funcs = get_sample_functions(str);
-            let mut ssa = PhiForge::run(&funcs);
+            let (mut ssa, _) = PhiForge::run(&funcs);
             let reports = ConstProp::run(&mut ssa);
 
             let file_path = format!("samples/const_prop/{}.txt", name);

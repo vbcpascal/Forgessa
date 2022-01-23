@@ -2,8 +2,6 @@ use depile::ir::instr::HasOperand;
 use depile::ir::instr::stripped::{Function, Operand};
 use smallvec::SmallVec;
 
-pub trait HasParams {}
-
 pub fn scan_parameters(func: &Function) -> Vec<String> {
     let count = func.parameter_count;
     let mut params: Vec<String> = Vec::new();

@@ -82,35 +82,34 @@ pub struct PhiForge {
 }
 
 impl PhiForge {
-    pub fn run(funcs: &Functions) -> SSAFunctions {
+    pub fn run(funcs: &Functions) -> (SSAFunctions, Vec<Vec<String>>) {
         fn count_instructions(func: &SSAFunction) -> usize {
             func.blocks.iter().fold(0, |x, block| x + block.instructions.len())
         }
 
         let mut curr_idx: usize = 0;
         let mut res = Vec::new();
+        let mut params = Vec::new();
 
         for func in &funcs.functions {
             curr_idx = max(curr_idx, func.blocks[0].first_index);
-            let func_res = PhiForge::run_func(&func, curr_idx);
+            let (func_res, params_res) = PhiForge::run_func(&func, curr_idx);
             curr_idx += count_instructions(&func_res);
             res.push(func_res);
+            params.push(params_res);
         }
 
-        SSAFunctions {
-            functions: res,
-            entry_function: funcs.entry_function,
-        }
+        ( SSAFunctions { functions: res, entry_function: funcs.entry_function }, params )
     }
 
-    fn run_func(func: &Function, instr_idx: usize) -> SSAFunction {
+    fn run_func(func: &Function, instr_idx: usize) -> (SSAFunction, Vec<String>) {
         let mut forge = PhiForge::new(func);
         forge.infer_phi(func);
         forge.top_down_domtree();
         let mut func_phi = forge.place_phi_placeholder(func, instr_idx);
         forge.place_phi(&mut func_phi);
         forge.rename_phi(&mut func_phi);
-        func_phi
+        (func_phi, forge.params)
     }
 
     fn new(func: &Function) -> Self {
@@ -454,7 +453,7 @@ mod test {
             let mut writer = BufWriter::new(&file);
             write!(&mut writer, "{}", funcs).unwrap();
 
-            let res = PhiForge::run(&funcs);
+            let (res, _) = PhiForge::run(&funcs);
             let file_path = format!("samples/ssa/{}.txt", name);
             let file = std::fs::File::create(file_path).unwrap();
             let mut writer = BufWriter::new(&file);

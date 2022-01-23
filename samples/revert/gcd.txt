@@ -1,33 +1,35 @@
 Function #0:
 #parameters = 2
-#local_vars = 0
+#local_vars = 6
 
 (ENTRY) Block #0:
+  instr 3: move a#24 a1#-8
+  instr 4: move b#16 b1#-16
 
 Block #1:
   instr 3: nop
   instr 4: nop
   instr 5: nop
-  instr 6: cmpeq b$1 0
+  instr 6: cmpeq b1#-16 0
   instr 7: blbs (6) [3]
 
 Block #2:
-  instr 8: move a$1 c$1
-  instr 9: move b$1 a$2
-  instr 10: mod c$1 b$1
-  instr 11: move (10) b$2
-  instr 12: write c$1
-  instr 13: write a$2
-  instr 14: write b$2
+  instr 8: move a1#-8 c1#-24
+  instr 9: move b1#-16 a2#-32
+  instr 10: mod c1#-24 b1#-16
+  instr 11: move (10) b2#-40
+  instr 12: write c1#-24
+  instr 13: write a2#-32
+  instr 14: write b2#-40
   instr 15: wrl
-  instr 16: move a$2 a$1
-  instr 17: move b$2 b$1
-  instr 18: move c$1 c$0
+  instr 16: move a2#-32 a1#-8
+  instr 17: move b2#-40 b1#-16
+  instr 18: move c1#-24 c0#-48
   instr 19: br [1]
 
 Block #3:
   instr 17: add res_base#32744 GP
-  instr 18: store a$1 (17)
+  instr 18: store a1#-8 (17)
   instr 19: ret
 
 
