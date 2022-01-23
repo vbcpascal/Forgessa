@@ -11,7 +11,7 @@ use crate::ir::converter::block_convert;
 use crate::ir::panning::{Pannable, PannableBlock};
 use crate::analysis::dom_frontier::compute_df_cfg;
 use crate::analysis::domtree::{BlockMap, BlockSet, compute_domtree, compute_idom, ImmDomRel, root_of_domtree};
-use crate::analysis::params::scan_parameters;
+use crate::ir::params::scan_parameters;
 use crate::ssa::{Phi, SSABlock, SSAFunction, SSAFunctions, SSAInstr, SSAInterProc, SSAOpd};
 
 /// Find all the variable definitions in `block`.

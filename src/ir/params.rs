@@ -24,7 +24,7 @@ pub fn scan_parameters(func: &Function) -> Vec<String> {
 
 #[cfg(test)]
 mod test {
-    use crate::analysis::params::scan_parameters;
+    use crate::ir::params::scan_parameters;
     use crate::samples::{GCD, get_sample_functions};
 
     #[test]

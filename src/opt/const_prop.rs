@@ -189,7 +189,7 @@ pub fn check_vars_in_phi(vars: &Vec<SSAOpd>) -> Option<SSAOpd> {
 mod test {
     use std::io::{BufWriter, Write};
     use depile::ir::instr::basic::Operand::Const;
-    use crate::analysis::const_prop::{check_vars_in_phi, ConstProp};
+    use crate::opt::const_prop::{check_vars_in_phi, ConstProp};
     use crate::analysis::phi::PhiForge;
     use crate::samples::{ALL_SAMPLES, get_sample_functions};
     use crate::ssa::SSAOpd;

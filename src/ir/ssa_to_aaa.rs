@@ -1,6 +1,6 @@
 use depile::ir::Instr;
 use crate::ir::panning::panning_function;
-use crate::analysis::ssa_to_aaa::helper::Substitutable;
+use crate::ir::ssa_to_aaa::helper::Substitutable;
 use crate::ssa::{Phi, SSAFunction, SSAFunctions, SSAOpd};
 
 pub struct SSATo3Addr { }
@@ -169,7 +169,7 @@ mod helper {
 mod test {
     use std::io::{ Write, BufWriter };
     use crate::analysis::phi::PhiForge;
-    use crate::analysis::ssa_to_aaa::SSATo3Addr;
+    use crate::ir::ssa_to_aaa::SSATo3Addr;
     use crate::samples::{ALL_SAMPLES, get_sample_functions, PRIME};
 
     #[test]

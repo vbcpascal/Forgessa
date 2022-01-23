@@ -3,7 +3,7 @@ use std::fmt::Display;
 use depile::ir::Instr;
 use depile::ir::instr::basic::Operand;
 use smallvec::alloc::fmt::Formatter;
-use crate::analysis::loop_invariant::helper::Substitutable;
+use crate::opt::loop_invariant::helper::Substitutable;
 use crate::analysis::natural_loop::NaturalLoop;
 use crate::ir::panning::panning_function;
 use crate::ir::insert_block::BlockInserter;
@@ -224,7 +224,7 @@ mod helper {
 mod test {
     use std::io::Write;
     use std::io::BufWriter;
-    use crate::analysis::loop_invariant::LoopInVariant;
+    use crate::opt::loop_invariant::LoopInVariant;
     use crate::analysis::phi::PhiForge;
     use crate::samples::{ALL_SAMPLES, COLLATZ, get_sample_functions};
 
