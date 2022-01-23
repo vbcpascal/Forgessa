@@ -5,7 +5,7 @@ use depile::ir::instr::basic::Operand;
 use smallvec::alloc::fmt::Formatter;
 use crate::analysis::loop_invariant::helper::Substitutable;
 use crate::analysis::natural_loop::NaturalLoop;
-use crate::analysis::panning::panning_function;
+use crate::ir::panning::panning_function;
 use crate::ir::insert_block::BlockInserter;
 use crate::ssa::{SSABlock, SSAFunction, SSAFunctions, SSAInstr, SSAOpd};
 

@@ -1,5 +1,5 @@
 use depile::ir::Instr;
-use crate::analysis::panning::panning_function;
+use crate::ir::panning::panning_function;
 use crate::analysis::ssa_to_aaa::helper::Substitutable;
 use crate::ssa::{Phi, SSAFunction, SSAFunctions, SSAOpd};
 

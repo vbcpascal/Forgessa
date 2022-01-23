@@ -1,6 +1,6 @@
 use depile::ir::Instr;
 use depile::ir::instr::Branching;
-use crate::analysis::panning::panning_function;
+use crate::ir::panning::panning_function;
 use crate::ssa::{Phi, SSABlock, SSAFunction, SSAInstr};
 
 pub struct BlockInserter {
