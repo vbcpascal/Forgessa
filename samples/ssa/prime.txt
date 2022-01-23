@@ -16,12 +16,12 @@
   instr 14: move 3 v$0
 
 Block #1:
-  instr 15: phi i$0 i$2
-  instr 16: move (18) i$1
+  instr 15: phi i$0 i$3
+  instr 16: move (15) i$1
   instr 17: phi j$-1 j$2
-  instr 18: move (16) j$0
+  instr 18: move (17) j$0
   instr 19: phi v$0 v$2
-  instr 20: move (18) v$1
+  instr 20: move (19) v$1
   instr 21: cmplt i$1 400
   instr 22: blbc (21) [12]
 
@@ -29,8 +29,8 @@ Block #2:
   instr 23: move 0 j$1
 
 Block #3:
-  instr 24: phi j$1 j$4
-  instr 25: move (29) j$2
+  instr 24: phi j$1 j$6
+  instr 25: move (24) j$2
   instr 26: cmplt j$2 i$1
   instr 27: blbc (26) [9]
 
@@ -62,13 +62,13 @@ Block #6:
   instr 48: blbc (47) [8]
 
 Block #7:
-  instr 49: move i$1 j$3
+  instr 49: move i$1 j$4
 
 Block #8:
-  instr 50: phi j$3 j$2 j$3
-  instr 51: move (57) j$3
-  instr 52: add j$3 1
-  instr 53: move (52) j$4
+  instr 50: phi j$3 j$2 j$4
+  instr 51: move (50) j$5
+  instr 52: add j$5 1
+  instr 53: move (52) j$6
   instr 54: br [3]
 
 Block #9:
@@ -86,7 +86,7 @@ Block #10:
 
 Block #11:
   instr 64: phi i$1 i$2
-  instr 65: move (69) i$2
+  instr 65: move (64) i$3
   instr 66: add v$1 2
   instr 67: move (66) v$2
   instr 68: br [1]

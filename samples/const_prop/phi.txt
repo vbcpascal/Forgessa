@@ -1,0 +1,40 @@
+Report of phi:
+  Function: 4
+  Number of constants propagated: 8
+
+(ENTRY) Function #0:
+#parameters = 0
+#local_vars = 0
+
+(ENTRY) Block #0:
+
+Block #1:
+  instr 4: nop
+  instr 5: nop
+  instr 6: cmpeq 1 1
+  instr 7: blbc (6) [3]
+
+Block #2:
+  instr 8: nop
+  instr 9: br [1]
+
+Block #3:
+  instr 10: nop
+  instr 11: cmple 2 0
+  instr 12: blbs (11) [5]
+
+Block #4:
+  instr 13: nop
+  instr 14: br [6]
+
+Block #5:
+  instr 15: nop
+
+Block #6:
+  instr 16: nop
+  instr 17: nop
+  instr 18: nop
+  instr 19: write 4
+  instr 20: ret
+
+
