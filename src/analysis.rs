@@ -5,4 +5,5 @@ pub mod converter;
 pub mod cfg;
 pub mod panning;
 pub mod params;
-mod const_prop;
+pub mod const_prop;
+pub mod natural_loop;
