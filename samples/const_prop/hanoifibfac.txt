@@ -5,13 +5,13 @@ Report of hanoifibfac:
   Function: 18
   Number of constants propagated: 0
 
-  Function: 43
+  Function: 41
   Number of constants propagated: 0
 
-  Function: 52
+  Function: 50
   Number of constants propagated: 0
 
-  Function: 74
+  Function: 73
   Number of constants propagated: 0
 
   Function: 88
@@ -75,11 +75,9 @@ Block #2:
   instr 37: store (35) (36)
 
 Block #3:
-  instr 38: phi x$-1 x$0
-  instr 39: move (38) x$0
-  instr 40: phi y$-1 y$0
-  instr 41: move (40) y$0
-  instr 42: ret
+  instr 38: x$0 <- phi x$-1 x$0 [1] [2]
+  instr 39: y$0 <- phi y$-1 y$0 [1] [2]
+  instr 40: ret
 
 
 Function #2:
@@ -87,15 +85,15 @@ Function #2:
 #local_vars = 0
 
 (ENTRY) Block #0:
-  instr 43: write from$0
-  instr 44: write to$0
-  instr 45: wrl
-  instr 46: add count_base#32728 GP
-  instr 47: load (46)
-  instr 48: add (47) 1
-  instr 49: add count_base#32728 GP
-  instr 50: store (48) (49)
-  instr 51: ret
+  instr 41: write from$0
+  instr 42: write to$0
+  instr 43: wrl
+  instr 44: add count_base#32728 GP
+  instr 45: load (44)
+  instr 46: add (45) 1
+  instr 47: add count_base#32728 GP
+  instr 48: store (46) (47)
+  instr 49: ret
 
 
 Function #3:
@@ -103,34 +101,34 @@ Function #3:
 #local_vars = 0
 
 (ENTRY) Block #0:
-  instr 52: cmpeq height$0 1
-  instr 53: blbc (52) [2]
+  instr 50: cmpeq height$0 1
+  instr 51: blbc (50) [2]
 
 Block #1:
-  instr 54: param from$0
-  instr 55: param to$0
-  instr 56: call [2]
-  instr 57: br [3]
+  instr 52: param from$0
+  instr 53: param to$0
+  instr 54: call [2]
+  instr 55: br [3]
 
 Block #2:
-  instr 58: param from$0
-  instr 59: param to$0
-  instr 60: param by$0
-  instr 61: sub height$0 1
-  instr 62: param (61)
-  instr 63: call [3]
-  instr 64: param from$0
-  instr 65: param to$0
-  instr 66: call [2]
-  instr 67: param by$0
-  instr 68: param from$0
-  instr 69: param to$0
-  instr 70: sub height$0 1
-  instr 71: param (70)
-  instr 72: call [3]
+  instr 56: param from$0
+  instr 57: param to$0
+  instr 58: param by$0
+  instr 59: sub height$0 1
+  instr 60: param (59)
+  instr 61: call [3]
+  instr 62: param from$0
+  instr 63: param to$0
+  instr 64: call [2]
+  instr 65: param by$0
+  instr 66: param from$0
+  instr 67: param to$0
+  instr 68: sub height$0 1
+  instr 69: param (68)
+  instr 70: call [3]
 
 Block #3:
-  instr 73: ret
+  instr 71: ret
 
 
 Function #4:
@@ -138,19 +136,19 @@ Function #4:
 #local_vars = 0
 
 (ENTRY) Block #0:
-  instr 74: add count_base#32728 GP
-  instr 75: store 0 (74)
-  instr 76: param 1
-  instr 77: param 2
-  instr 78: param 3
-  instr 79: param height$0
-  instr 80: call [3]
-  instr 81: wrl
-  instr 82: add count_base#32728 GP
-  instr 83: load (82)
-  instr 84: write (83)
-  instr 85: wrl
-  instr 86: ret
+  instr 73: add count_base#32728 GP
+  instr 74: store 0 (73)
+  instr 75: param 1
+  instr 76: param 2
+  instr 77: param 3
+  instr 78: param height$0
+  instr 79: call [3]
+  instr 80: wrl
+  instr 81: add count_base#32728 GP
+  instr 82: load (81)
+  instr 83: write (82)
+  instr 84: wrl
+  instr 85: ret
 
 
 (ENTRY) Function #5:
