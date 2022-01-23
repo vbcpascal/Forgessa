@@ -92,7 +92,8 @@ pub fn panning_function<K: InstrExt>(func: &Function<K>, first_index: usize) -> 
     let mut index = first_index;
     for block in func.blocks.iter() {
         let i = block.first_index;
-        blocks.push(block.pan(&|x| x + index - i));
+        let block_new = block.pan(&|x| x + index - i);
+        blocks.push(block_new);
         index += block.instructions.len();
     }
     (Function {

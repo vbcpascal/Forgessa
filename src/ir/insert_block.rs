@@ -12,7 +12,7 @@ impl BlockInserter {
 
     pub fn run(func: &mut SSAFunction, insert_idx: usize) {
         BlockInserter::new(insert_idx).modify_function(func);
-        panning_function(func, func.blocks[0].first_index);
+        *func = panning_function(func, func.blocks[0].first_index).0;
     }
 
     pub fn modify_function(&self, func:&mut SSAFunction) {

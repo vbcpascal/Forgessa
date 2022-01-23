@@ -41,7 +41,7 @@ impl NaturalLoop {
         let mut loops: Vec<NaturalLoop> = Vec::new();
         for (from, tos) in &cfg.edges {
             for to in tos {
-                if from > to { loops.push(NaturalLoop::from(&cfg, *from, *to)) }
+                if from >= to { loops.push(NaturalLoop::from(&cfg, *from, *to)) }
             }
         }
         loops
