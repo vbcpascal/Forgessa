@@ -264,7 +264,10 @@ impl PhiForge {
             // Step 4: recurse on children.
             for child in td_tree.get(&block_idx).unwrap() {
                 let mut rs = rename_stack.clone();
-                visit(forge, *child, func, &mut rename_stack.clone(), td_tree);
+                visit(forge, *child, func, &mut rs, td_tree);
+                for (var, cell) in &mut rename_stack.var_stacks {
+                    cell.counter = rs.var_stacks.get(var).unwrap().counter;
+                }
             }
         }
         func
