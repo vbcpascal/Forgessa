@@ -156,7 +156,7 @@ impl<K: InstrExt> Pannable for Instr<K>
 
 #[cfg(test)]
 mod test {
-    use crate::analysis::converter::block_convert;
+    use crate::ir::converter::block_convert;
     use crate::analysis::panning::PannableBlock;
     use crate::samples::{get_sample_functions, PRIME};
 

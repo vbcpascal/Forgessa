@@ -7,7 +7,7 @@ use depile::ir::instr::{BranchKind, InstrExt};
 use depile::ir::instr::stripped::Functions;
 use crate::to_isize;
 use crate::analysis::cfg::SimpleCfg;
-use crate::analysis::converter::block_convert;
+use crate::ir::converter::block_convert;
 use crate::analysis::panning::{Pannable, PannableBlock};
 use crate::analysis::dom_frontier::compute_df_cfg;
 use crate::analysis::domtree::{BlockMap, BlockSet, compute_domtree, compute_idom, ImmDomRel, root_of_domtree};

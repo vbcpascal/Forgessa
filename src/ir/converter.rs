@@ -17,19 +17,19 @@ pub fn block_convert(block: &Block<Kind>) -> SSABlock {
     SSABlock { first_index: block.first_index, instructions: instrs.into_boxed_slice() }
 }
 
-// pub fn block_revert(block: &SSABlock) -> Block<Kind> {
-//     let mut instrs: Vec<Instr<Kind>> = Vec::new();
-//     for instr in block.instructions.iter() {
-//         instrs.push(instr.clone().map_kind(
-//             revert::map_operand,
-//             revert::map_branching,
-//             revert::map_inter_proc,
-//             std::convert::identity,
-//             |_| panic!(""),
-//         ))
-//     }
-//     Block { first_index: block.first_index, instructions: instrs.into_boxed_slice() }
-// }
+pub fn block_revert(block: &SSABlock) -> Block<Kind> {
+    let mut instrs = Vec::new();
+    for instr in block.instructions.iter() {
+        instrs.push(instr.clone().map_kind(
+            revert::map_operand,
+            revert::map_branching,
+            revert::map_inter_proc,
+            std::convert::identity,
+            |_| panic!(""),
+        ))
+    }
+    Block { first_index: block.first_index, instructions: instrs.into_boxed_slice() }
+}
 
 ///
 mod convert {
@@ -63,43 +63,46 @@ mod convert {
         }
     }
 }
-//
-// mod revert {
-//     use depile::ir::instr::{Branching, BranchKind};
-//     use depile::ir::instr::stripped::{InterProc, Operand};
-//     use crate::ssa::{SSAInterProc, SSAOpd};
-//
-//     pub fn map_operand(opd: SSAOpd) -> Operand {
-//         SSAOpd::Operand(opd)
-//     }
-//
-//     pub fn map_branch_kind(brk: BranchKind<Operand>) -> BranchKind<SSAOpd> {
-//         match brk {
-//             BranchKind::Unconditional => BranchKind::Unconditional,
-//             BranchKind::If(opd) => BranchKind::If(map_operand(opd)),
-//             BranchKind::Unless(opd) => BranchKind::Unless(map_operand(opd)),
-//         }
-//     }
-//
-//     pub fn map_branching(branching: Branching<Operand>) -> Branching<SSAOpd> {
-//         Branching {
-//             method: map_branch_kind(branching.method),
-//             dest: branching.dest,
-//         }
-//     }
-//
-//     pub fn map_inter_proc(inter: InterProc) -> SSAInterProc {
-//         match inter {
-//             InterProc::PushParam(opd) => SSAInterProc::PushParam(map_operand(opd)),
-//             InterProc::Call {dest} => SSAInterProc::Call {dest}
-//         }
-//     }
-// }
+
+mod revert {
+    use depile::ir::instr::{Branching, BranchKind};
+    use depile::ir::instr::stripped::{InterProc, Operand};
+    use crate::ssa::{SSAInterProc, SSAOpd};
+
+    pub fn map_operand(opd: SSAOpd) -> Operand {
+        match opd {
+            SSAOpd::Operand(opd) => opd,
+            _ => panic!(""),
+        }
+    }
+
+    pub fn map_branch_kind(brk: BranchKind<SSAOpd>) -> BranchKind<Operand> {
+        match brk {
+            BranchKind::Unconditional => BranchKind::Unconditional,
+            BranchKind::If(opd) => BranchKind::If(map_operand(opd)),
+            BranchKind::Unless(opd) => BranchKind::Unless(map_operand(opd)),
+        }
+    }
+
+    pub fn map_branching(branching: Branching<SSAOpd>) -> Branching<Operand> {
+        Branching {
+            method: map_branch_kind(branching.method),
+            dest: branching.dest,
+        }
+    }
+
+    pub fn map_inter_proc(inter: SSAInterProc) -> InterProc {
+        match inter {
+            SSAInterProc::PushParam(opd) => InterProc::PushParam(map_operand(opd)),
+            SSAInterProc::Call {dest} => InterProc::Call {dest}
+        }
+    }
+}
 
 #[cfg(test)]
 mod test {
     use depile::ir::Function;
-    use crate::analysis::converter::block_convert;
+    use crate::ir::converter::block_convert;
     use crate::samples::{get_sample_functions, PRIME};
 
     #[test]
