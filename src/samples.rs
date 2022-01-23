@@ -12,7 +12,7 @@ macro_rules! count {
 macro_rules! include_samples {
     ($($name: ident),+ $(,)?) => {
         $(
-            pub const $name: &str = include_str!(concat!("../dependencies/depile/src/samples/", stringify!($name), ".txt"));
+            pub const $name: &str = include_str!(concat!("../samples/3-addr/", stringify!($name), ".txt"));
         )+
         pub const ALL_SAMPLES: [&str; count!($($name),+)] = [$($name),+];
 
@@ -34,6 +34,8 @@ include_samples! {
     SIEVE,
     SORT,
     STRUCT,
+
+    PHI,
 }
 
 pub fn get_sample_functions(str: &str) -> Functions {
