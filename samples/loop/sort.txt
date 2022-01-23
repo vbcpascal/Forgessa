@@ -1,0 +1,188 @@
+Report of sort:
+  Function: 4
+  Number of statement hoisted: 24
+  9: add array_base#-104 FP
+  23: add array_base#-104 FP
+  44: add array_base#-104 FP
+  47: mul i$7 8
+  49: add array_base#-104 FP
+  51: add (41) (41)
+  57: mul i$7 8
+  59: add array_base#-104 FP
+  61: add (44) (44)
+  65: mul i$7 8
+  67: add array_base#-104 FP
+  69: add (47) (47)
+  72: add array_base#-104 FP
+  78: add array_base#-104 FP
+  39: add array_base#-104 FP
+  42: add array_base#-104 FP
+  44: add (34) (34)
+  47: add array_base#-104 FP
+  49: add (36) (36)
+  52: add array_base#-104 FP
+  54: add (38) (38)
+  56: add array_base#-104 FP
+  58: add array_base#-104 FP
+  103: add array_base#-104 FP
+
+(ENTRY) Function #0:
+#parameters = 0
+#local_vars = 0
+
+(ENTRY) Block #0:
+  instr 4: move 0 i$0
+
+Block #1:
+  instr 5: add array_base#-104 FP
+
+Block #2:
+  instr 6: i$1 <- phi i$0 i$2 [0] [3]
+  instr 7: cmplt i$1 10
+  instr 8: blbc (7) [4]
+
+Block #3:
+  instr 9: mul i$1 8
+  instr 10: nop
+  instr 11: add (5) (9)
+  instr 12: sub 10 i$1
+  instr 13: sub (12) 1
+  instr 14: store (13) (11)
+  instr 15: add i$1 1
+  instr 16: move (15) i$2
+  instr 17: br [2]
+
+Block #4:
+
+Block #5:
+  instr 18: move 0 i$3
+  instr 19: add array_base#-104 FP
+
+Block #6:
+  instr 20: i$4 <- phi i$3 i$5 [4] [7]
+  instr 21: cmplt i$4 10
+  instr 22: blbc (21) [9]
+
+Block #7:
+
+Block #8:
+  instr 23: mul i$4 8
+  instr 24: nop
+  instr 25: add (19) (23)
+  instr 26: load (25)
+  instr 27: write (26)
+  instr 28: add i$4 1
+  instr 29: move (28) i$5
+  instr 30: br [6]
+
+Block #9:
+  instr 31: wrl
+  instr 32: move 0 i$6
+
+Block #10:
+  instr 33: add array_base#-104 FP
+  instr 34: add array_base#-104 FP
+  instr 35: add (34) (34)
+  instr 36: add array_base#-104 FP
+  instr 37: add (36) (36)
+  instr 38: add array_base#-104 FP
+  instr 39: add (38) (38)
+  instr 40: add array_base#-104 FP
+  instr 41: add array_base#-104 FP
+
+Block #11:
+  instr 42: i$7 <- phi i$6 i$8 [9] [18]
+  instr 43: j$0 <- phi j$-1 j$2 [9] [18]
+  instr 44: temp$0 <- phi temp$-1 temp$1 [9] [18]
+  instr 45: cmplt i$7 10
+  instr 46: blbc (45) [19]
+
+Block #12:
+  instr 47: move 0 j$1
+  instr 48: nop
+  instr 49: mul i$7 8
+  instr 50: nop
+  instr 51: nop
+  instr 52: mul i$7 8
+  instr 53: nop
+  instr 54: nop
+  instr 55: mul i$7 8
+  instr 56: nop
+  instr 57: nop
+  instr 58: nop
+  instr 59: nop
+
+Block #13:
+  instr 60: j$2 <- phi j$1 j$3 [12] [17]
+  instr 61: temp$1 <- phi temp$0 temp$3 [12] [17]
+  instr 62: cmplt j$2 i$7
+  instr 63: blbc (62) [18]
+
+Block #14:
+  instr 64: mul j$2 8
+  instr 65: nop
+  instr 66: add (41) (64)
+  instr 67: nop
+  instr 68: nop
+  instr 69: nop
+  instr 70: load (66)
+  instr 71: load (69)
+  instr 72: cmple (70) (71)
+  instr 73: blbs (72) [17]
+
+Block #15:
+
+Block #16:
+  instr 74: nop
+  instr 75: nop
+  instr 76: nop
+  instr 77: load (76)
+  instr 78: move (77) temp$2
+  instr 79: nop
+  instr 80: nop
+  instr 81: nop
+  instr 82: mul j$2 8
+  instr 83: nop
+  instr 84: add (41) (82)
+  instr 85: load (84)
+  instr 86: store (85) (41)
+  instr 87: mul j$2 8
+  instr 88: nop
+  instr 89: add (41) (87)
+  instr 90: store temp$2 (89)
+
+Block #17:
+  instr 91: temp$3 <- phi temp$1 temp$2 [14] [15]
+  instr 92: add j$2 1
+  instr 93: move (92) j$3
+  instr 94: br [13]
+
+Block #18:
+  instr 95: add i$7 1
+  instr 96: move (95) i$8
+  instr 97: br [11]
+
+Block #19:
+  instr 98: move 0 i$9
+  instr 99: add array_base#-104 FP
+
+Block #20:
+  instr 100: i$10 <- phi i$9 i$11 [19] [21]
+  instr 101: cmplt i$10 10
+  instr 102: blbc (101) [22]
+
+Block #21:
+  instr 103: mul i$10 8
+  instr 104: nop
+  instr 105: add (99) (103)
+  instr 106: load (105)
+  instr 107: write (106)
+  instr 108: add i$10 1
+  instr 109: move (108) i$11
+  instr 110: br [20]
+
+Block #22:
+  instr 111: wrl
+  instr 112: ret
+
+

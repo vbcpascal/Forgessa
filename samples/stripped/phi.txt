@@ -3,30 +3,23 @@
 #local_vars = 3
 
 (ENTRY) Block #0:
+  instr 4: move 2 a#-8
+  instr 5: move 1 b#-16
 
 Block #1:
-  instr 4: cmpeq 1 1
-  instr 5: blbc (4) [3]
+  instr 6: cmple a#-8 b#-16
+  instr 7: blbs (6) [3]
 
 Block #2:
-  instr 6: move 1 x#-8
-  instr 7: br [1]
+  instr 8: mul 4 a#-8
+  instr 9: add (8) a#-8
+  instr 10: move (9) c#-24
+  instr 11: add b#-16 1
+  instr 12: move (11) b#-16
+  instr 13: br [1]
 
 Block #3:
-  instr 8: move 2 a#-16
-  instr 9: cmple a#-16 0
-  instr 10: blbs (9) [5]
-
-Block #4:
-  instr 11: move 4 a#-16
-  instr 12: br [6]
-
-Block #5:
-  instr 13: move 4 a#-16
-
-Block #6:
-  instr 14: move a#-16 b#-24
-  instr 15: write b#-24
-  instr 16: ret
+  instr 14: write b#-16
+  instr 15: ret
 
 

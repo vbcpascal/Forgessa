@@ -1,0 +1,204 @@
+Report of collatz:
+  Function: 4
+  Number of statement hoisted: 39
+  18: add j_base#32752 GP
+  23: add j_base#32752 GP
+  29: add j_base#32752 GP
+  32: add j_base#32752 GP
+  36: add j_base#32752 GP
+  42: add j_base#32752 GP
+  45: add k_base#32736 GP
+  49: add k_base#32736 GP
+  53: add j_base#32752 GP
+  57: add j_base#32752 GP
+  60: add k_base#32736 GP
+  64: add k_base#32736 GP
+  8: add max_base#32728 GP
+  13: add k_base#32736 GP
+  15: store 0 (9)
+  17: add i_base#32760 GP
+  20: add j_base#32752 GP
+  23: add j_base#32752 GP
+  25: add j_base#32752 GP
+  27: add j_base#32752 GP
+  29: add j_base#32752 GP
+  31: add j_base#32752 GP
+  33: add j_base#32752 GP
+  35: add k_base#32736 GP
+  37: add k_base#32736 GP
+  39: add j_base#32752 GP
+  41: add j_base#32752 GP
+  43: add k_base#32736 GP
+  45: add k_base#32736 GP
+  85: add k_base#32736 GP
+  88: add max_base#32728 GP
+  93: add k_base#32736 GP
+  96: add max_base#32728 GP
+  99: add i_base#32760 GP
+  102: add maxi_base#32744 GP
+  105: add max_base#32728 GP
+  110: add maxi_base#32744 GP
+  115: add i_base#32760 GP
+  119: add i_base#32760 GP
+
+(ENTRY) Function #0:
+#parameters = 0
+#local_vars = 0
+
+(ENTRY) Block #0:
+  instr 4: add max_base#32728 GP
+  instr 5: store 0 (4)
+  instr 6: add i_base#32760 GP
+  instr 7: store 5 (6)
+
+Block #1:
+  instr 8: add max_base#32728 GP
+  instr 9: add k_base#32736 GP
+  instr 10: store 0 (9)
+  instr 11: add i_base#32760 GP
+  instr 12: add j_base#32752 GP
+  instr 13: add j_base#32752 GP
+  instr 14: add j_base#32752 GP
+  instr 15: add j_base#32752 GP
+  instr 16: add j_base#32752 GP
+  instr 17: add j_base#32752 GP
+  instr 18: add j_base#32752 GP
+  instr 19: add k_base#32736 GP
+  instr 20: add k_base#32736 GP
+  instr 21: add j_base#32752 GP
+  instr 22: add j_base#32752 GP
+  instr 23: add k_base#32736 GP
+  instr 24: add k_base#32736 GP
+  instr 25: add k_base#32736 GP
+  instr 26: add max_base#32728 GP
+  instr 27: add k_base#32736 GP
+  instr 28: add max_base#32728 GP
+  instr 29: add i_base#32760 GP
+  instr 30: add maxi_base#32744 GP
+  instr 31: add max_base#32728 GP
+  instr 32: add maxi_base#32744 GP
+  instr 33: add i_base#32760 GP
+  instr 34: add i_base#32760 GP
+
+Block #2:
+  instr 35: nop
+  instr 36: load (35)
+  instr 37: cmplt (36) 270
+  instr 38: blbc (37) [13]
+
+Block #3:
+  instr 39: nop
+  instr 40: nop
+  instr 41: nop
+  instr 42: load (41)
+  instr 43: nop
+  instr 44: store (42) (34)
+
+Block #4:
+  instr 45: nop
+  instr 46: nop
+  instr 47: nop
+  instr 48: nop
+  instr 49: nop
+  instr 50: nop
+  instr 51: nop
+  instr 52: nop
+  instr 53: nop
+  instr 54: nop
+  instr 55: nop
+  instr 56: nop
+
+Block #5:
+  instr 57: nop
+  instr 58: load (57)
+  instr 59: cmpeq (58) 4
+  instr 60: blbs (59) [10]
+
+Block #6:
+  instr 61: nop
+  instr 62: load (61)
+  instr 63: mod (62) 2
+  instr 64: cmpeq (63) 1
+  instr 65: blbc (64) [8]
+
+Block #7:
+  instr 66: nop
+  instr 67: load (66)
+  instr 68: nop
+  instr 69: load (68)
+  instr 70: add (67) (69)
+  instr 71: nop
+  instr 72: load (71)
+  instr 73: add (70) (72)
+  instr 74: add (73) 1
+  instr 75: div (74) 2
+  instr 76: nop
+  instr 77: store (75) (34)
+  instr 78: nop
+  instr 79: load (78)
+  instr 80: add (79) 2
+  instr 81: nop
+  instr 82: store (80) (34)
+  instr 83: br [9]
+
+Block #8:
+  instr 84: nop
+  instr 85: load (84)
+  instr 86: div (85) 2
+  instr 87: nop
+  instr 88: store (86) (34)
+  instr 89: nop
+  instr 90: load (89)
+  instr 91: add (90) 1
+  instr 92: nop
+  instr 93: store (91) (34)
+
+Block #9:
+  instr 94: br [5]
+
+Block #10:
+  instr 95: nop
+  instr 96: load (95)
+  instr 97: nop
+  instr 98: load (97)
+  instr 99: cmple (96) (98)
+  instr 100: blbs (99) [12]
+
+Block #11:
+  instr 101: nop
+  instr 102: load (101)
+  instr 103: nop
+  instr 104: store (102) (34)
+  instr 105: nop
+  instr 106: load (105)
+  instr 107: nop
+  instr 108: store (106) (34)
+  instr 109: nop
+  instr 110: load (109)
+  instr 111: add (110) 2
+  instr 112: write (111)
+  instr 113: nop
+  instr 114: load (113)
+  instr 115: write (114)
+  instr 116: wrl
+
+Block #12:
+  instr 117: nop
+  instr 118: load (117)
+  instr 119: add (118) 1
+  instr 120: nop
+  instr 121: store (119) (34)
+  instr 122: br [2]
+
+Block #13:
+  instr 123: add max_base#32728 GP
+  instr 124: load (123)
+  instr 125: add (124) 2
+  instr 126: write (125)
+  instr 127: add maxi_base#32744 GP
+  instr 128: load (127)
+  instr 129: write (128)
+  instr 130: wrl
+  instr 131: ret
+
+

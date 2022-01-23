@@ -1,0 +1,116 @@
+Report of prime:
+  Function: 4
+  Number of statement hoisted: 8
+  25: add prime_base#29568 GP
+  29: add prime_base#29568 GP
+  37: sub i$1 1
+  42: add prime_base#29568 GP
+  21: add prime_base#29568 GP
+  23: add prime_base#29568 GP
+  26: add prime_base#29568 GP
+  60: add prime_base#29568 GP
+
+(ENTRY) Function #0:
+#parameters = 0
+#local_vars = 0
+
+(ENTRY) Block #0:
+  instr 4: mul 0 8
+  instr 5: add prime_base#29568 GP
+  instr 6: add (5) (4)
+  instr 7: store 2 (6)
+  instr 8: mul 0 8
+  instr 9: add prime_base#29568 GP
+  instr 10: add (9) (8)
+  instr 11: load (10)
+  instr 12: write (11)
+  instr 13: move 1 i$0
+  instr 14: move 3 v$0
+
+Block #1:
+  instr 15: add prime_base#29568 GP
+  instr 16: add prime_base#29568 GP
+  instr 17: add prime_base#29568 GP
+  instr 18: add prime_base#29568 GP
+
+Block #2:
+  instr 19: i$1 <- phi i$0 i$3 [0] [13]
+  instr 20: j$0 <- phi j$-1 j$2 [0] [13]
+  instr 21: v$1 <- phi v$0 v$2 [0] [13]
+  instr 22: cmplt i$1 400
+  instr 23: blbc (22) [14]
+
+Block #3:
+  instr 24: move 0 j$1
+
+Block #4:
+  instr 25: nop
+  instr 26: nop
+  instr 27: sub i$1 1
+  instr 28: nop
+
+Block #5:
+  instr 29: j$2 <- phi j$1 j$6 [3] [10]
+  instr 30: cmplt j$2 i$1
+  instr 31: blbc (30) [11]
+
+Block #6:
+  instr 32: mul j$2 8
+  instr 33: nop
+  instr 34: add (18) (32)
+  instr 35: mul j$2 8
+  instr 36: nop
+  instr 37: add (18) (35)
+  instr 38: load (34)
+  instr 39: load (37)
+  instr 40: mul (38) (39)
+  instr 41: cmple (40) v$1
+  instr 42: blbs (41) [8]
+
+Block #7:
+  instr 43: nop
+  instr 44: move (18) j$3
+  instr 45: br [10]
+
+Block #8:
+  instr 46: mul j$2 8
+  instr 47: nop
+  instr 48: add (18) (46)
+  instr 49: load (48)
+  instr 50: mod v$1 (49)
+  instr 51: cmpeq (50) 0
+  instr 52: blbc (51) [10]
+
+Block #9:
+  instr 53: move i$1 j$4
+
+Block #10:
+  instr 54: j$5 <- phi j$3 j$2 j$4 [7] [8] [9]
+  instr 55: add j$5 1
+  instr 56: move (55) j$6
+  instr 57: br [5]
+
+Block #11:
+  instr 58: cmpeq j$2 i$1
+  instr 59: blbc (58) [13]
+
+Block #12:
+  instr 60: mul i$1 8
+  instr 61: nop
+  instr 62: add (18) (60)
+  instr 63: store v$1 (62)
+  instr 64: write v$1
+  instr 65: add i$1 1
+  instr 66: move (65) i$2
+
+Block #13:
+  instr 67: i$3 <- phi i$1 i$2 [11] [12]
+  instr 68: add v$1 2
+  instr 69: move (68) v$2
+  instr 70: br [2]
+
+Block #14:
+  instr 71: wrl
+  instr 72: ret
+
+

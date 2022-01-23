@@ -1,0 +1,122 @@
+Report of sieve:
+  Function: 4
+  Number of statement hoisted: 5
+  17: add is_prime_base#-8016 FP
+  42: add is_prime_base#-8016 FP
+  30: add is_prime_base#-8016 FP
+  37: add is_prime_base#-8016 FP
+  60: add is_prime_base#-8016 FP
+
+(ENTRY) Function #0:
+#parameters = 0
+#local_vars = 0
+
+(ENTRY) Block #0:
+  instr 4: mul 0 8
+  instr 5: add is_prime_base#-8016 FP
+  instr 6: add (5) (4)
+  instr 7: store 0 (6)
+  instr 8: mul 1 8
+  instr 9: add is_prime_base#-8016 FP
+  instr 10: add (9) (8)
+  instr 11: store 0 (10)
+  instr 12: move 2 i$0
+
+Block #1:
+  instr 13: add is_prime_base#-8016 FP
+
+Block #2:
+  instr 14: i$1 <- phi i$0 i$2 [0] [3]
+  instr 15: cmplt i$1 1000
+  instr 16: blbc (15) [4]
+
+Block #3:
+  instr 17: mul i$1 8
+  instr 18: nop
+  instr 19: add (13) (17)
+  instr 20: store 1 (19)
+  instr 21: add i$1 1
+  instr 22: move (21) i$2
+  instr 23: br [2]
+
+Block #4:
+
+Block #5:
+  instr 24: move 2 i$3
+  instr 25: add is_prime_base#-8016 FP
+  instr 26: add is_prime_base#-8016 FP
+
+Block #6:
+  instr 27: i$4 <- phi i$3 i$5 [4] [13]
+  instr 28: j$0 <- phi j$-1 j$4 [4] [13]
+  instr 29: cmplt i$4 1000
+  instr 30: blbc (29) [14]
+
+Block #7:
+  instr 31: mul i$4 8
+  instr 32: nop
+  instr 33: add (26) (31)
+  instr 34: load (33)
+  instr 35: cmpeq (34) 0
+  instr 36: blbs (35) [13]
+
+Block #8:
+
+Block #9:
+  instr 37: move 2 j$1
+  instr 38: nop
+
+Block #10:
+  instr 39: j$2 <- phi j$1 j$3 [8] [11]
+  instr 40: mul i$4 j$2
+  instr 41: cmplt (40) 1000
+  instr 42: blbc (41) [13]
+
+Block #11:
+
+Block #12:
+  instr 43: mul i$4 j$2
+  instr 44: mul (43) 8
+  instr 45: nop
+  instr 46: add (26) (44)
+  instr 47: store 0 (46)
+  instr 48: add j$2 1
+  instr 49: move (48) j$3
+  instr 50: br [10]
+
+Block #13:
+  instr 51: j$4 <- phi j$0 j$2 [7] [10]
+  instr 52: add i$4 1
+  instr 53: move (52) i$5
+  instr 54: br [6]
+
+Block #14:
+  instr 55: move 2 i$6
+  instr 56: add is_prime_base#-8016 FP
+
+Block #15:
+  instr 57: i$7 <- phi i$6 i$8 [14] [18]
+  instr 58: cmplt i$7 1000
+  instr 59: blbc (58) [19]
+
+Block #16:
+  instr 60: mul i$7 8
+  instr 61: nop
+  instr 62: add (56) (60)
+  instr 63: load (62)
+  instr 64: cmpeq (63) 0
+  instr 65: blbs (64) [18]
+
+Block #17:
+  instr 66: write i$7
+
+Block #18:
+  instr 67: add i$7 1
+  instr 68: move (67) i$8
+  instr 69: br [15]
+
+Block #19:
+  instr 70: wrl
+  instr 71: ret
+
+

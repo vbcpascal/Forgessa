@@ -7,19 +7,15 @@
 
 void main()
 {
-  long x, a, b;
-
-  while (1 == 1) {
-    x = 1;
-  }
+  long a, b, c;
 
   a = 2;
-  if (a > 0) {
-    a = 4;
-  } else {
-    a = 4;
+  b = 1;
+
+  while (a > b) {
+    c = 4 * a + a;
+    b = b + 1;
   }
 
-  b = a;
   WriteLong(b);
 }

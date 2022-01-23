@@ -1,0 +1,78 @@
+Report of gcd:
+  Function: 3
+  Number of statement hoisted: 0
+
+  Function: 20
+  Number of statement hoisted: 0
+
+Function #0:
+#parameters = 2
+#local_vars = 0
+
+(ENTRY) Block #0:
+
+Block #1:
+
+Block #2:
+  instr 3: a$1 <- phi a$0 a$2 [0] [3]
+  instr 4: b$1 <- phi b$0 b$2 [0] [3]
+  instr 5: c$0 <- phi c$-1 c$1 [0] [3]
+  instr 6: cmpeq b$1 0
+  instr 7: blbs (6) [4]
+
+Block #3:
+  instr 8: move a$1 c$1
+  instr 9: move b$1 a$2
+  instr 10: mod c$1 b$1
+  instr 11: move (10) b$2
+  instr 12: write c$1
+  instr 13: write a$2
+  instr 14: write b$2
+  instr 15: wrl
+  instr 16: br [2]
+
+Block #4:
+  instr 17: add res_base#32744 GP
+  instr 18: store a$1 (17)
+  instr 19: ret
+
+
+(ENTRY) Function #1:
+#parameters = 0
+#local_vars = 0
+
+(ENTRY) Block #0:
+  instr 20: add a_base#32760 GP
+  instr 21: store 25733 (20)
+  instr 22: add b_base#32752 GP
+  instr 23: store 48611 (22)
+  instr 24: add a_base#32760 GP
+  instr 25: load (24)
+  instr 26: param (25)
+  instr 27: add b_base#32752 GP
+  instr 28: load (27)
+  instr 29: param (28)
+  instr 30: call [0]
+  instr 31: add res_base#32744 GP
+  instr 32: load (31)
+  instr 33: write (32)
+  instr 34: wrl
+  instr 35: wrl
+  instr 36: add a_base#32760 GP
+  instr 37: store 7485671 (36)
+  instr 38: add b_base#32752 GP
+  instr 39: store 7480189 (38)
+  instr 40: add a_base#32760 GP
+  instr 41: load (40)
+  instr 42: param (41)
+  instr 43: add b_base#32752 GP
+  instr 44: load (43)
+  instr 45: param (44)
+  instr 46: call [0]
+  instr 47: add res_base#32744 GP
+  instr 48: load (47)
+  instr 49: write (48)
+  instr 50: wrl
+  instr 51: ret
+
+

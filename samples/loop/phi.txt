@@ -1,0 +1,37 @@
+Report of phi:
+  Function: 4
+  Number of statement hoisted: 2
+  10: mul 4 a$0
+  12: add (6) a$0
+
+(ENTRY) Function #0:
+#parameters = 0
+#local_vars = 0
+
+(ENTRY) Block #0:
+  instr 4: move 2 a$0
+  instr 5: move 1 b$0
+
+Block #1:
+  instr 6: mul 4 a$0
+  instr 7: add (6) a$0
+
+Block #2:
+  instr 8: b$1 <- phi b$0 b$2 [0] [3]
+  instr 9: c$0 <- phi c$-1 c$1 [0] [3]
+  instr 10: cmple a$0 b$1
+  instr 11: blbs (10) [4]
+
+Block #3:
+  instr 12: nop
+  instr 13: nop
+  instr 14: move (7) c$1
+  instr 15: add b$1 1
+  instr 16: move (15) b$2
+  instr 17: br [2]
+
+Block #4:
+  instr 18: write b$1
+  instr 19: ret
+
+
