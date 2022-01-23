@@ -1,4 +1,3 @@
-use std::collections::BTreeMap;
 use depile::ir::instr::HasOperand;
 use depile::ir::instr::stripped::{Function, Operand};
 use smallvec::SmallVec;
@@ -14,7 +13,7 @@ pub fn scan_parameters(func: &Function) -> Vec<String> {
             let opds: SmallVec<[&Operand;2]> = instr.get_operands();
             for opd in opds {
                 match opd {
-                    Operand::Var(var, x) => if (*x > 0) {
+                    Operand::Var(var, x) => if *x > 0 {
                         *params.get_mut(usize::try_from(x / 8 - 2).unwrap()).unwrap() = var.clone();
                     }
                     _ => ()

@@ -1,6 +1,6 @@
 use depile::ir::{Block, Instr};
 use depile::ir::instr::{Branching, BranchKind, InstrExt};
-use depile::ir::instr::stripped::{InterProc, Marker, Operand};
+use depile::ir::instr::stripped::{Marker, Operand};
 use crate::ssa::{Phi, SSAInterProc, SSAOpd};
 
 pub trait PannableBlock {
@@ -15,7 +15,7 @@ impl<K: InstrExt> PannableBlock for Block<K>
           K::Extra: Pannable {
     fn panning_forward_fill(&self, offset: usize) -> Self {
         let mut instrs: Vec<Instr<K>> = Vec::new();
-        for i in 0..offset { instrs.push(Instr::Nop); }
+        for _ in 0..offset { instrs.push(Instr::Nop); }
         for instr in self.instructions.iter() {
             instrs.push(instr.pan(&|x| x + offset));
         }
@@ -83,7 +83,7 @@ impl<K: InstrExt> Pannable for Block<K>
 }
 
 impl Pannable for Marker {
-    fn pan(&self, f: &impl Fn(usize) -> usize) -> Self { self.clone() }
+    fn pan(&self, _: &impl Fn(usize) -> usize) -> Self { self.clone() }
 }
 
 impl Pannable for SSAInterProc {
@@ -96,7 +96,11 @@ impl Pannable for SSAInterProc {
 }
 
 impl Pannable for Phi {
-    fn pan(&self, f: &impl Fn(usize) -> usize) -> Self { self.clone() }
+    fn pan(&self, f: &impl Fn(usize) -> usize) -> Self {
+        let mut res: Vec<SSAOpd> = Vec::new();
+        for opd in &self.vars { res.push(opd.pan(f)); }
+        Phi { vars: res }
+    }
 }
 
 impl<K: InstrExt> Pannable for Instr<K>

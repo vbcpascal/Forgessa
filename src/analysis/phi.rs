@@ -1,22 +1,18 @@
 use std::cmp::max;
 use std::collections::{BTreeMap, BTreeSet};
-use std::fs::rename;
-use depile::analysis::control_flow::ControlFlowExt;
 use depile::ir::{Block, Function, Instr};
 use depile::ir::instr::basic::Operand;
 use depile::ir::instr::basic::Operand::{Register, Var};
-use depile::ir::instr::Instr::{Binary, Extra, Move, Unary};
-use depile::ir::instr::{Branching, BranchKind, InstrExt};
+use depile::ir::instr::{BranchKind, InstrExt};
 use depile::ir::instr::stripped::Functions;
 use crate::to_isize;
 use crate::analysis::cfg::SimpleCfg;
 use crate::analysis::converter::block_convert;
 use crate::analysis::panning::{Pannable, PannableBlock};
 use crate::analysis::dom_frontier::compute_df_cfg;
-use crate::analysis::domtree::{BlockMap, BlockSet, compute_domtree, compute_idom, imm_dominators, ImmDomRel, root_of_domtree};
+use crate::analysis::domtree::{BlockMap, BlockSet, compute_domtree, compute_idom, ImmDomRel, root_of_domtree};
 use crate::analysis::params::scan_parameters;
 use crate::ssa::{Phi, SSABlock, SSAFunction, SSAFunctions, SSAInstr, SSAInterProc, SSAOpd};
-use crate::ssa::SSAOpd::Subscribed;
 
 /// Find all the variable definitions in `block`.
 pub fn find_defs<K: InstrExt>(block: &Block<K>) -> BTreeSet<String>
@@ -24,7 +20,7 @@ pub fn find_defs<K: InstrExt>(block: &Block<K>) -> BTreeSet<String>
     let mut vars = BTreeSet::new();
     for instr in block.instructions.iter() {
         match instr {
-            Move { source: _, dest: dst }  => if dst.is_var() { vars.insert(dst.unwrap()); }
+            Instr::Move { source: _, dest: dst }  => if dst.is_var() { vars.insert(dst.unwrap()); }
             _ => { }
         }
     }
@@ -153,7 +149,7 @@ impl PhiForge {
         }
 
         // Step 3: insert phi-functions
-        let mut phi_instrs = &mut self.phi_cells;
+        let phi_instrs = &mut self.phi_cells;
         phi_instrs.clear();
 
         for i in 0..func.blocks.len() { phi_instrs.insert(i, BTreeMap::new()); }
@@ -210,8 +206,8 @@ impl PhiForge {
     }
 
     pub fn place_phi<'a>(&self, func: &'a mut SSAFunction) -> &'a mut SSAFunction {
-        for (i, mut b) in func.blocks.iter_mut().enumerate() {
-            for (j, (var, _)) in self.phi_cells.get(&i).unwrap().iter().enumerate() {
+        for (i, b) in func.blocks.iter_mut().enumerate() {
+            for j in 0..self.phi_cells.get(&i).unwrap().len() {
                 *b.instructions.get_mut(2 * j).unwrap() =
                     SSAInstr::Extra(Phi { vars: Vec::new() });
             }
@@ -281,12 +277,6 @@ pub struct RenameStack {
 
 impl RenameStack {
     fn new() -> Self { RenameStack { var_stacks: BTreeMap::new() } }
-
-    fn init(&mut self, vars: &Vec<String>) {
-        for var in vars {
-            self.var_stacks.insert(var.clone(), RenameStackCell::new());
-        }
-    }
 
     fn try_get(&mut self, var: &String) -> isize {
         let cell = self.var_stack_mut(var);
@@ -378,9 +368,9 @@ impl Renameable for SSAInterProc {
 impl Renameable for SSAInstr {
     fn rename_by(&mut self, rename_stack: &mut RenameStack) {
         match self {
-            Instr::Binary {op, lhs, rhs} =>
+            Instr::Binary {op: _, lhs, rhs} =>
                 { lhs.rename_by(rename_stack); rhs.rename_by(rename_stack); }
-            Instr::Unary { op, operand } =>
+            Instr::Unary { op: _, operand } =>
                 { operand.rename_by(rename_stack); }
             Instr::Branch(branching) =>
                 { branching.method.rename_by(rename_stack); }
@@ -424,7 +414,7 @@ mod test {
     use std::io::{ Write, BufWriter };
     use depile::ir::Function;
     use crate::analysis::phi::{find_defs, PhiForge};
-    use crate::samples::{ALL_SAMPLES, get_sample_functions, HANOIFIBFAC, PRIME};
+    use crate::samples::{ALL_SAMPLES, get_sample_functions, PRIME};
 
     #[test]
     fn test_find_defs() {
@@ -454,13 +444,13 @@ mod test {
             let name = crate::samples::samples_str::ALL_SAMPLES[i].to_string().to_lowercase();
             let funcs = get_sample_functions(str);
 
-            let mut file_path = format!("samples/stripped/{}.txt", name);
+            let file_path = format!("samples/stripped/{}.txt", name);
             let file = std::fs::File::create(file_path).unwrap();
             let mut writer = BufWriter::new(&file);
             write!(&mut writer, "{}", funcs).unwrap();
 
             let res = PhiForge::run(&funcs);
-            let mut file_path = format!("samples/ssa/{}.txt", name);
+            let file_path = format!("samples/ssa/{}.txt", name);
             let file = std::fs::File::create(file_path).unwrap();
             let mut writer = BufWriter::new(&file);
             write!(&mut writer, "{}", res).unwrap();

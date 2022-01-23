@@ -2,6 +2,7 @@ use std::collections::BTreeMap;
 use std::fmt::{Display, Formatter};
 use depile::ir::Instr;
 use depile::ir::instr::basic::Operand::Const;
+use depile::ir::instr::BranchKind;
 use depile::ir::instr::stripped::Operand;
 use crate::ssa::{Phi, SSABlock, SSAFunction, SSAFunctions, SSAInstr, SSAInterProc, SSAOpd};
 
@@ -86,7 +87,7 @@ impl Substitutable for SSAFunction {
 impl Substitutable for SSABlock {
     fn subst(&mut self, cp: &mut ConstProp) -> bool {
         let mut changed = false;
-        let mut instr_idx = self.first_index;
+        let instr_idx = self.first_index;
         for instr in self.instructions.iter_mut() {
             changed |= IdxInstr { idx: instr_idx, instr: instr }.subst(cp);
         }
@@ -104,18 +105,24 @@ impl Substitutable for IdxInstr<'_> {
         let idx = self.idx;
         let instr = &mut self.instr;
         match instr {
-            Instr::Binary {op, lhs, rhs} =>
+            Instr::Binary {op: _, lhs, rhs} =>
                 cp.check_subst(lhs) || cp.check_subst(rhs),
-            Instr::Unary {op, operand} =>
+            Instr::Unary {op: _, operand} =>
                 cp.check_subst(operand),
-            Instr::Branch(branching) => false,
-            Instr::Load(opd) => false,
-            Instr::Store {data, address } =>
+            Instr::Branch(branching) =>
+                match &mut branching.method {
+                    BranchKind::If(opd) => cp.check_subst(opd),
+                    BranchKind::Unless(opd) => cp.check_subst(opd),
+                    _ => false
+                },
+            Instr::Load(opd) =>
+                cp.check_subst(opd),
+            Instr::Store {data, address: _} =>
                 cp.check_subst(data),
             Instr::Move {source, dest} => {
                 let mut changed = cp.check_subst(source);
                 match as_constant(source) {
-                    Some(opd) => {
+                    Some(_) => {
                         cp.insert(dest, source);
                         **instr = Instr::Nop;
                         changed = true;
@@ -195,10 +202,10 @@ mod test {
             let mut ssa = PhiForge::run(&funcs);
             let reports = ConstProp::run(&mut ssa);
 
-            let mut file_path = format!("samples/const_prop/{}.txt", name);
+            let file_path = format!("samples/const_prop/{}.txt", name);
             let file = std::fs::File::create(file_path).unwrap();
             let mut writer = BufWriter::new(&file);
-            writeln!(&mut writer, "Report of {}:", name);
+            writeln!(&mut writer, "Report of {}:", name).expect("Error");
             for r in reports { writeln!(&mut writer, "{}", r).expect("error"); }
             write!(&mut writer, "{}", ssa).unwrap();
         }
@@ -208,7 +215,7 @@ mod test {
     fn test_check_vars_phi() {
         let v = SSAOpd::Operand(Const(4));
         let mut vars = Vec::new();
-        for i in 0..3 { vars.push(v.clone()); }
+        for _ in 0..3 { vars.push(v.clone()); }
         assert!(check_vars_in_phi(&vars).is_some());
 
         vars.push(SSAOpd::Subscribed(String::from("v"), -1));
