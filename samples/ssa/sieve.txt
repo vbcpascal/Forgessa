@@ -14,93 +14,87 @@
   instr 12: move 2 i$0
 
 Block #1:
-  instr 13: phi i$0 i$2
-  instr 14: move (13) i$1
-  instr 15: cmplt i$1 1000
-  instr 16: blbc (15) [3]
+  instr 13: i$1 <- phi i$0 i$2 [0] [2]
+  instr 14: cmplt i$1 1000
+  instr 15: blbc (14) [3]
 
 Block #2:
-  instr 17: mul i$1 8
-  instr 18: add is_prime_base#-8016 FP
-  instr 19: add (18) (17)
-  instr 20: store 1 (19)
-  instr 21: add i$1 1
-  instr 22: move (21) i$2
-  instr 23: br [1]
+  instr 16: mul i$1 8
+  instr 17: add is_prime_base#-8016 FP
+  instr 18: add (17) (16)
+  instr 19: store 1 (18)
+  instr 20: add i$1 1
+  instr 21: move (20) i$2
+  instr 22: br [1]
 
 Block #3:
-  instr 24: move 2 i$3
+  instr 23: move 2 i$3
 
 Block #4:
-  instr 25: phi i$3 i$5
-  instr 26: move (25) i$4
-  instr 27: phi j$-1 j$4
-  instr 28: move (27) j$0
-  instr 29: cmplt i$4 1000
-  instr 30: blbc (29) [10]
+  instr 24: i$4 <- phi i$3 i$5 [3] [9]
+  instr 25: j$0 <- phi j$-1 j$4 [3] [9]
+  instr 26: cmplt i$4 1000
+  instr 27: blbc (26) [10]
 
 Block #5:
-  instr 31: mul i$4 8
-  instr 32: add is_prime_base#-8016 FP
-  instr 33: add (32) (31)
-  instr 34: load (33)
-  instr 35: cmpeq (34) 0
-  instr 36: blbs (35) [9]
+  instr 28: mul i$4 8
+  instr 29: add is_prime_base#-8016 FP
+  instr 30: add (29) (28)
+  instr 31: load (30)
+  instr 32: cmpeq (31) 0
+  instr 33: blbs (32) [9]
 
 Block #6:
-  instr 37: move 2 j$1
+  instr 34: move 2 j$1
 
 Block #7:
-  instr 38: phi j$1 j$3
-  instr 39: move (38) j$2
-  instr 40: mul i$4 j$2
-  instr 41: cmplt (40) 1000
-  instr 42: blbc (41) [9]
+  instr 35: j$2 <- phi j$1 j$3 [6] [8]
+  instr 36: mul i$4 j$2
+  instr 37: cmplt (36) 1000
+  instr 38: blbc (37) [9]
 
 Block #8:
-  instr 43: mul i$4 j$2
-  instr 44: mul (43) 8
-  instr 45: add is_prime_base#-8016 FP
-  instr 46: add (45) (44)
-  instr 47: store 0 (46)
-  instr 48: add j$2 1
-  instr 49: move (48) j$3
-  instr 50: br [7]
+  instr 39: mul i$4 j$2
+  instr 40: mul (39) 8
+  instr 41: add is_prime_base#-8016 FP
+  instr 42: add (41) (40)
+  instr 43: store 0 (42)
+  instr 44: add j$2 1
+  instr 45: move (44) j$3
+  instr 46: br [7]
 
 Block #9:
-  instr 51: phi j$0 j$2
-  instr 52: move (51) j$4
-  instr 53: add i$4 1
-  instr 54: move (53) i$5
-  instr 55: br [4]
+  instr 47: j$4 <- phi j$0 j$2 [5] [7]
+  instr 48: add i$4 1
+  instr 49: move (48) i$5
+  instr 50: br [4]
 
 Block #10:
-  instr 56: move 2 i$6
+  instr 51: move 2 i$6
 
 Block #11:
-  instr 57: phi i$6 i$8
-  instr 58: move (57) i$7
-  instr 59: cmplt i$7 1000
-  instr 60: blbc (59) [15]
+  instr 52: i$7 <- phi i$6 i$8 [10] [14]
+  instr 53: cmplt i$7 1000
+  instr 54: blbc (53) [15]
 
 Block #12:
-  instr 61: mul i$7 8
-  instr 62: add is_prime_base#-8016 FP
-  instr 63: add (62) (61)
-  instr 64: load (63)
-  instr 65: cmpeq (64) 0
-  instr 66: blbs (65) [14]
+  instr 55: mul i$7 8
+  instr 56: add is_prime_base#-8016 FP
+  instr 57: add (56) (55)
+  instr 58: load (57)
+  instr 59: cmpeq (58) 0
+  instr 60: blbs (59) [14]
 
 Block #13:
-  instr 67: write i$7
+  instr 61: write i$7
 
 Block #14:
-  instr 68: add i$7 1
-  instr 69: move (68) i$8
-  instr 70: br [11]
+  instr 62: add i$7 1
+  instr 63: move (62) i$8
+  instr 64: br [11]
 
 Block #15:
-  instr 71: wrl
-  instr 72: ret
+  instr 65: wrl
+  instr 66: ret
 
 

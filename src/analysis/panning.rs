@@ -99,7 +99,7 @@ impl Pannable for Phi {
     fn pan(&self, f: &impl Fn(usize) -> usize) -> Self {
         let mut res: Vec<SSAOpd> = Vec::new();
         for opd in &self.vars { res.push(opd.pan(f)); }
-        Phi { vars: res }
+        Phi { vars: res, blocks: self.blocks.clone(), dest: self.dest.clone() }
     }
 }
 

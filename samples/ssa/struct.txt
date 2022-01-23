@@ -87,45 +87,44 @@
   instr 85: move 0 i$0
 
 Block #1:
-  instr 86: phi i$0 i$2
-  instr 87: move (86) i$1
-  instr 88: cmplt i$1 3
-  instr 89: blbc (88) [3]
+  instr 86: i$1 <- phi i$0 i$2 [0] [2]
+  instr 87: cmplt i$1 3
+  instr 88: blbc (87) [3]
 
 Block #2:
-  instr 90: mul i$1 40
-  instr 91: add b_base#32608 GP
-  instr 92: add (91) (90)
-  instr 93: add (92) x_offset#0
-  instr 94: load (93)
-  instr 95: write (94)
-  instr 96: mul i$1 40
-  instr 97: add b_base#32608 GP
-  instr 98: add (97) (96)
-  instr 99: add (98) y_offset#8
-  instr 100: load (99)
-  instr 101: write (100)
-  instr 102: wrl
-  instr 103: add i$1 1
-  instr 104: move (103) i$2
-  instr 105: br [1]
+  instr 89: mul i$1 40
+  instr 90: add b_base#32608 GP
+  instr 91: add (90) (89)
+  instr 92: add (91) x_offset#0
+  instr 93: load (92)
+  instr 94: write (93)
+  instr 95: mul i$1 40
+  instr 96: add b_base#32608 GP
+  instr 97: add (96) (95)
+  instr 98: add (97) y_offset#8
+  instr 99: load (98)
+  instr 100: write (99)
+  instr 101: wrl
+  instr 102: add i$1 1
+  instr 103: move (102) i$2
+  instr 104: br [1]
 
 Block #3:
-  instr 106: add c_base#-48 FP
-  instr 107: add (106) x_offset#0
-  instr 108: load (107)
-  instr 109: write (108)
-  instr 110: add c_base#-48 FP
-  instr 111: add (110) y_offset#8
-  instr 112: load (111)
-  instr 113: write (112)
-  instr 114: wrl
-  instr 115: add c_base#-48 FP
-  instr 116: add (115) z_offset#16
-  instr 117: add (116) r_offset#8
-  instr 118: load (117)
-  instr 119: write (118)
-  instr 120: wrl
-  instr 121: ret
+  instr 105: add c_base#-48 FP
+  instr 106: add (105) x_offset#0
+  instr 107: load (106)
+  instr 108: write (107)
+  instr 109: add c_base#-48 FP
+  instr 110: add (109) y_offset#8
+  instr 111: load (110)
+  instr 112: write (111)
+  instr 113: wrl
+  instr 114: add c_base#-48 FP
+  instr 115: add (114) z_offset#16
+  instr 116: add (115) r_offset#8
+  instr 117: load (116)
+  instr 118: write (117)
+  instr 119: wrl
+  instr 120: ret
 
 

@@ -5,32 +5,30 @@
 (ENTRY) Block #0:
 
 Block #1:
-  instr 4: phi x$-1 x$1
-  instr 5: move (4) x$0
-  instr 6: cmpeq 1 1
-  instr 7: blbc (6) [3]
+  instr 4: x$0 <- phi x$-1 x$1 [0] [2]
+  instr 5: cmpeq 1 1
+  instr 6: blbc (5) [3]
 
 Block #2:
-  instr 8: move 1 x$1
-  instr 9: br [1]
+  instr 7: move 1 x$1
+  instr 8: br [1]
 
 Block #3:
-  instr 10: move 2 a$0
-  instr 11: cmple a$0 0
-  instr 12: blbs (11) [5]
+  instr 9: move 2 a$0
+  instr 10: cmple a$0 0
+  instr 11: blbs (10) [5]
 
 Block #4:
-  instr 13: move 4 a$1
-  instr 14: br [6]
+  instr 12: move 4 a$1
+  instr 13: br [6]
 
 Block #5:
-  instr 15: move 4 a$2
+  instr 14: move 4 a$2
 
 Block #6:
-  instr 16: phi a$1 a$2
-  instr 17: move (16) a$3
-  instr 18: move a$3 b$0
-  instr 19: write b$0
-  instr 20: ret
+  instr 15: a$3 <- phi a$1 a$2 [4] [5]
+  instr 16: move a$3 b$0
+  instr 17: write b$0
+  instr 18: ret
 
 

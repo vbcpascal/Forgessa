@@ -8,134 +8,107 @@
   instr 6: move 0 a$0
 
 Block #1:
-  instr 7: phi a$0 a$2
-  instr 8: move (7) a$1
-  instr 9: phi b$-1 b$2
-  instr 10: move (9) b$0
-  instr 11: phi c$-1 c$1
-  instr 12: move (11) c$0
-  instr 13: phi d$-1 d$1
-  instr 14: move (13) d$0
-  instr 15: phi e$-1 e$1
-  instr 16: move (15) e$0
-  instr 17: phi f$-1 f$1
-  instr 18: move (17) f$0
-  instr 19: phi x$0 x$3
-  instr 20: move (19) x$1
-  instr 21: cmplt a$1 n$0
-  instr 22: blbc (21) [18]
+  instr 7: a$1 <- phi a$0 a$2 [0] [17]
+  instr 8: b$0 <- phi b$-1 b$2 [0] [17]
+  instr 9: c$0 <- phi c$-1 c$1 [0] [17]
+  instr 10: d$0 <- phi d$-1 d$1 [0] [17]
+  instr 11: e$0 <- phi e$-1 e$1 [0] [17]
+  instr 12: f$0 <- phi f$-1 f$1 [0] [17]
+  instr 13: x$1 <- phi x$0 x$3 [0] [17]
+  instr 14: cmplt a$1 n$0
+  instr 15: blbc (14) [18]
 
 Block #2:
-  instr 23: move 0 b$1
-  instr 24: move 0 x$2
+  instr 16: move 0 b$1
+  instr 17: move 0 x$2
 
 Block #3:
-  instr 25: phi b$1 b$3
-  instr 26: move (25) b$2
-  instr 27: phi c$0 c$3
-  instr 28: move (27) c$1
-  instr 29: phi d$0 d$2
-  instr 30: move (29) d$1
-  instr 31: phi e$0 e$2
-  instr 32: move (31) e$1
-  instr 33: phi f$0 f$2
-  instr 34: move (33) f$1
-  instr 35: phi x$2 x$4
-  instr 36: move (35) x$3
-  instr 37: cmplt b$2 n$0
-  instr 38: blbc (37) [17]
+  instr 18: b$2 <- phi b$1 b$3 [2] [16]
+  instr 19: c$1 <- phi c$0 c$3 [2] [16]
+  instr 20: d$1 <- phi d$0 d$2 [2] [16]
+  instr 21: e$1 <- phi e$0 e$2 [2] [16]
+  instr 22: f$1 <- phi f$0 f$2 [2] [16]
+  instr 23: x$3 <- phi x$2 x$4 [2] [16]
+  instr 24: cmplt b$2 n$0
+  instr 25: blbc (24) [17]
 
 Block #4:
-  instr 39: move 0 c$2
+  instr 26: move 0 c$2
 
 Block #5:
-  instr 40: phi c$2 c$4
-  instr 41: move (40) c$3
-  instr 42: phi d$1 d$4
-  instr 43: move (42) d$2
-  instr 44: phi e$1 e$3
-  instr 45: move (44) e$2
-  instr 46: phi f$1 f$3
-  instr 47: move (46) f$2
-  instr 48: phi x$3 x$5
-  instr 49: move (48) x$4
-  instr 50: cmplt c$3 n$0
-  instr 51: blbc (50) [16]
+  instr 27: c$3 <- phi c$2 c$4 [4] [15]
+  instr 28: d$2 <- phi d$1 d$4 [4] [15]
+  instr 29: e$2 <- phi e$1 e$3 [4] [15]
+  instr 30: f$2 <- phi f$1 f$3 [4] [15]
+  instr 31: x$4 <- phi x$3 x$5 [4] [15]
+  instr 32: cmplt c$3 n$0
+  instr 33: blbc (32) [16]
 
 Block #6:
-  instr 52: move 0 d$3
+  instr 34: move 0 d$3
 
 Block #7:
-  instr 53: phi d$3 d$5
-  instr 54: move (53) d$4
-  instr 55: phi e$2 e$5
-  instr 56: move (55) e$3
-  instr 57: phi f$2 f$4
-  instr 58: move (57) f$3
-  instr 59: phi x$4 x$6
-  instr 60: move (59) x$5
-  instr 61: cmplt d$4 n$0
-  instr 62: blbc (61) [15]
+  instr 35: d$4 <- phi d$3 d$5 [6] [14]
+  instr 36: e$3 <- phi e$2 e$5 [6] [14]
+  instr 37: f$3 <- phi f$2 f$4 [6] [14]
+  instr 38: x$5 <- phi x$4 x$6 [6] [14]
+  instr 39: cmplt d$4 n$0
+  instr 40: blbc (39) [15]
 
 Block #8:
-  instr 63: move 0 e$4
+  instr 41: move 0 e$4
 
 Block #9:
-  instr 64: phi e$4 e$6
-  instr 65: move (64) e$5
-  instr 66: phi f$3 f$6
-  instr 67: move (66) f$4
-  instr 68: phi x$5 x$7
-  instr 69: move (68) x$6
-  instr 70: cmplt e$5 n$0
-  instr 71: blbc (70) [14]
+  instr 42: e$5 <- phi e$4 e$6 [8] [13]
+  instr 43: f$4 <- phi f$3 f$6 [8] [13]
+  instr 44: x$6 <- phi x$5 x$7 [8] [13]
+  instr 45: cmplt e$5 n$0
+  instr 46: blbc (45) [14]
 
 Block #10:
-  instr 72: move 0 f$5
+  instr 47: move 0 f$5
 
 Block #11:
-  instr 73: phi f$5 f$7
-  instr 74: move (73) f$6
-  instr 75: phi x$6 x$8
-  instr 76: move (75) x$7
-  instr 77: cmplt f$6 n$0
-  instr 78: blbc (77) [13]
+  instr 48: f$6 <- phi f$5 f$7 [10] [12]
+  instr 49: x$7 <- phi x$6 x$8 [10] [12]
+  instr 50: cmplt f$6 n$0
+  instr 51: blbc (50) [13]
 
 Block #12:
-  instr 79: add x$7 1
-  instr 80: move (79) x$8
-  instr 81: add f$6 1
-  instr 82: move (81) f$7
-  instr 83: br [11]
+  instr 52: add x$7 1
+  instr 53: move (52) x$8
+  instr 54: add f$6 1
+  instr 55: move (54) f$7
+  instr 56: br [11]
 
 Block #13:
-  instr 84: add e$5 1
-  instr 85: move (84) e$6
-  instr 86: br [9]
+  instr 57: add e$5 1
+  instr 58: move (57) e$6
+  instr 59: br [9]
 
 Block #14:
-  instr 87: add d$4 1
-  instr 88: move (87) d$5
-  instr 89: br [7]
+  instr 60: add d$4 1
+  instr 61: move (60) d$5
+  instr 62: br [7]
 
 Block #15:
-  instr 90: add c$3 1
-  instr 91: move (90) c$4
-  instr 92: br [5]
+  instr 63: add c$3 1
+  instr 64: move (63) c$4
+  instr 65: br [5]
 
 Block #16:
-  instr 93: add b$2 1
-  instr 94: move (93) b$3
-  instr 95: br [3]
+  instr 66: add b$2 1
+  instr 67: move (66) b$3
+  instr 68: br [3]
 
 Block #17:
-  instr 96: add a$1 1
-  instr 97: move (96) a$2
-  instr 98: br [1]
+  instr 69: add a$1 1
+  instr 70: move (69) a$2
+  instr 71: br [1]
 
 Block #18:
-  instr 99: write x$1
-  instr 100: wrl
-  instr 101: ret
+  instr 72: write x$1
+  instr 73: wrl
+  instr 74: ret
 
 

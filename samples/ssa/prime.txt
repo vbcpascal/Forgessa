@@ -16,83 +16,77 @@
   instr 14: move 3 v$0
 
 Block #1:
-  instr 15: phi i$0 i$3
-  instr 16: move (15) i$1
-  instr 17: phi j$-1 j$2
-  instr 18: move (17) j$0
-  instr 19: phi v$0 v$2
-  instr 20: move (19) v$1
-  instr 21: cmplt i$1 400
-  instr 22: blbc (21) [12]
+  instr 15: i$1 <- phi i$0 i$3 [0] [11]
+  instr 16: j$0 <- phi j$-1 j$2 [0] [11]
+  instr 17: v$1 <- phi v$0 v$2 [0] [11]
+  instr 18: cmplt i$1 400
+  instr 19: blbc (18) [12]
 
 Block #2:
-  instr 23: move 0 j$1
+  instr 20: move 0 j$1
 
 Block #3:
-  instr 24: phi j$1 j$6
-  instr 25: move (24) j$2
-  instr 26: cmplt j$2 i$1
-  instr 27: blbc (26) [9]
+  instr 21: j$2 <- phi j$1 j$6 [2] [8]
+  instr 22: cmplt j$2 i$1
+  instr 23: blbc (22) [9]
 
 Block #4:
-  instr 28: mul j$2 8
-  instr 29: add prime_base#29568 GP
-  instr 30: add (29) (28)
-  instr 31: mul j$2 8
-  instr 32: add prime_base#29568 GP
-  instr 33: add (32) (31)
-  instr 34: load (30)
-  instr 35: load (33)
-  instr 36: mul (34) (35)
-  instr 37: cmple (36) v$1
-  instr 38: blbs (37) [6]
+  instr 24: mul j$2 8
+  instr 25: add prime_base#29568 GP
+  instr 26: add (25) (24)
+  instr 27: mul j$2 8
+  instr 28: add prime_base#29568 GP
+  instr 29: add (28) (27)
+  instr 30: load (26)
+  instr 31: load (29)
+  instr 32: mul (30) (31)
+  instr 33: cmple (32) v$1
+  instr 34: blbs (33) [6]
 
 Block #5:
-  instr 39: sub i$1 1
-  instr 40: move (39) j$3
-  instr 41: br [8]
+  instr 35: sub i$1 1
+  instr 36: move (35) j$3
+  instr 37: br [8]
 
 Block #6:
-  instr 42: mul j$2 8
-  instr 43: add prime_base#29568 GP
-  instr 44: add (43) (42)
-  instr 45: load (44)
-  instr 46: mod v$1 (45)
-  instr 47: cmpeq (46) 0
-  instr 48: blbc (47) [8]
+  instr 38: mul j$2 8
+  instr 39: add prime_base#29568 GP
+  instr 40: add (39) (38)
+  instr 41: load (40)
+  instr 42: mod v$1 (41)
+  instr 43: cmpeq (42) 0
+  instr 44: blbc (43) [8]
 
 Block #7:
-  instr 49: move i$1 j$4
+  instr 45: move i$1 j$4
 
 Block #8:
-  instr 50: phi j$3 j$2 j$4
-  instr 51: move (50) j$5
-  instr 52: add j$5 1
-  instr 53: move (52) j$6
-  instr 54: br [3]
+  instr 46: j$5 <- phi j$3 j$2 j$4 [5] [6] [7]
+  instr 47: add j$5 1
+  instr 48: move (47) j$6
+  instr 49: br [3]
 
 Block #9:
-  instr 55: cmpeq j$2 i$1
-  instr 56: blbc (55) [11]
+  instr 50: cmpeq j$2 i$1
+  instr 51: blbc (50) [11]
 
 Block #10:
-  instr 57: mul i$1 8
-  instr 58: add prime_base#29568 GP
-  instr 59: add (58) (57)
-  instr 60: store v$1 (59)
-  instr 61: write v$1
-  instr 62: add i$1 1
-  instr 63: move (62) i$2
+  instr 52: mul i$1 8
+  instr 53: add prime_base#29568 GP
+  instr 54: add (53) (52)
+  instr 55: store v$1 (54)
+  instr 56: write v$1
+  instr 57: add i$1 1
+  instr 58: move (57) i$2
 
 Block #11:
-  instr 64: phi i$1 i$2
-  instr 65: move (64) i$3
-  instr 66: add v$1 2
-  instr 67: move (66) v$2
-  instr 68: br [1]
+  instr 59: i$3 <- phi i$1 i$2 [9] [10]
+  instr 60: add v$1 2
+  instr 61: move (60) v$2
+  instr 62: br [1]
 
 Block #12:
-  instr 69: wrl
-  instr 70: ret
+  instr 63: wrl
+  instr 64: ret
 
 

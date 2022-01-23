@@ -38,33 +38,25 @@ pub enum SSAOpd {
     /// Subscribed variable.
     #[display("{0}${1}")]
     Subscribed(String, isize),
+    /// Empty operand.
+    #[display("<unknown>")]
+    NOpd,
 }
 
 /// SSA extra instructions.
 #[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub struct Phi {
-    pub vars: Vec<SSAOpd>
+    pub vars: Vec<SSAOpd>,
+    pub blocks: Vec<usize>,
+    pub dest: SSAOpd,
 }
 
 impl std::fmt::Display for Phi {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "phi").unwrap();
-        for var in &self.vars {
-            write!(f, " {}", var).unwrap();
-        }
+        write!(f, "{} <- phi", self.dest).unwrap();
+        for var in &self.vars { write!(f, " {}", var).unwrap(); }
+        for block in &self.blocks { write!(f, " [{}]", block).unwrap(); }
         Ok(())
-    }
-}
-
-impl std::str::FromStr for Phi {
-    type Err = ();
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let tokens: Vec<&str> = s.split(" ").collect();
-        if tokens[0] != "phi" { return Err(()); }
-        let mut vars: Vec<SSAOpd> = Vec::new();
-        for tok in tokens[1..].iter() { vars.push(tok.parse().unwrap()); }
-        Ok(Phi{vars})
     }
 }
 
@@ -133,15 +125,4 @@ mod tests {
         }
     }
 
-    #[test]
-    fn test_instruction() {
-        assert_equiv! {
-            "nop" => SSAInstr::Nop,
-            "phi i$0 i$1" => SSAInstr::Extra(
-                Phi { vars: Vec::from_iter([
-                    SSAOpd::Subscribed("i".to_string(), 0),
-                    SSAOpd::Subscribed("i".to_string(), 1),
-                ])}),
-        }
-    }
 }

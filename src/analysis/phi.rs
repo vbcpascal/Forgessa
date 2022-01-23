@@ -48,6 +48,7 @@ impl HasVariableOperand for crate::ssa::SSAOpd {
         match self {
             SSAOpd::Operand(opd) => opd.get_var_name(),
             SSAOpd::Subscribed(var, _) => Some(var.clone()),
+            _ => None,
         }
     }
 }
@@ -192,7 +193,7 @@ impl PhiForge {
             let offset = id - b.first_index;
             let block = block_convert(b)
                 .pan(&|x| x + offset)
-                .panning_forward_fill(self.phi_cells.get(&i).unwrap().len() * 2);
+                .panning_forward_fill(self.phi_cells.get(&i).unwrap().len());
             id += block.instructions.len();
             blocks.push(block);
         }
@@ -208,8 +209,12 @@ impl PhiForge {
     pub fn place_phi<'a>(&self, func: &'a mut SSAFunction) -> &'a mut SSAFunction {
         for (i, b) in func.blocks.iter_mut().enumerate() {
             for j in 0..self.phi_cells.get(&i).unwrap().len() {
-                *b.instructions.get_mut(2 * j).unwrap() =
-                    SSAInstr::Extra(Phi { vars: Vec::new() });
+                *b.instructions.get_mut(j).unwrap() =
+                    SSAInstr::Extra(Phi {
+                        vars: Vec::new(),
+                        blocks: Vec::new(),
+                        dest: SSAOpd::NOpd
+                    });
             }
         }
         func
@@ -233,12 +238,11 @@ impl PhiForge {
             // Step 1: generate unique names and push them.
             for (j, (var, _)) in forge.phi_cells.get(&block_idx).unwrap().iter().enumerate() {
                 let var_index: usize = rename_stack.request_push(var);
-                let phi_instr_index: usize = block.first_index + j * 2;
-                *block.instructions.get_mut(2 * j + 1).unwrap() =
-                    SSAInstr::Move {
-                        source: SSAOpd::Operand(Register(phi_instr_index)),
-                        dest: SSAOpd::Subscribed(var.clone(),  to_isize!(var_index))
-                    }
+                match block.instructions.get_mut(j).unwrap() {
+                    Instr::Extra(Phi {vars, blocks, dest}) =>
+                        *dest = SSAOpd::Subscribed(var.clone(),  to_isize!(var_index)),
+                    _ => panic!("Error"),
+                }
             }
 
             // Step 2: rewrite names.
@@ -250,10 +254,9 @@ impl PhiForge {
             for succ in forge.cfg.get_succs(block_idx) {
                 let succ_block = func.blocks.get_mut(succ).unwrap();
                 for (j, (var, _)) in forge.phi_cells.get(&succ).unwrap().iter().enumerate() {
-                    let instr = succ_block.instructions.get_mut(2 * j).unwrap();
-                    // TODO
+                    let instr = succ_block.instructions.get_mut(j).unwrap();
                     let var_idx = rename_stack.try_get(var);
-                    push_phi_param(instr, var, var_idx);
+                    push_phi_param(instr, var, var_idx, block_idx.try_into().unwrap());
                 }
             }
 
@@ -396,10 +399,12 @@ impl Renameable for SSAInstr {
     }
 }
 
-fn push_phi_param(instr: &mut SSAInstr, var: &String, var_idx: isize) {
+fn push_phi_param(instr: &mut SSAInstr, var: &String, var_idx: isize, block_idx: isize) {
     match instr {
-        Instr::Extra(Phi {vars}) =>
-            vars.push(SSAOpd::Subscribed(var.clone(), var_idx)),
+        Instr::Extra(Phi {vars, blocks, dest}) => {
+            vars.push(SSAOpd::Subscribed(var.clone(), var_idx));
+            blocks.push(block_idx.try_into().unwrap());
+        }
         _ => panic!("Not phi instruction."),
     }
 }

@@ -117,8 +117,8 @@ impl Substitutable for IdxInstr<'_> {
                 },
             Instr::Load(opd) =>
                 cp.check_subst(opd),
-            Instr::Store {data, address: _} =>
-                cp.check_subst(data),
+            Instr::Store {data, address} =>
+                cp.check_subst(data) || cp.check_subst(address),
             Instr::Move {source, dest} => {
                 let mut changed = cp.check_subst(source);
                 match as_constant(source) {
@@ -142,14 +142,15 @@ impl Substitutable for IdxInstr<'_> {
                 },
             Instr::Nop => false,
             Instr::Marker(_) => false,
-            Instr::Extra(Phi {vars}) => {
+            Instr::Extra(Phi {vars, blocks, dest}) => {
                 let mut changed = false;
                 for var in vars.iter_mut() { changed |= cp.check_subst(var); }
 
                 match check_vars_in_phi(vars) {
                     Some(opd) => {
-                        cp.insert(&SSAOpd::Operand(Operand::Register(idx)), &opd);
+                        cp.insert(dest, &opd);
                         **instr = Instr::Nop;
+                        changed = true;
                     },
                     None => ()
                 }
