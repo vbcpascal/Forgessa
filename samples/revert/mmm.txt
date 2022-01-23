@@ -3,8 +3,8 @@
 #local_vars = 47
 
 (ENTRY) Block #0:
-  instr 4: move 0 i0#-8
-  instr 5: move i0#-8 i1#-16
+  instr 3: move 0 i0#-8
+  instr 4: move i0#-8 i1#-16
 
 Block #1:
   instr 5: nop
@@ -17,283 +17,283 @@ Block #2:
   instr 10: move j1#-24 j2#-32
 
 Block #3:
-  instr 10: nop
-  instr 11: cmplt j2#-32 3
-  instr 12: blbc (11) [5]
+  instr 11: nop
+  instr 12: cmplt j2#-32 3
+  instr 13: blbc (12) [5]
 
 Block #4:
-  instr 13: mul i1#-16 24
-  instr 14: add m1_base#-96 FP
-  instr 15: add (14) (13)
-  instr 16: mul j2#-32 8
-  instr 17: add (15) (16)
-  instr 18: mul j2#-32 2
-  instr 19: add i1#-16 (18)
-  instr 20: store (19) (17)
-  instr 21: mul j2#-32 2
-  instr 22: add i1#-16 (21)
-  instr 23: write (22)
-  instr 24: add j2#-32 1
-  instr 25: move (24) j3#-40
-  instr 26: move j3#-40 j2#-32
-  instr 27: br [3]
+  instr 14: mul i1#-16 24
+  instr 15: add m1_base#-96 FP
+  instr 16: add (15) (14)
+  instr 17: mul j2#-32 8
+  instr 18: add (16) (17)
+  instr 19: mul j2#-32 2
+  instr 20: add i1#-16 (19)
+  instr 21: store (20) (18)
+  instr 22: mul j2#-32 2
+  instr 23: add i1#-16 (22)
+  instr 24: write (23)
+  instr 25: add j2#-32 1
+  instr 26: move (25) j3#-40
+  instr 27: move j3#-40 j2#-32
+  instr 28: br [3]
 
 Block #5:
-  instr 27: wrl
-  instr 28: add i1#-16 1
-  instr 29: move (28) i2#-48
-  instr 30: move i2#-48 i1#-16
-  instr 31: move j2#-32 j0#-56
-  instr 32: br [1]
+  instr 29: wrl
+  instr 30: add i1#-16 1
+  instr 31: move (30) i2#-48
+  instr 32: move i2#-48 i1#-16
+  instr 33: move j2#-32 j0#-56
+  instr 34: br [1]
 
 Block #6:
-  instr 31: move 0 i3#-64
-  instr 32: move i3#-64 i4#-72
-  instr 33: move j0#-56 j4#-80
+  instr 35: move 0 i3#-64
+  instr 36: move i3#-64 i4#-72
+  instr 37: move j0#-56 j4#-80
 
 Block #7:
-  instr 32: nop
-  instr 33: nop
-  instr 34: cmplt i4#-72 4
-  instr 35: blbc (34) [12]
+  instr 38: nop
+  instr 39: nop
+  instr 40: cmplt i4#-72 4
+  instr 41: blbc (40) [12]
 
 Block #8:
-  instr 36: move 0 j5#-88
-  instr 37: move j5#-88 j6#-96
+  instr 42: move 0 j5#-88
+  instr 43: move j5#-88 j6#-96
 
 Block #9:
-  instr 37: nop
-  instr 38: cmplt j6#-96 3
-  instr 39: blbc (38) [11]
+  instr 44: nop
+  instr 45: cmplt j6#-96 3
+  instr 46: blbc (45) [11]
 
 Block #10:
-  instr 40: mul j6#-96 32
-  instr 41: add m2_base#-192 FP
-  instr 42: add (41) (40)
-  instr 43: mul i4#-72 8
-  instr 44: add (42) (43)
-  instr 45: mul i4#-72 24
-  instr 46: add m1_base#-96 FP
-  instr 47: add (46) (45)
-  instr 48: mul j6#-96 8
-  instr 49: add (47) (48)
-  instr 50: load (49)
-  instr 51: store (50) (44)
-  instr 52: add j6#-96 1
-  instr 53: move (52) j7#-104
-  instr 54: move j7#-104 j6#-96
-  instr 55: br [9]
+  instr 47: mul j6#-96 32
+  instr 48: add m2_base#-192 FP
+  instr 49: add (48) (47)
+  instr 50: mul i4#-72 8
+  instr 51: add (49) (50)
+  instr 52: mul i4#-72 24
+  instr 53: add m1_base#-96 FP
+  instr 54: add (53) (52)
+  instr 55: mul j6#-96 8
+  instr 56: add (54) (55)
+  instr 57: load (56)
+  instr 58: store (57) (51)
+  instr 59: add j6#-96 1
+  instr 60: move (59) j7#-104
+  instr 61: move j7#-104 j6#-96
+  instr 62: br [9]
 
 Block #11:
-  instr 55: add i4#-72 1
-  instr 56: move (55) i5#-112
-  instr 57: move i5#-112 i4#-72
-  instr 58: move j6#-96 j4#-80
-  instr 59: br [7]
+  instr 63: add i4#-72 1
+  instr 64: move (63) i5#-112
+  instr 65: move i5#-112 i4#-72
+  instr 66: move j6#-96 j4#-80
+  instr 67: br [7]
 
 Block #12:
-  instr 58: wrl
-  instr 59: move 0 i6#-120
-  instr 60: move i6#-120 i7#-128
-  instr 61: move j4#-80 j8#-136
+  instr 68: wrl
+  instr 69: move 0 i6#-120
+  instr 70: move i6#-120 i7#-128
+  instr 71: move j4#-80 j8#-136
 
 Block #13:
-  instr 60: nop
-  instr 61: nop
-  instr 62: cmplt i7#-128 3
-  instr 63: blbc (62) [18]
+  instr 72: nop
+  instr 73: nop
+  instr 74: cmplt i7#-128 3
+  instr 75: blbc (74) [18]
 
 Block #14:
-  instr 64: move 0 j9#-144
-  instr 65: move j9#-144 j10#-152
+  instr 76: move 0 j9#-144
+  instr 77: move j9#-144 j10#-152
 
 Block #15:
-  instr 65: nop
-  instr 66: cmplt j10#-152 4
-  instr 67: blbc (66) [17]
+  instr 78: nop
+  instr 79: cmplt j10#-152 4
+  instr 80: blbc (79) [17]
 
 Block #16:
-  instr 68: mul i7#-128 32
-  instr 69: add m2_base#-192 FP
-  instr 70: add (69) (68)
-  instr 71: mul j10#-152 8
-  instr 72: add (70) (71)
-  instr 73: load (72)
-  instr 74: write (73)
-  instr 75: add j10#-152 1
-  instr 76: move (75) j11#-160
-  instr 77: move j11#-160 j10#-152
-  instr 78: br [15]
+  instr 81: mul i7#-128 32
+  instr 82: add m2_base#-192 FP
+  instr 83: add (82) (81)
+  instr 84: mul j10#-152 8
+  instr 85: add (83) (84)
+  instr 86: load (85)
+  instr 87: write (86)
+  instr 88: add j10#-152 1
+  instr 89: move (88) j11#-160
+  instr 90: move j11#-160 j10#-152
+  instr 91: br [15]
 
 Block #17:
-  instr 78: wrl
-  instr 79: add i7#-128 1
-  instr 80: move (79) i8#-168
-  instr 81: move i8#-168 i7#-128
-  instr 82: move j10#-152 j8#-136
-  instr 83: br [13]
+  instr 92: wrl
+  instr 93: add i7#-128 1
+  instr 94: move (93) i8#-168
+  instr 95: move i8#-168 i7#-128
+  instr 96: move j10#-152 j8#-136
+  instr 97: br [13]
 
 Block #18:
-  instr 82: move 0 i9#-176
-  instr 83: move i9#-176 i10#-184
-  instr 84: move j8#-136 j12#-192
+  instr 98: move 0 i9#-176
+  instr 99: move i9#-176 i10#-184
+  instr 100: move j8#-136 j12#-192
 
 Block #19:
-  instr 83: nop
-  instr 84: nop
-  instr 85: cmplt i10#-184 3
-  instr 86: blbc (85) [24]
+  instr 101: nop
+  instr 102: nop
+  instr 103: cmplt i10#-184 3
+  instr 104: blbc (103) [24]
 
 Block #20:
-  instr 87: move 0 j13#-200
-  instr 88: move j13#-200 j14#-208
+  instr 105: move 0 j13#-200
+  instr 106: move j13#-200 j14#-208
 
 Block #21:
-  instr 88: nop
-  instr 89: cmplt j14#-208 3
-  instr 90: blbc (89) [23]
+  instr 107: nop
+  instr 108: cmplt j14#-208 3
+  instr 109: blbc (108) [23]
 
 Block #22:
-  instr 91: mul i10#-184 24
-  instr 92: add m3_base#-264 FP
-  instr 93: add (92) (91)
-  instr 94: mul j14#-208 8
-  instr 95: add (93) (94)
-  instr 96: store 0 (95)
-  instr 97: add j14#-208 1
-  instr 98: move (97) j15#-216
-  instr 99: move j15#-216 j14#-208
-  instr 100: br [21]
+  instr 110: mul i10#-184 24
+  instr 111: add m3_base#-264 FP
+  instr 112: add (111) (110)
+  instr 113: mul j14#-208 8
+  instr 114: add (112) (113)
+  instr 115: store 0 (114)
+  instr 116: add j14#-208 1
+  instr 117: move (116) j15#-216
+  instr 118: move j15#-216 j14#-208
+  instr 119: br [21]
 
 Block #23:
-  instr 100: add i10#-184 1
-  instr 101: move (100) i11#-224
-  instr 102: move i11#-224 i10#-184
-  instr 103: move j14#-208 j12#-192
-  instr 104: br [19]
+  instr 120: add i10#-184 1
+  instr 121: move (120) i11#-224
+  instr 122: move i11#-224 i10#-184
+  instr 123: move j14#-208 j12#-192
+  instr 124: br [19]
 
 Block #24:
-  instr 103: wrl
-  instr 104: move 0 i12#-232
-  instr 105: move i12#-232 i13#-240
-  instr 106: move j12#-192 j16#-248
+  instr 125: wrl
+  instr 126: move 0 i12#-232
+  instr 127: move i12#-232 i13#-240
+  instr 128: move j12#-192 j16#-248
 
 Block #25:
-  instr 105: nop
-  instr 106: nop
-  instr 107: nop
-  instr 108: cmplt i13#-240 3
-  instr 109: blbc (108) [33]
+  instr 129: nop
+  instr 130: nop
+  instr 131: nop
+  instr 132: cmplt i13#-240 3
+  instr 133: blbc (132) [33]
 
 Block #26:
-  instr 110: move 0 j17#-256
-  instr 111: move j17#-256 j18#-264
-  instr 112: move k0#-272 k1#-280
+  instr 134: move 0 j17#-256
+  instr 135: move j17#-256 j18#-264
+  instr 136: move k0#-272 k1#-280
 
 Block #27:
-  instr 111: nop
-  instr 112: nop
-  instr 113: cmplt j18#-264 3
-  instr 114: blbc (113) [32]
+  instr 137: nop
+  instr 138: nop
+  instr 139: cmplt j18#-264 3
+  instr 140: blbc (139) [32]
 
 Block #28:
-  instr 115: move 0 k2#-288
-  instr 116: move k2#-288 k3#-296
+  instr 141: move 0 k2#-288
+  instr 142: move k2#-288 k3#-296
 
 Block #29:
-  instr 116: nop
-  instr 117: cmplt k3#-296 4
-  instr 118: blbc (117) [31]
+  instr 143: nop
+  instr 144: cmplt k3#-296 4
+  instr 145: blbc (144) [31]
 
 Block #30:
-  instr 119: mul i13#-240 24
-  instr 120: add m3_base#-264 FP
-  instr 121: add (120) (119)
-  instr 122: mul j18#-264 8
-  instr 123: add (121) (122)
-  instr 124: mul i13#-240 24
-  instr 125: add m3_base#-264 FP
-  instr 126: add (125) (124)
-  instr 127: mul j18#-264 8
-  instr 128: add (126) (127)
-  instr 129: mul k3#-296 24
-  instr 130: add m1_base#-96 FP
-  instr 131: add (130) (129)
-  instr 132: mul j18#-264 8
-  instr 133: add (131) (132)
-  instr 134: mul i13#-240 32
-  instr 135: add m2_base#-192 FP
-  instr 136: add (135) (134)
-  instr 137: mul k3#-296 8
-  instr 138: add (136) (137)
-  instr 139: load (133)
-  instr 140: load (138)
-  instr 141: mul (139) (140)
-  instr 142: load (128)
-  instr 143: add (142) (141)
-  instr 144: store (143) (123)
-  instr 145: add k3#-296 1
-  instr 146: move (145) k4#-304
-  instr 147: move k4#-304 k3#-296
-  instr 148: br [29]
+  instr 146: mul i13#-240 24
+  instr 147: add m3_base#-264 FP
+  instr 148: add (147) (146)
+  instr 149: mul j18#-264 8
+  instr 150: add (148) (149)
+  instr 151: mul i13#-240 24
+  instr 152: add m3_base#-264 FP
+  instr 153: add (152) (151)
+  instr 154: mul j18#-264 8
+  instr 155: add (153) (154)
+  instr 156: mul k3#-296 24
+  instr 157: add m1_base#-96 FP
+  instr 158: add (157) (156)
+  instr 159: mul j18#-264 8
+  instr 160: add (158) (159)
+  instr 161: mul i13#-240 32
+  instr 162: add m2_base#-192 FP
+  instr 163: add (162) (161)
+  instr 164: mul k3#-296 8
+  instr 165: add (163) (164)
+  instr 166: load (160)
+  instr 167: load (165)
+  instr 168: mul (166) (167)
+  instr 169: load (155)
+  instr 170: add (169) (168)
+  instr 171: store (170) (150)
+  instr 172: add k3#-296 1
+  instr 173: move (172) k4#-304
+  instr 174: move k4#-304 k3#-296
+  instr 175: br [29]
 
 Block #31:
-  instr 148: add j18#-264 1
-  instr 149: move (148) j19#-312
-  instr 150: move j19#-312 j18#-264
-  instr 151: move k3#-296 k1#-280
-  instr 152: br [27]
+  instr 176: add j18#-264 1
+  instr 177: move (176) j19#-312
+  instr 178: move j19#-312 j18#-264
+  instr 179: move k3#-296 k1#-280
+  instr 180: br [27]
 
 Block #32:
-  instr 151: add i13#-240 1
-  instr 152: move (151) i14#-320
-  instr 153: move i14#-320 i13#-240
-  instr 154: move j18#-264 j16#-248
-  instr 155: move k1#-280 k0#-272
-  instr 156: br [25]
+  instr 181: add i13#-240 1
+  instr 182: move (181) i14#-320
+  instr 183: move i14#-320 i13#-240
+  instr 184: move j18#-264 j16#-248
+  instr 185: move k1#-280 k0#-272
+  instr 186: br [25]
 
 Block #33:
-  instr 154: move 0 i15#-328
-  instr 155: move i15#-328 i16#-336
-  instr 156: move j16#-248 j20#-344
+  instr 187: move 0 i15#-328
+  instr 188: move i15#-328 i16#-336
+  instr 189: move j16#-248 j20#-344
 
 Block #34:
-  instr 155: nop
-  instr 156: nop
-  instr 157: cmplt i16#-336 3
-  instr 158: blbc (157) [39]
+  instr 190: nop
+  instr 191: nop
+  instr 192: cmplt i16#-336 3
+  instr 193: blbc (192) [39]
 
 Block #35:
-  instr 159: move 0 j21#-352
-  instr 160: move j21#-352 j22#-360
+  instr 194: move 0 j21#-352
+  instr 195: move j21#-352 j22#-360
 
 Block #36:
-  instr 160: nop
-  instr 161: cmplt j22#-360 3
-  instr 162: blbc (161) [38]
+  instr 196: nop
+  instr 197: cmplt j22#-360 3
+  instr 198: blbc (197) [38]
 
 Block #37:
-  instr 163: mul i16#-336 24
-  instr 164: add m3_base#-264 FP
-  instr 165: add (164) (163)
-  instr 166: mul j22#-360 8
-  instr 167: add (165) (166)
-  instr 168: load (167)
-  instr 169: write (168)
-  instr 170: add j22#-360 1
-  instr 171: move (170) j23#-368
-  instr 172: move j23#-368 j22#-360
-  instr 173: br [36]
+  instr 199: mul i16#-336 24
+  instr 200: add m3_base#-264 FP
+  instr 201: add (200) (199)
+  instr 202: mul j22#-360 8
+  instr 203: add (201) (202)
+  instr 204: load (203)
+  instr 205: write (204)
+  instr 206: add j22#-360 1
+  instr 207: move (206) j23#-368
+  instr 208: move j23#-368 j22#-360
+  instr 209: br [36]
 
 Block #38:
-  instr 173: wrl
-  instr 174: add i16#-336 1
-  instr 175: move (174) i17#-376
-  instr 176: move i17#-376 i16#-336
-  instr 177: move j22#-360 j20#-344
-  instr 178: br [34]
+  instr 210: wrl
+  instr 211: add i16#-336 1
+  instr 212: move (211) i17#-376
+  instr 213: move i17#-376 i16#-336
+  instr 214: move j22#-360 j20#-344
+  instr 215: br [34]
 
 Block #39:
-  instr 177: ret
+  instr 216: ret
 
 

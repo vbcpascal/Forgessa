@@ -3,10 +3,10 @@
 #local_vars = 307
 
 (ENTRY) Block #0:
-  instr 4: move 1 a0#-8
-  instr 5: move 2 b0#-16
-  instr 6: move 3 c0#-24
-  instr 7: move a0#-8 a1#-32
+  instr 3: move 1 a0#-8
+  instr 4: move 2 b0#-16
+  instr 5: move 3 c0#-24
+  instr 6: move a0#-8 a1#-32
 
 Block #1:
   instr 7: nop
@@ -16381,6 +16381,6 @@ Block #2:
   instr 16374: br [1]
 
 Block #3:
-  instr 16374: ret
+  instr 16375: ret
 
 

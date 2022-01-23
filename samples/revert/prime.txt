@@ -3,102 +3,102 @@
 #local_vars = 14
 
 (ENTRY) Block #0:
-  instr 4: mul 0 8
-  instr 5: add prime_base#29568 GP
-  instr 6: add (5) (4)
-  instr 7: store 2 (6)
-  instr 8: mul 0 8
-  instr 9: add prime_base#29568 GP
-  instr 10: add (9) (8)
-  instr 11: load (10)
-  instr 12: write (11)
-  instr 13: move 1 i0#-8
-  instr 14: move 3 v0#-16
-  instr 15: move i0#-8 i1#-24
-  instr 16: move v0#-16 v1#-32
+  instr 3: mul 0 8
+  instr 4: add prime_base#29568 GP
+  instr 5: add (4) (3)
+  instr 6: store 2 (5)
+  instr 7: mul 0 8
+  instr 8: add prime_base#29568 GP
+  instr 9: add (8) (7)
+  instr 10: load (9)
+  instr 11: write (10)
+  instr 12: move 1 i0#-8
+  instr 13: move 3 v0#-16
+  instr 14: move i0#-8 i1#-24
+  instr 15: move v0#-16 v1#-32
 
 Block #1:
-  instr 15: nop
   instr 16: nop
   instr 17: nop
-  instr 18: cmplt i1#-24 400
-  instr 19: blbc (18) [12]
+  instr 18: nop
+  instr 19: cmplt i1#-24 400
+  instr 20: blbc (19) [12]
 
 Block #2:
-  instr 20: move 0 j1#-40
-  instr 21: move j1#-40 j2#-48
+  instr 21: move 0 j1#-40
+  instr 22: move j1#-40 j2#-48
 
 Block #3:
-  instr 21: nop
-  instr 22: cmplt j2#-48 i1#-24
-  instr 23: blbc (22) [9]
+  instr 23: nop
+  instr 24: cmplt j2#-48 i1#-24
+  instr 25: blbc (24) [9]
 
 Block #4:
-  instr 24: mul j2#-48 8
-  instr 25: add prime_base#29568 GP
-  instr 26: add (25) (24)
-  instr 27: mul j2#-48 8
-  instr 28: add prime_base#29568 GP
-  instr 29: add (28) (27)
-  instr 30: load (26)
-  instr 31: load (29)
-  instr 32: mul (30) (31)
-  instr 33: cmple (32) v1#-32
-  instr 34: blbs (33) [6]
+  instr 26: mul j2#-48 8
+  instr 27: add prime_base#29568 GP
+  instr 28: add (27) (26)
+  instr 29: mul j2#-48 8
+  instr 30: add prime_base#29568 GP
+  instr 31: add (30) (29)
+  instr 32: load (28)
+  instr 33: load (31)
+  instr 34: mul (32) (33)
+  instr 35: cmple (34) v1#-32
+  instr 36: blbs (35) [6]
 
 Block #5:
-  instr 35: sub i1#-24 1
-  instr 36: move (35) j3#-56
-  instr 37: move j3#-56 j5#-64
-  instr 38: br [8]
+  instr 37: sub i1#-24 1
+  instr 38: move (37) j3#-56
+  instr 39: move j3#-56 j5#-64
+  instr 40: br [8]
 
 Block #6:
-  instr 38: mul j2#-48 8
-  instr 39: add prime_base#29568 GP
-  instr 40: add (39) (38)
-  instr 41: load (40)
-  instr 42: mod v1#-32 (41)
-  instr 43: cmpeq (42) 0
-  instr 44: move j2#-48 j5#-64
-  instr 45: blbc (43) [8]
+  instr 41: mul j2#-48 8
+  instr 42: add prime_base#29568 GP
+  instr 43: add (42) (41)
+  instr 44: load (43)
+  instr 45: mod v1#-32 (44)
+  instr 46: cmpeq (45) 0
+  instr 47: move j2#-48 j5#-64
+  instr 48: blbc (46) [8]
 
 Block #7:
-  instr 45: move i1#-24 j4#-72
-  instr 46: move j4#-72 j5#-64
+  instr 49: move i1#-24 j4#-72
+  instr 50: move j4#-72 j5#-64
 
 Block #8:
-  instr 46: nop
-  instr 47: add j5#-64 1
-  instr 48: move (47) j6#-80
-  instr 49: move j6#-80 j2#-48
-  instr 50: br [3]
+  instr 51: nop
+  instr 52: add j5#-64 1
+  instr 53: move (52) j6#-80
+  instr 54: move j6#-80 j2#-48
+  instr 55: br [3]
 
 Block #9:
-  instr 50: cmpeq j2#-48 i1#-24
-  instr 51: move i1#-24 i3#-88
-  instr 52: blbc (50) [11]
+  instr 56: cmpeq j2#-48 i1#-24
+  instr 57: move i1#-24 i3#-88
+  instr 58: blbc (56) [11]
 
 Block #10:
-  instr 52: mul i1#-24 8
-  instr 53: add prime_base#29568 GP
-  instr 54: add (53) (52)
-  instr 55: store v1#-32 (54)
-  instr 56: write v1#-32
-  instr 57: add i1#-24 1
-  instr 58: move (57) i2#-96
-  instr 59: move i2#-96 i3#-88
+  instr 59: mul i1#-24 8
+  instr 60: add prime_base#29568 GP
+  instr 61: add (60) (59)
+  instr 62: store v1#-32 (61)
+  instr 63: write v1#-32
+  instr 64: add i1#-24 1
+  instr 65: move (64) i2#-96
+  instr 66: move i2#-96 i3#-88
 
 Block #11:
-  instr 59: nop
-  instr 60: add v1#-32 2
-  instr 61: move (60) v2#-104
-  instr 62: move i3#-88 i1#-24
-  instr 63: move j2#-48 j0#-112
-  instr 64: move v2#-104 v1#-32
-  instr 65: br [1]
+  instr 67: nop
+  instr 68: add v1#-32 2
+  instr 69: move (68) v2#-104
+  instr 70: move i3#-88 i1#-24
+  instr 71: move j2#-48 j0#-112
+  instr 72: move v2#-104 v1#-32
+  instr 73: br [1]
 
 Block #12:
-  instr 63: wrl
-  instr 64: ret
+  instr 74: wrl
+  instr 75: ret
 
 

@@ -3,161 +3,161 @@
 #local_vars = 43
 
 (ENTRY) Block #0:
-  instr 4: move 13 n0#-8
-  instr 5: move 0 x0#-16
-  instr 6: move 0 a0#-24
-  instr 7: move a0#-24 a1#-32
-  instr 8: move x0#-16 x1#-40
+  instr 3: move 13 n0#-8
+  instr 4: move 0 x0#-16
+  instr 5: move 0 a0#-24
+  instr 6: move a0#-24 a1#-32
+  instr 7: move x0#-16 x1#-40
 
 Block #1:
-  instr 7: nop
   instr 8: nop
   instr 9: nop
   instr 10: nop
   instr 11: nop
   instr 12: nop
   instr 13: nop
-  instr 14: cmplt a1#-32 n0#-8
-  instr 15: blbc (14) [18]
+  instr 14: nop
+  instr 15: cmplt a1#-32 n0#-8
+  instr 16: blbc (15) [18]
 
 Block #2:
-  instr 16: move 0 b1#-48
-  instr 17: move 0 x2#-56
-  instr 18: move b1#-48 b2#-64
-  instr 19: move c0#-72 c1#-80
-  instr 20: move d0#-88 d1#-96
-  instr 21: move e0#-104 e1#-112
-  instr 22: move f0#-120 f1#-128
-  instr 23: move x2#-56 x3#-136
+  instr 17: move 0 b1#-48
+  instr 18: move 0 x2#-56
+  instr 19: move b1#-48 b2#-64
+  instr 20: move c0#-72 c1#-80
+  instr 21: move d0#-88 d1#-96
+  instr 22: move e0#-104 e1#-112
+  instr 23: move f0#-120 f1#-128
+  instr 24: move x2#-56 x3#-136
 
 Block #3:
-  instr 18: nop
-  instr 19: nop
-  instr 20: nop
-  instr 21: nop
-  instr 22: nop
-  instr 23: nop
-  instr 24: cmplt b2#-64 n0#-8
-  instr 25: blbc (24) [17]
-
-Block #4:
-  instr 26: move 0 c2#-144
-  instr 27: move c2#-144 c3#-152
-  instr 28: move d1#-96 d2#-160
-  instr 29: move e1#-112 e2#-168
-  instr 30: move f1#-128 f2#-176
-  instr 31: move x3#-136 x4#-184
-
-Block #5:
+  instr 25: nop
+  instr 26: nop
   instr 27: nop
   instr 28: nop
   instr 29: nop
   instr 30: nop
-  instr 31: nop
-  instr 32: cmplt c3#-152 n0#-8
-  instr 33: blbc (32) [16]
+  instr 31: cmplt b2#-64 n0#-8
+  instr 32: blbc (31) [17]
 
-Block #6:
-  instr 34: move 0 d3#-192
-  instr 35: move d3#-192 d4#-200
-  instr 36: move e2#-168 e3#-208
-  instr 37: move f2#-176 f3#-216
-  instr 38: move x4#-184 x5#-224
+Block #4:
+  instr 33: move 0 c2#-144
+  instr 34: move c2#-144 c3#-152
+  instr 35: move d1#-96 d2#-160
+  instr 36: move e1#-112 e2#-168
+  instr 37: move f1#-128 f2#-176
+  instr 38: move x3#-136 x4#-184
 
-Block #7:
-  instr 35: nop
-  instr 36: nop
-  instr 37: nop
-  instr 38: nop
-  instr 39: cmplt d4#-200 n0#-8
-  instr 40: blbc (39) [15]
-
-Block #8:
-  instr 41: move 0 e4#-232
-  instr 42: move e4#-232 e5#-240
-  instr 43: move f3#-216 f4#-248
-  instr 44: move x5#-224 x6#-256
-
-Block #9:
+Block #5:
+  instr 39: nop
+  instr 40: nop
+  instr 41: nop
   instr 42: nop
   instr 43: nop
-  instr 44: nop
-  instr 45: cmplt e5#-240 n0#-8
-  instr 46: blbc (45) [14]
+  instr 44: cmplt c3#-152 n0#-8
+  instr 45: blbc (44) [16]
+
+Block #6:
+  instr 46: move 0 d3#-192
+  instr 47: move d3#-192 d4#-200
+  instr 48: move e2#-168 e3#-208
+  instr 49: move f2#-176 f3#-216
+  instr 50: move x4#-184 x5#-224
+
+Block #7:
+  instr 51: nop
+  instr 52: nop
+  instr 53: nop
+  instr 54: nop
+  instr 55: cmplt d4#-200 n0#-8
+  instr 56: blbc (55) [15]
+
+Block #8:
+  instr 57: move 0 e4#-232
+  instr 58: move e4#-232 e5#-240
+  instr 59: move f3#-216 f4#-248
+  instr 60: move x5#-224 x6#-256
+
+Block #9:
+  instr 61: nop
+  instr 62: nop
+  instr 63: nop
+  instr 64: cmplt e5#-240 n0#-8
+  instr 65: blbc (64) [14]
 
 Block #10:
-  instr 47: move 0 f5#-264
-  instr 48: move f5#-264 f6#-272
-  instr 49: move x6#-256 x7#-280
+  instr 66: move 0 f5#-264
+  instr 67: move f5#-264 f6#-272
+  instr 68: move x6#-256 x7#-280
 
 Block #11:
-  instr 48: nop
-  instr 49: nop
-  instr 50: cmplt f6#-272 n0#-8
-  instr 51: blbc (50) [13]
+  instr 69: nop
+  instr 70: nop
+  instr 71: cmplt f6#-272 n0#-8
+  instr 72: blbc (71) [13]
 
 Block #12:
-  instr 52: add x7#-280 1
-  instr 53: move (52) x8#-288
-  instr 54: add f6#-272 1
-  instr 55: move (54) f7#-296
-  instr 56: move f7#-296 f6#-272
-  instr 57: move x8#-288 x7#-280
-  instr 58: br [11]
+  instr 73: add x7#-280 1
+  instr 74: move (73) x8#-288
+  instr 75: add f6#-272 1
+  instr 76: move (75) f7#-296
+  instr 77: move f7#-296 f6#-272
+  instr 78: move x8#-288 x7#-280
+  instr 79: br [11]
 
 Block #13:
-  instr 57: add e5#-240 1
-  instr 58: move (57) e6#-304
-  instr 59: move e6#-304 e5#-240
-  instr 60: move f6#-272 f4#-248
-  instr 61: move x7#-280 x6#-256
-  instr 62: br [9]
+  instr 80: add e5#-240 1
+  instr 81: move (80) e6#-304
+  instr 82: move e6#-304 e5#-240
+  instr 83: move f6#-272 f4#-248
+  instr 84: move x7#-280 x6#-256
+  instr 85: br [9]
 
 Block #14:
-  instr 60: add d4#-200 1
-  instr 61: move (60) d5#-312
-  instr 62: move d5#-312 d4#-200
-  instr 63: move e5#-240 e3#-208
-  instr 64: move f4#-248 f3#-216
-  instr 65: move x6#-256 x5#-224
-  instr 66: br [7]
+  instr 86: add d4#-200 1
+  instr 87: move (86) d5#-312
+  instr 88: move d5#-312 d4#-200
+  instr 89: move e5#-240 e3#-208
+  instr 90: move f4#-248 f3#-216
+  instr 91: move x6#-256 x5#-224
+  instr 92: br [7]
 
 Block #15:
-  instr 63: add c3#-152 1
-  instr 64: move (63) c4#-320
-  instr 65: move c4#-320 c3#-152
-  instr 66: move d4#-200 d2#-160
-  instr 67: move e3#-208 e2#-168
-  instr 68: move f3#-216 f2#-176
-  instr 69: move x5#-224 x4#-184
-  instr 70: br [5]
+  instr 93: add c3#-152 1
+  instr 94: move (93) c4#-320
+  instr 95: move c4#-320 c3#-152
+  instr 96: move d4#-200 d2#-160
+  instr 97: move e3#-208 e2#-168
+  instr 98: move f3#-216 f2#-176
+  instr 99: move x5#-224 x4#-184
+  instr 100: br [5]
 
 Block #16:
-  instr 66: add b2#-64 1
-  instr 67: move (66) b3#-328
-  instr 68: move b3#-328 b2#-64
-  instr 69: move c3#-152 c1#-80
-  instr 70: move d2#-160 d1#-96
-  instr 71: move e2#-168 e1#-112
-  instr 72: move f2#-176 f1#-128
-  instr 73: move x4#-184 x3#-136
-  instr 74: br [3]
+  instr 101: add b2#-64 1
+  instr 102: move (101) b3#-328
+  instr 103: move b3#-328 b2#-64
+  instr 104: move c3#-152 c1#-80
+  instr 105: move d2#-160 d1#-96
+  instr 106: move e2#-168 e1#-112
+  instr 107: move f2#-176 f1#-128
+  instr 108: move x4#-184 x3#-136
+  instr 109: br [3]
 
 Block #17:
-  instr 69: add a1#-32 1
-  instr 70: move (69) a2#-336
-  instr 71: move a2#-336 a1#-32
-  instr 72: move b2#-64 b0#-344
-  instr 73: move c1#-80 c0#-72
-  instr 74: move d1#-96 d0#-88
-  instr 75: move e1#-112 e0#-104
-  instr 76: move f1#-128 f0#-120
-  instr 77: move x3#-136 x1#-40
-  instr 78: br [1]
+  instr 110: add a1#-32 1
+  instr 111: move (110) a2#-336
+  instr 112: move a2#-336 a1#-32
+  instr 113: move b2#-64 b0#-344
+  instr 114: move c1#-80 c0#-72
+  instr 115: move d1#-96 d0#-88
+  instr 116: move e1#-112 e0#-104
+  instr 117: move f1#-128 f0#-120
+  instr 118: move x3#-136 x1#-40
+  instr 119: br [1]
 
 Block #18:
-  instr 72: write x1#-40
-  instr 73: wrl
-  instr 74: ret
+  instr 120: write x1#-40
+  instr 121: wrl
+  instr 122: ret
 
 

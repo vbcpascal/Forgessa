@@ -1,4 +1,4 @@
-use depile::ir::{Block, Instr};
+use depile::ir::{Block, Function, Instr};
 use depile::ir::instr::{Branching, BranchKind, InstrExt};
 use depile::ir::instr::stripped::{Marker, Operand};
 use crate::ssa::{Phi, SSAInterProc, SSAOpd};
@@ -80,6 +80,27 @@ impl<K: InstrExt> Pannable for Block<K>
             instructions: instrs.into_boxed_slice()
         }
     }
+}
+
+pub fn panning_function<K: InstrExt>(func: &Function<K>, first_index: usize) -> (Function<K>, usize)
+    where K::Operand: Pannable,
+          K::Branching: Pannable,
+          K::Marker: Pannable,
+          K::InterProc: Pannable,
+          K::Extra: Pannable {
+    let mut blocks = Vec::new();
+    let mut index = first_index;
+    for block in func.blocks.iter() {
+        let i = block.first_index;
+        blocks.push(block.pan(&|x| x + index - i));
+        index += block.instructions.len();
+    }
+    (Function {
+        parameter_count: func.parameter_count,
+        local_var_count: func.local_var_count,
+        entry_block: func.entry_block,
+        blocks: blocks,
+    }, index)
 }
 
 impl Pannable for Marker {

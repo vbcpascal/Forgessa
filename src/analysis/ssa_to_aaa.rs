@@ -1,10 +1,9 @@
 use depile::ir::Instr;
+use crate::analysis::panning::panning_function;
 use crate::analysis::ssa_to_aaa::helper::Substitutable;
 use crate::ssa::{Phi, SSAFunction, SSAFunctions, SSAOpd};
 
-pub struct SSATo3Addr {
-
-}
+pub struct SSATo3Addr { }
 
 impl SSATo3Addr {
     pub fn new() -> Self { SSATo3Addr { } }
@@ -19,7 +18,7 @@ impl SSATo3Addr {
             s23.remove_phi_func(func);
             locals.push(s23.rename_params(func, params));
         }
-
+        s23.flatten(funcs);
         locals
     }
 
@@ -50,6 +49,16 @@ impl SSATo3Addr {
         }
         func.local_var_count = locals.len() as u64;
         locals
+    }
+
+    pub fn flatten(&self, funcs: &mut SSAFunctions) {
+        let mut index: usize = 3;
+        for func in funcs.functions.iter_mut() {
+            let res = panning_function(func, index);
+            *func = res.0;
+            index = res.1;
+        }
+
     }
 }
 
@@ -167,12 +176,10 @@ mod test {
     #[test]
     fn test_ssa_to_aaa() {
         let funcs = get_sample_functions(PRIME);
-        let (mut ssa, _) = PhiForge::run(&funcs);
-        let mut func = &mut ssa.functions[0];
-        let x = SSATo3Addr { };
-        x.remove_phi_func(func);
+        let (mut ssa, params) = PhiForge::run(&funcs);
+        SSATo3Addr::run(&mut ssa, &params);
 
-        println!("{}", func);
+        println!("{}", ssa);
     }
 
     #[test]

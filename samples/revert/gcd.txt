@@ -7,30 +7,30 @@ Function #0:
   instr 4: move b#16 b1#-16
 
 Block #1:
-  instr 3: nop
-  instr 4: nop
   instr 5: nop
-  instr 6: cmpeq b1#-16 0
-  instr 7: blbs (6) [3]
+  instr 6: nop
+  instr 7: nop
+  instr 8: cmpeq b1#-16 0
+  instr 9: blbs (8) [3]
 
 Block #2:
-  instr 8: move a1#-8 c1#-24
-  instr 9: move b1#-16 a2#-32
-  instr 10: mod c1#-24 b1#-16
-  instr 11: move (10) b2#-40
-  instr 12: write c1#-24
-  instr 13: write a2#-32
-  instr 14: write b2#-40
-  instr 15: wrl
-  instr 16: move a2#-32 a1#-8
-  instr 17: move b2#-40 b1#-16
-  instr 18: move c1#-24 c0#-48
-  instr 19: br [1]
+  instr 10: move a1#-8 c1#-24
+  instr 11: move b1#-16 a2#-32
+  instr 12: mod c1#-24 b1#-16
+  instr 13: move (12) b2#-40
+  instr 14: write c1#-24
+  instr 15: write a2#-32
+  instr 16: write b2#-40
+  instr 17: wrl
+  instr 18: move a2#-32 a1#-8
+  instr 19: move b2#-40 b1#-16
+  instr 20: move c1#-24 c0#-48
+  instr 21: br [1]
 
 Block #3:
-  instr 17: add res_base#32744 GP
-  instr 18: store a1#-8 (17)
-  instr 19: ret
+  instr 22: add res_base#32744 GP
+  instr 23: store a1#-8 (22)
+  instr 24: ret
 
 
 (ENTRY) Function #1:
@@ -38,37 +38,37 @@ Block #3:
 #local_vars = 0
 
 (ENTRY) Block #0:
-  instr 20: add a_base#32760 GP
-  instr 21: store 25733 (20)
-  instr 22: add b_base#32752 GP
-  instr 23: store 48611 (22)
-  instr 24: add a_base#32760 GP
-  instr 25: load (24)
-  instr 26: param (25)
+  instr 25: add a_base#32760 GP
+  instr 26: store 25733 (25)
   instr 27: add b_base#32752 GP
-  instr 28: load (27)
-  instr 29: param (28)
-  instr 30: call [0]
-  instr 31: add res_base#32744 GP
-  instr 32: load (31)
-  instr 33: write (32)
-  instr 34: wrl
-  instr 35: wrl
-  instr 36: add a_base#32760 GP
-  instr 37: store 7485671 (36)
-  instr 38: add b_base#32752 GP
-  instr 39: store 7480189 (38)
-  instr 40: add a_base#32760 GP
-  instr 41: load (40)
-  instr 42: param (41)
+  instr 28: store 48611 (27)
+  instr 29: add a_base#32760 GP
+  instr 30: load (29)
+  instr 31: param (30)
+  instr 32: add b_base#32752 GP
+  instr 33: load (32)
+  instr 34: param (33)
+  instr 35: call [0]
+  instr 36: add res_base#32744 GP
+  instr 37: load (36)
+  instr 38: write (37)
+  instr 39: wrl
+  instr 40: wrl
+  instr 41: add a_base#32760 GP
+  instr 42: store 7485671 (41)
   instr 43: add b_base#32752 GP
-  instr 44: load (43)
-  instr 45: param (44)
-  instr 46: call [0]
-  instr 47: add res_base#32744 GP
-  instr 48: load (47)
-  instr 49: write (48)
-  instr 50: wrl
-  instr 51: ret
+  instr 44: store 7480189 (43)
+  instr 45: add a_base#32760 GP
+  instr 46: load (45)
+  instr 47: param (46)
+  instr 48: add b_base#32752 GP
+  instr 49: load (48)
+  instr 50: param (49)
+  instr 51: call [0]
+  instr 52: add res_base#32744 GP
+  instr 53: load (52)
+  instr 54: write (53)
+  instr 55: wrl
+  instr 56: ret
 
 
