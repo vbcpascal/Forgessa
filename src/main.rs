@@ -1,9 +1,12 @@
-mod ssa;
-mod samples;
-mod analysis;
-mod ir;
-mod opt;
+pub mod ssa;
+pub mod samples;
+pub mod analysis;
+pub mod ir;
+pub mod opt;
+pub mod cli;
 
 fn main() {
-    println!("Hello, world!");
+    if let Err(err) = cli::Cli::run() {
+        eprintln!("{}", err);
+    }
 }

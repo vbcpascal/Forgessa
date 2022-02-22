@@ -1,8 +1,23 @@
 [package]
-name = "Forgessa"
+name = "forgessa"
 version = "0.1.0"
 edition = "2021"
-
+authors = ["Zhichao Guan <vbcpascal@outlook.com>"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+depile = { path = "dependencies/depile" }
+parse-display = "0.5.3"
+thiserror = "1.0.30"
+displaydoc = "0.2.3"
+derivative = "2.2.0"
+itertools = "0.10.3"
+smallvec = { version = "1.7.0", features = ["const_generics", "const_new"] }
+clap = { version = "3.0.7", features = ["derive"], optional = true }
+
+[[bin]]
+name = "forgessa"
+required-features = ["cli"]
+
+[features]
+cli = ["clap"]

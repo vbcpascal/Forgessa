@@ -1,6 +1,6 @@
-use depile::ir::Block;
-use depile::ir::instr::stripped::Kind;
-use crate::ssa::{SSABlock, SSAInstr};
+use depile::ir::{Block, Functions};
+use depile::ir::instr::stripped::{Function, Kind};
+use crate::ssa::{SSABlock, SSAFunction, SSAFunctions, SSAInstr};
 
 /// Convert a block with kind `Stripped` to `SSAKind` straight forward.
 pub fn block_convert(block: &Block<Kind>) -> SSABlock {
@@ -15,6 +15,30 @@ pub fn block_convert(block: &Block<Kind>) -> SSABlock {
         ))
     }
     SSABlock { first_index: block.first_index, instructions: instrs.into_boxed_slice() }
+}
+
+pub fn functions_revert(funcs: &SSAFunctions) -> Functions<Kind> {
+    let mut funcs_ = Vec::new();
+    for func in &funcs.functions {
+        funcs_.push(func_revert(func));
+    }
+    Functions {
+        functions: funcs_,
+        entry_function: funcs.entry_function,
+    }
+}
+
+pub fn func_revert(func: &SSAFunction) -> Function {
+    let mut blocks = Vec::new();
+    for block in &func.blocks {
+        blocks.push(block_revert(block));
+    }
+    Function {
+        parameter_count: func.parameter_count,
+        local_var_count: func.local_var_count,
+        entry_block: func.entry_block,
+        blocks: blocks,
+    }
 }
 
 pub fn block_revert(block: &SSABlock) -> Block<Kind> {

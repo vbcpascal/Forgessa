@@ -127,8 +127,8 @@ mod dominance_analysis {
         pub fn insert(&mut self, x: usize) -> bool { self.bs.insert(x) }
     }
 
-    impl<K: InstrExt> JoinSemiLattice<K> for DomAnalysis {
-        fn bottom(env: &dyn ControlFlowExt<BlockKind=K>) -> Self {
+    impl JoinSemiLattice for DomAnalysis {
+        fn bottom<K: InstrExt>(env: &dyn ControlFlowExt<BlockKind=K>) -> Self {
             Self::complete(env.block_count())
         }
 
@@ -147,7 +147,7 @@ mod dominance_analysis {
         fn transfer_function(block_idx: usize, _: &Block<K>, input: &Self, output: &mut Self) -> bool {
             let mut res = input.clone();
             res.insert(block_idx);
-            <Self as JoinSemiLattice<K>>::join_assign(output, res)
+            Self::join_assign(output, res)
             // output.join_assign::(res)
         }
     }
