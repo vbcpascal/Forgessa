@@ -1,5 +1,7 @@
 # ForgeSSA
 
+[![language](https://img.shields.io/badge/language-Rust-red)](https://www.rust-lang.org/)
+
 Build Static Single Assignment (SSA) form, and perform optimizations on SSA. In particular, this project consists of the following parts:
 
 - Build Static Single Assignment (SSA) form from 3-address.
